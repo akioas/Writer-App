@@ -2,15 +2,16 @@
 import SwiftUI
 import UIKit
 
-let layersMaxNum = 9
+//let layersMaxNum = 9
 //var j = 0
-var stopPoint: CGPoint = CGPoint(x:0, y:0)
-
+//var stopPoint: CGPoint = CGPoint(x:0, y:0)
+var currentLayer = 0
+var pathVar = Path()
 
 struct ContentView: View {
 
-    @State var points: [CGPoint] = load()
-
+    @State var points: Array<[CGPoint]> = load()
+    
     var body: some View {
         HStack{
         ZStack {
@@ -29,9 +30,11 @@ struct ContentView: View {
 //                                   points = []
                                 
             //                    save(points)
-                                stopPoint = points.last!
-                        print(stopPoint)
-                                
+//                                stopPoint = points[currentLayer].last!
+//                        print(stopPoint)
+                               currentLayer = currentLayer + 1
+                                points.append([])
+                                print(points)
                             }))
             
            
@@ -41,7 +44,7 @@ struct ContentView: View {
             
            
             DrawShape(points: points)
-                .stroke(lineWidth: 5) // here you put width of lines
+                .stroke(lineWidth: 5)
                 .foregroundColor(.black)
             
             
@@ -51,17 +54,19 @@ struct ContentView: View {
     
     
         Button("CLEAR"){
-            points = []
+            points = [[]]
+            pathVar = Path()
+            currentLayer = 0
             Circle()
                         .foregroundColor(.blue)
                         .frame(width: 100, height: 100)
         }
     }
-    private func addNewPoint(_ value: DragGesture.Value) {
+    func addNewPoint(_ value: DragGesture.Value) {
                 //
 
-        points.append(value.location)
-        save(points)
+        points[currentLayer].append(value.location)
+        //save(points)
         
         
     }
@@ -70,41 +75,32 @@ struct ContentView: View {
 
 struct DrawShape: Shape {
 
-    var points: [CGPoint]
+    var points: Array<[CGPoint]>
 //    let layer = CAShapeLayer()
     
     
           
     func path(in rect: CGRect) -> Path {
-        var path = Path()
-        guard let firstPoint = points.first else { return path
+        
+        
+        guard let firstPoint = points[currentLayer].first else { return pathVar
+ 
         }
         
 
         
         
-            path.move(to: firstPoint)
-                for pointIndex in 1..<points.count {
-                    if points[pointIndex] != stopPoint{
-                    path.addLine(to: points[pointIndex])
+            pathVar.move(to: firstPoint)
+        for pointIndex in 1..<points[currentLayer].count{
+                   
+                    pathVar.addLine(to: points[currentLayer][pointIndex])
 //                    save(points)
-                    }
+                    
                 }
             
-                
-            
-        
-        
-        
-        
-        
-        
-        
-        
-        
 
         
-            return path
+            return pathVar
     }
     
 }
@@ -120,7 +116,10 @@ struct ContentView_Previews: PreviewProvider {
     
 }
 
-
+func load() -> Array<[CGPoint]> {
+    
+    return [[]]
+}
 
 /*
  let res = str
@@ -130,10 +129,24 @@ struct ContentView_Previews: PreviewProvider {
 
 
 
-
+/*
 
 let KeyForUserDefaults = "drawKey"
 
+func save(_ points: Array<[CGPoint]>) {
+    let data = points.map { try? JSONEncoder().encode($0) }
+    UserDefaults.standard.set(data, forKey: KeyForUserDefaults)
+}
+
+func load() -> Array<[CGPoint]> {
+    guard let encodedData = UserDefaults.standard.array(forKey: KeyForUserDefaults) as? [Data] else {
+        return []
+    }
+
+    return encodedData.map { try! JSONDecoder().decode([CGPoint].self, from: $0) }
+}*/
+
+/*
 func save(_ points: [CGPoint]) {
     let data = points.map { try? JSONEncoder().encode($0) }
     UserDefaults.standard.set(data, forKey: KeyForUserDefaults)
@@ -145,7 +158,12 @@ func load() -> [CGPoint] {
     }
 
     return encodedData.map { try! JSONDecoder().decode(CGPoint.self, from: $0) }
-}
+}*/
+
+
+
+
+
 
 
 
