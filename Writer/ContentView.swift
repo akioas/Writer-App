@@ -32,10 +32,13 @@ struct ContentView: View {
             //                    save(points)
 //                                stopPoint = points[currentLayer].last!
 //                        print(stopPoint)
+                              
                                currentLayer = currentLayer + 1
+                                
                                 points.append([])
+                                
                                 print(points)
-                                save(points)
+//                                save(points)
                             }))
             
            
@@ -67,6 +70,7 @@ struct ContentView: View {
                 //
 
         points[currentLayer].append(value.location)
+       
         //save(points)
         
         
@@ -88,20 +92,19 @@ struct DrawShape: Shape {
  
         }
         
-
-        
-        
             pathVar.move(to: firstPoint)
         for pointIndex in 1..<points[currentLayer].count{
                    
                     pathVar.addLine(to: points[currentLayer][pointIndex])
+            save(points)
 //                    save(points)
                     
                 }
             
-            save(points)
-        
+            
+            
             return pathVar
+        
     }
     
 }
@@ -172,11 +175,29 @@ func save(_ points: [[CGPoint]]) {
 }
 
 func load() -> [[CGPoint]] {
+    
     guard let encodedData = UserDefaults.standard.array(forKey: KeyForUserDefaults) as? [Data] else {
-        return [[]]
+        return []
     }
 
-    return encodedData.map { try! JSONDecoder().decode([CGPoint].self, from: $0) }
+    
+    let encodedReturn = encodedData.map { try! JSONDecoder().decode([CGPoint].self, from: $0) }
+    currentLayer = encodedReturn.count - 1
+    pathVar = Path()
+    for currentNum in 0...currentLayer{
+        guard let firstPoint = encodedReturn[currentNum].first else { return []
+
+        }
+        
+            pathVar.move(to: firstPoint)
+        for pointIndex in 1..<encodedReturn[currentNum].count{
+                   
+                    pathVar.addLine(to: encodedReturn[currentNum][pointIndex])
+                    
+                }
+    }
+    
+    return encodedReturn
 }
 
 
