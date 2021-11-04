@@ -35,6 +35,7 @@ struct ContentView: View {
                                currentLayer = currentLayer + 1
                                 points.append([])
                                 print(points)
+                                save(points)
                             }))
             
            
@@ -115,11 +116,11 @@ struct ContentView_Previews: PreviewProvider {
     
     
 }
-
+/*
 func load() -> Array<[CGPoint]> {
     
     return [[]]
-}
+}*/
 
 /*
  let res = str
@@ -129,22 +130,54 @@ func load() -> Array<[CGPoint]> {
 
 
 
-/*
+
 
 let KeyForUserDefaults = "drawKey"
-
+//let defaults = UserDefaults.standard
+/*
 func save(_ points: Array<[CGPoint]>) {
+    let encodedData = try? NSKeyedArchiver.archivedData(withRootObject: points, requiringSecureCoding: false)
+    let userDefaults = UserDefaults.standard
+    userDefaults.set(encodedData, forKey: KeyForUserDefaults)
+}
+
+func load() -> Array<[CGPoint]> {
+
+    let decoded  = UserDefaults.standard.object(forKey: KeyForUserDefaults) as! Data
+    let decodedReturn = try? NSKeyedUnarchiver.unarchivedObject(ofClass:Array<[CGPoint]>, from: decoded) as? [[CGPoint]]
+
+    return decodedReturn!
+}
+
+*/
+
+/*
+func save<T: Codable>(_ value: [T]){
+        let data = value.map { try? JSONEncoder().encode($0) }
+        
+    UserDefaults.standard.set(data, forKey: KeyForUserDefaults)
+    }
+    
+func load() -> Array<[CGPoint]> {
+    guard let encodedData = UserDefaults.standard.array(forKey: KeyForUserDefaults) as? [Data] else {
+        return []
+        }
+    let encReturn = encodedData.map { try! JSONDecoder().decode([CGPoint].self, from: $0)}
+    return encReturn
+    }*/
+
+func save(_ points: [[CGPoint]]) {
     let data = points.map { try? JSONEncoder().encode($0) }
     UserDefaults.standard.set(data, forKey: KeyForUserDefaults)
 }
 
-func load() -> Array<[CGPoint]> {
-    guard let encodedData = UserDefaults.standard.array(forKey: KeyForUserDefaults) as? [Data] else {
-        return []
+func load() -> [[CGPoint]] {
+    guard let encodedData = UserDefaults.standard.array(forKey: KeyForUserDefaults) as? [CGPoint] else {
+        return [[]]
     }
 
-    return encodedData.map { try! JSONDecoder().decode([CGPoint].self, from: $0) }
-}*/
+    return encodedData.map { _ in try! JSONDecoder().decode([CGPoint].self, from: UserDefaults.standard.object(forKey: KeyForUserDefaults) as! Data) }
+}
 
 /*
 func save(_ points: [CGPoint]) {
@@ -158,11 +191,8 @@ func load() -> [CGPoint] {
     }
 
     return encodedData.map { try! JSONDecoder().decode(CGPoint.self, from: $0) }
-}*/
-
-
-
-
+}
+*/
 
 
 
