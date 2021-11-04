@@ -99,7 +99,7 @@ struct DrawShape: Shape {
                     
                 }
             
-
+            save(points)
         
             return pathVar
     }
@@ -172,12 +172,14 @@ func save(_ points: [[CGPoint]]) {
 }
 
 func load() -> [[CGPoint]] {
-    guard let encodedData = UserDefaults.standard.array(forKey: KeyForUserDefaults) as? [CGPoint] else {
+    guard let encodedData = UserDefaults.standard.array(forKey: KeyForUserDefaults) as? [Data] else {
         return [[]]
     }
 
-    return encodedData.map { _ in try! JSONDecoder().decode([CGPoint].self, from: UserDefaults.standard.object(forKey: KeyForUserDefaults) as! Data) }
+    return encodedData.map { try! JSONDecoder().decode([CGPoint].self, from: $0) }
 }
+
+
 
 /*
 func save(_ points: [CGPoint]) {
