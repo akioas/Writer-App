@@ -33,7 +33,7 @@ struct ContentView: View {
             //                    save(points)
 //                                stopPoint = points[currentLayer].last!
 //                        print(stopPoint)
-                              
+                                save(points)
                                currentLayer = currentLayer + 1
                                 
                                 points.append([])
@@ -61,6 +61,7 @@ struct ContentView: View {
         Button("CLEAR"){
             points = [[]]
             pathVar = Path()
+            save(points)
             currentLayer = 0
             Circle()
                         .foregroundColor(.blue)
