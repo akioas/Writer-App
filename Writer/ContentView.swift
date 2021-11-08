@@ -57,7 +57,7 @@ struct ContentView: View {
 
     }
     
-    
+        HStack{
         Button("CLEAR"){
             points = [[]]
             pathVar = Path()
@@ -66,6 +66,61 @@ struct ContentView: View {
             Circle()
                         .foregroundColor(.blue)
                         .frame(width: 100, height: 100)
+        }
+            Button("BACK"){
+                
+                if points.isEmpty == false{
+                    if ((points.last?.isEmpty) == true)
+                    {
+                        points.removeLast()
+                    }
+                    if points.isEmpty == false{
+                        points.removeLast()
+                    
+                    }
+                    
+                    currentLayer = points.count - 1
+                    print(currentLayer)
+                    print(points)
+                    pathVar = Path()
+                    if currentLayer == -1{
+                        points = [[]]
+                        pathVar = Path()
+                        save(points)
+                        currentLayer = 0
+                    } else {
+                    for currentNum in 0...currentLayer{
+                        let firstPoint = points[currentNum].first
+                        
+                        pathVar.move(to: firstPoint!)
+                        for pointIndex in 1..<points[currentNum].count{
+                                   
+                                    pathVar.addLine(to: points[currentNum][pointIndex])
+                                    
+                                }
+                        
+                        save(points)
+                        
+                    }
+                        
+                }
+
+                    
+                } else{
+                    points = [[]]
+                    pathVar = Path()
+                    save(points)
+                    currentLayer = 0
+                }
+                
+//                points.append([])
+//                currentLayer = currentLayer + 1
+                Circle()
+                            .foregroundColor(.blue)
+                            .frame(width: 100, height: 100)
+            }
+            
+            
         }
     }
     func addNewPoint(_ value: DragGesture.Value) {
