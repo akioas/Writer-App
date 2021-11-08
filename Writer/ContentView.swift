@@ -12,6 +12,7 @@ struct ContentView: View {
 
     @State var points: Array<[CGPoint]> = load()
     
+    
     var body: some View {
         HStack{
         ZStack {
@@ -135,7 +136,51 @@ func load() -> Array<[CGPoint]> {
 
 
 
+
 let KeyForUserDefaults = "drawKey"
+
+
+func save(_ points: [[CGPoint]]) {
+    let data = points.map { try? JSONEncoder().encode($0) }
+    UserDefaults.standard.set(data, forKey: KeyForUserDefaults)
+}
+
+func load() -> [[CGPoint]] {
+    
+    guard let encodedData = UserDefaults.standard.array(forKey: KeyForUserDefaults) as? [Data] else {
+        return [[]]
+    }
+
+    
+    var encodedReturn = encodedData.map { try! JSONDecoder().decode([CGPoint].self, from: $0) }
+    currentLayer = encodedReturn.count - 1
+    pathVar = Path()
+    for currentNum in 0...currentLayer{
+        guard let firstPoint = encodedReturn[currentNum].first else { return [[]]
+
+        }
+        
+            pathVar.move(to: firstPoint)
+        for pointIndex in 1..<encodedReturn[currentNum].count{
+                   
+                    pathVar.addLine(to: encodedReturn[currentNum][pointIndex])
+                    
+                }
+        
+        
+        
+    }
+    
+//    encodedReturn.append([])
+//    currentLayer = currentLayer + 1
+    return encodedReturn
+}
+
+
+
+
+
+
 //let defaults = UserDefaults.standard
 /*
 func save(_ points: Array<[CGPoint]>) {
@@ -168,37 +213,6 @@ func load() -> Array<[CGPoint]> {
     let encReturn = encodedData.map { try! JSONDecoder().decode([CGPoint].self, from: $0)}
     return encReturn
     }*/
-
-func save(_ points: [[CGPoint]]) {
-    let data = points.map { try? JSONEncoder().encode($0) }
-    UserDefaults.standard.set(data, forKey: KeyForUserDefaults)
-}
-
-func load() -> [[CGPoint]] {
-    
-    guard let encodedData = UserDefaults.standard.array(forKey: KeyForUserDefaults) as? [Data] else {
-        return []
-    }
-
-    
-    let encodedReturn = encodedData.map { try! JSONDecoder().decode([CGPoint].self, from: $0) }
-    currentLayer = encodedReturn.count - 1
-    pathVar = Path()
-    for currentNum in 0...currentLayer{
-        guard let firstPoint = encodedReturn[currentNum].first else { return []
-
-        }
-        
-            pathVar.move(to: firstPoint)
-        for pointIndex in 1..<encodedReturn[currentNum].count{
-                   
-                    pathVar.addLine(to: encodedReturn[currentNum][pointIndex])
-                    
-                }
-    }
-    
-    return encodedReturn
-}
 
 
 
