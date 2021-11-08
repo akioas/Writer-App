@@ -172,8 +172,8 @@ func load() -> [[CGPoint]] {
         
     }
     
-//    encodedReturn.append([])
-//    currentLayer = currentLayer + 1
+    encodedReturn.append([])
+    currentLayer = currentLayer + 1
     return encodedReturn
 }
 
