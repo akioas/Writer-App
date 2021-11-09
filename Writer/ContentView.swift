@@ -20,7 +20,7 @@ struct ContentView: View {
             
            Rectangle()
                             .foregroundColor(.yellow)
-                            .edgesIgnoringSafeArea(.all)
+//                            .edgesIgnoringSafeArea(.all)
                             .gesture(DragGesture().onChanged( {
                                 
                                 value in
@@ -35,7 +35,7 @@ struct ContentView: View {
 //                        print(stopPoint)
                                 save(points)
                                currentLayer = currentLayer + 1
-                                
+
                                 points.append([])
                                 
                                 print(points)
@@ -68,7 +68,7 @@ struct ContentView: View {
                         .frame(width: 100, height: 100)
         }
             Button("BACK"){
-                
+                points.removeAll{$0.isEmpty}
                 if points.isEmpty == false{
                     if ((points.last?.isEmpty) == true)
                     {
@@ -83,28 +83,35 @@ struct ContentView: View {
                     print(currentLayer)
                     print(points)
                     pathVar = Path()
-                    if currentLayer == -1{
+                    if currentLayer  < 0 {
                         points = [[]]
                         pathVar = Path()
                         save(points)
                         currentLayer = 0
                     } else {
+                        currentLayer = points.count - 1
                     for currentNum in 0...currentLayer{
                         let firstPoint = points[currentNum].first
                         
-                        pathVar.move(to: firstPoint!)
-                        for pointIndex in 1..<points[currentNum].count{
-                                   
-                                    pathVar.addLine(to: points[currentNum][pointIndex])
-                                    
-                                }
                         
-                        save(points)
+                            pathVar.move(to: firstPoint!)
+                            for pointIndex in 1..<points[currentNum].count{
+                                       
+                                        pathVar.addLine(to: points[currentNum][pointIndex])
+                                        
+                                    }
+                            
+                            save(points)
                         
                     }
                         
                 }
 
+                    
+                     
+                     points.append([])
+                    currentLayer = points.count - 1
+                    
                     
                 } else{
                     points = [[]]
@@ -176,11 +183,7 @@ struct ContentView_Previews: PreviewProvider {
     
     
 }
-/*
-func load() -> Array<[CGPoint]> {
-    
-    return [[]]
-}*/
+
 
 /*
  let res = str
@@ -200,6 +203,9 @@ func save(_ points: [[CGPoint]]) {
     let data = points.map { try? JSONEncoder().encode($0) }
     UserDefaults.standard.set(data, forKey: KeyForUserDefaults)
 }
+
+
+
 
 func load() -> [[CGPoint]] {
     
@@ -236,61 +242,10 @@ func load() -> [[CGPoint]] {
 
 
 
-
-//let defaults = UserDefaults.standard
 /*
-func save(_ points: Array<[CGPoint]>) {
-    let encodedData = try? NSKeyedArchiver.archivedData(withRootObject: points, requiringSecureCoding: false)
-    let userDefaults = UserDefaults.standard
-    userDefaults.set(encodedData, forKey: KeyForUserDefaults)
-}
-
-func load() -> Array<[CGPoint]> {
-
-    let decoded  = UserDefaults.standard.object(forKey: KeyForUserDefaults) as! Data
-    let decodedReturn = try? NSKeyedUnarchiver.unarchivedObject(ofClass:Array<[CGPoint]>, from: decoded) as? [[CGPoint]]
-
-    return decodedReturn!
-}
-
-*/
-
-/*
-func save<T: Codable>(_ value: [T]){
-        let data = value.map { try? JSONEncoder().encode($0) }
-        
-    UserDefaults.standard.set(data, forKey: KeyForUserDefaults)
-    }
-    
-func load() -> Array<[CGPoint]> {
-    guard let encodedData = UserDefaults.standard.array(forKey: KeyForUserDefaults) as? [Data] else {
-        return []
-        }
-    let encReturn = encodedData.map { try! JSONDecoder().decode([CGPoint].self, from: $0)}
-    return encReturn
-    }*/
-
-
-
-/*
-func save(_ points: [CGPoint]) {
-    let data = points.map { try? JSONEncoder().encode($0) }
-    UserDefaults.standard.set(data, forKey: KeyForUserDefaults)
-}
-
-func load() -> [CGPoint] {
-    guard let encodedData = UserDefaults.standard.array(forKey: KeyForUserDefaults) as? [Data] else {
-        return []
-    }
-
-    return encodedData.map { try! JSONDecoder().decode(CGPoint.self, from: $0) }
-}
-*/
-
-
-
 
 func clear() -> [CGPoint]{
     return []
 }
 
+*/
