@@ -16,8 +16,14 @@ struct ContentView: View {
     
     
     var body: some View {
-        HStack{
-        ZStack {
+        
+        
+        return GeometryReader { proxy in
+                    if proxy.size.width < proxy.size.height {
+        
+        //
+        VStack{//1
+        ZStack {//2
            
            Rectangle()
                 
@@ -48,9 +54,9 @@ struct ContentView: View {
                 .stroke(lineWidth: 5)
                 .foregroundColor(.black)
                 .aspectRatio(1.0, contentMode: .fit)
-        }
+        }//2
 
-    }
+    
     
         HStack{
         Button("CLEAR"){
@@ -62,7 +68,66 @@ struct ContentView: View {
             
             
         }
+    }//1
+                    } else {
+                        //
+                        HStack{//1
+                        ZStack {//2
+                           
+                           Rectangle()
+                                
+                                            .foregroundColor(.yellow)
+                                            .aspectRatio(1.0, contentMode: .fit)
+                            
+                            
+                //                           .frame(width: screenWidth, height: screenWidth)
+                //                           .edgesIgnoringSafeArea(.all)
+                                            .gesture(DragGesture().onChanged( {
+                                                
+                                                value in
+                                                self.addNewPoint(value)
+                                               
+                                                    })
+                                            .onEnded( { _ in
+                                                save(points)
+                                               currentLayer = currentLayer + 1
+
+                                                points.append([])
+                                                
+                                                print(points)
+                                            }))
+                            
+                           
+                            DrawShape(points: points)
+                            
+                                .stroke(lineWidth: 5)
+                                .foregroundColor(.black)
+                                .aspectRatio(1.0, contentMode: .fit)
+                        }//2
+
+                    
+                    
+                        VStack{
+                        Button("CLEAR"){
+                            clearButton()
+                        }
+                            Button("BACK"){
+                                backButton()
+                            }
+                            
+                            
+                        }
+                    }//1
+                    
+        
+        }
     }
+        ////
+    }
+    
+  
+    
+    
     func addNewPoint(_ value: DragGesture.Value) {
                 //
 
