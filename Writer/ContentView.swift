@@ -2,9 +2,11 @@
 import SwiftUI
 import UIKit
 
-//let layersMaxNum = 9
-//var j = 0
-//var stopPoint: CGPoint = CGPoint(x:0, y:0)
+
+
+var screenWidth = UIScreen.main.bounds.width
+var screenHeight = UIScreen.main.bounds.height
+
 var currentLayer = 0
 var pathVar = Path()
 
@@ -17,10 +19,14 @@ struct ContentView: View {
         HStack{
         ZStack {
            
-            
            Rectangle()
+                
                             .foregroundColor(.yellow)
-//                            .edgesIgnoringSafeArea(.all)
+                            .aspectRatio(1.0, contentMode: .fit)
+            
+            
+//                           .frame(width: screenWidth, height: screenWidth)
+//                           .edgesIgnoringSafeArea(.all)
                             .gesture(DragGesture().onChanged( {
                                 
                                 value in
@@ -28,103 +34,30 @@ struct ContentView: View {
                                
                                     })
                             .onEnded( { _ in
-//                                   points = []
-                                
-            //                    save(points)
-//                                stopPoint = points[currentLayer].last!
-//                        print(stopPoint)
                                 save(points)
                                currentLayer = currentLayer + 1
 
                                 points.append([])
                                 
                                 print(points)
-//                                save(points)
                             }))
             
            
-            
-                
-        
-            
-           
             DrawShape(points: points)
+            
                 .stroke(lineWidth: 5)
                 .foregroundColor(.black)
-            
-            
+                .aspectRatio(1.0, contentMode: .fit)
         }
 
     }
     
         HStack{
         Button("CLEAR"){
-            points = [[]]
-            pathVar = Path()
-            save(points)
-            currentLayer = 0
-            Circle()
-                        .foregroundColor(.blue)
-                        .frame(width: 100, height: 100)
+            clearButton()
         }
             Button("BACK"){
-                points.removeAll{$0.isEmpty}
-                if points.isEmpty == false{
-                    if ((points.last?.isEmpty) == true)
-                    {
-                        points.removeLast()
-                    }
-                    if points.isEmpty == false{
-                        points.removeLast()
-                    
-                    }
-                    
-                    currentLayer = points.count - 1
-                    print(currentLayer)
-                    print(points)
-                    pathVar = Path()
-                    if currentLayer  < 0 {
-                        points = [[]]
-                        pathVar = Path()
-                        save(points)
-                        currentLayer = 0
-                    } else {
-                        currentLayer = points.count - 1
-                    for currentNum in 0...currentLayer{
-                        let firstPoint = points[currentNum].first
-                        
-                        
-                            pathVar.move(to: firstPoint!)
-                            for pointIndex in 1..<points[currentNum].count{
-                                       
-                                        pathVar.addLine(to: points[currentNum][pointIndex])
-                                        
-                                    }
-                            
-                            save(points)
-                        
-                    }
-                        
-                }
-
-                    
-                     
-                     points.append([])
-                    currentLayer = points.count - 1
-                    
-                    
-                } else{
-                    points = [[]]
-                    pathVar = Path()
-                    save(points)
-                    currentLayer = 0
-                }
-                
-//                points.append([])
-//                currentLayer = currentLayer + 1
-                Circle()
-                            .foregroundColor(.blue)
-                            .frame(width: 100, height: 100)
+                backButton()
             }
             
             
@@ -139,6 +72,72 @@ struct ContentView: View {
         
         
     }
+    
+    
+    
+    
+    func clearButton(){
+        
+            points = [[]]
+            pathVar = Path()
+            save(points)
+            currentLayer = 0
+    }
+
+
+    func backButton(){
+            points.removeAll{$0.isEmpty}
+            if points.isEmpty == false{
+                if ((points.last?.isEmpty) == true)
+                {
+                    points.removeLast()
+                }
+                if points.isEmpty == false{
+                    points.removeLast()
+                
+                }
+                
+                currentLayer = points.count - 1
+                print(currentLayer)
+                print(points)
+                pathVar = Path()
+                if currentLayer  < 0 {
+                    points = [[]]
+                    pathVar = Path()
+                    save(points)
+                    currentLayer = 0
+                } else {
+                    currentLayer = points.count - 1
+                for currentNum in 0...currentLayer{
+                    let firstPoint = points[currentNum].first
+                    
+                    
+                        pathVar.move(to: firstPoint!)
+                        for pointIndex in 1..<points[currentNum].count{
+                                   
+                                    pathVar.addLine(to: points[currentNum][pointIndex])
+                                    
+                                }
+                        
+                        save(points)
+                    
+                }
+                    
+            }
+
+                
+                 
+                 points.append([])
+                currentLayer = points.count - 1
+                
+                
+            } else{
+                points = [[]]
+                pathVar = Path()
+                save(points)
+                currentLayer = 0
+            }//backButton
+
 
 }
 
@@ -173,7 +172,7 @@ struct DrawShape: Shape {
     
 }
 
-
+}
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         ContentView()
@@ -249,3 +248,6 @@ func clear() -> [CGPoint]{
 }
 
 */
+
+
+
