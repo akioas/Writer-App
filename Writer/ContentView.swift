@@ -73,11 +73,14 @@ struct ContentView: View {
                 continuousLine()
 
                          }
-            
+        
             
             
         }
+        .background(Color(red: 0, green: 0.8, blue: 0.8))
+        .foregroundColor(Color.black)
     }//1
+                        
                     } else {
                         //
                         HStack{//1
@@ -131,11 +134,13 @@ struct ContentView: View {
                             }
                             
                         }
+                        .background(Color(red: 0, green: 0.8, blue: 0.8))
+                        .foregroundColor(Color.black)
                     }//1
                     
         
         }
-    }
+        }.background(Color(red: 0.6, green: 0.8, blue: 0.8))
         ////
     }
     
