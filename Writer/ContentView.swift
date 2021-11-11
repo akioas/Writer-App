@@ -14,7 +14,8 @@ var drawMode = 1 //
 struct ContentView: View {
 
     @State var points: Array<[CGPoint]> = load()
-    
+    let imageSize: CGSize = CGSize(width: screenWidth, height: screenHeight)
+
     
     var body: some View {
         
@@ -73,7 +74,10 @@ struct ContentView: View {
                 continuousLine()
 
                          }
-        
+            Button("SAVE"){
+                saveImage()
+
+                         }
             
             
         }
@@ -132,7 +136,10 @@ struct ContentView: View {
                             Button("CONTINUOUS"){
                                 continuousLine()
                             }
-                            
+                            Button("SAVE"){
+                                saveImage()
+
+                                         }
                         }
                         .background(Color(red: 0, green: 0.8, blue: 0.8))
                         .foregroundColor(Color.black)
@@ -145,7 +152,25 @@ struct ContentView: View {
     }
     
   
-    
+    func saveImage(){
+        let paths = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)
+        
+        let image = body.saveImage(size: imageSize).jpegData(
+            compressionQuality: 0.8)
+        let path = try! FileManager.default.url(for: FileManager.SearchPathDirectory.documentDirectory, in: FileManager.SearchPathDomainMask.userDomainMask, appropriateFor: nil, create: false)
+        var fileName = "saveImageFile1"
+        let fileURL = path.appendingPathComponent(fileName).appendingPathExtension("jpg")
+        print(fileURL)
+
+        do {
+           let result = try image?.write(to: fileURL, options: .atomic)
+        } catch let error {
+            print(error)
+        }
+
+
+    }
+
     
     func addNewPoint(_ value: DragGesture.Value) {
                 //
@@ -351,6 +376,28 @@ func load() -> [[CGPoint]] {
 
 
 
+
+
+
+
+
+extension UIView {
+    func saveImage() -> UIImage {
+        let format = UIGraphicsImageRendererFormat()
+        format.scale = 1
+        return UIGraphicsImageRenderer(size: self.layer.frame.size, format: format).image { context in
+            self.drawHierarchy(in: self.layer.bounds, afterScreenUpdates: true)
+        }
+    }
+}
+extension View {
+    func saveImage(size: CGSize) -> UIImage {
+        let controller = UIHostingController(rootView: self)
+        controller.view.bounds = CGRect(origin: .zero, size: size)
+        let image = controller.view.saveImage()
+        return image
+    }
+}
 
 /*
 
