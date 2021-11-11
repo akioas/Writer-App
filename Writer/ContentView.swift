@@ -9,6 +9,7 @@ var screenHeight = UIScreen.main.bounds.height
 
 var currentLayer = 0
 var pathVar = Path()
+var drawMode = 1 //
 
 struct ContentView: View {
 
@@ -41,11 +42,14 @@ struct ContentView: View {
                                     })
                             .onEnded( { _ in
                                 save(points)
-                               currentLayer = currentLayer + 1
+                                if drawMode == 1{
+                                    currentLayer = currentLayer + 1
 
                                 points.append([])
                                 
-                                print(points)
+                                    print(points)
+                                    
+                                }
                             }))
             
            
@@ -62,9 +66,14 @@ struct ContentView: View {
         Button("CLEAR"){
             clearButton()
         }
-            Button("BACK"){
-                backButton()
-            }
+        Button("BACK"){
+            backButton()
+        }
+            Button("CONTINUOUS"){
+                continuousLine()
+
+                         }
+            
             
             
         }
@@ -88,14 +97,17 @@ struct ContentView: View {
                                                 self.addNewPoint(value)
                                                
                                                     })
-                                            .onEnded( { _ in
-                                                save(points)
-                                               currentLayer = currentLayer + 1
+                                                        .onEnded( { _ in
+                                                            save(points)
+                                                            if drawMode == 1{
+                                                                currentLayer = currentLayer + 1
 
-                                                points.append([])
-                                                
-                                                print(points)
-                                            }))
+                                                            points.append([])
+                                                            
+                                                                print(points)
+                                                            }
+                                                            }))
+                            //
                             
                            
                             DrawShape(points: points)
@@ -114,7 +126,9 @@ struct ContentView: View {
                             Button("BACK"){
                                 backButton()
                             }
-                            
+                            Button("CONTINUOUS"){
+                                continuousLine()
+                            }
                             
                         }
                     }//1
@@ -154,6 +168,19 @@ struct ContentView: View {
     
     
     
+    
+    
+    
+    func continuousLine(){
+        if drawMode == 1{
+            drawMode = 0
+        } else {
+            drawMode = 1
+            currentLayer = currentLayer + 1
+
+        points.append([])
+        }
+    }
     
     func clearButton(){
         
