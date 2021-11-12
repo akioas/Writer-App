@@ -10,7 +10,7 @@ var screenHeight = UIScreen.main.bounds.height
 var currentLayer = 0
 var pathVar = Path()
 var drawMode = 1 //
-var imageSize = CGSize(width: screenHeight, height: screenHeight)
+var imageSize = CGSize(width: screenWidth+100, height: screenWidth+100)
 
 
 
@@ -22,27 +22,32 @@ struct ContentView: View {
     
     var body: some View {
         
-        
-        return GeometryReader { proxy in
-            if proxy.size.width < proxy.size.height {
-                VStack{//1
-                    drawView
-                    hButtons
+        return ZStack {
+            Color(.yellow)
+                .ignoresSafeArea()
+            GeometryReader { proxy in
+                if proxy.size.width < proxy.size.height {
+                    VStack{//1
+                        drawView
+                        hButtons
+                        
+                    }.background(Color(.yellow))
                     
+                    
+                } else {
+                    //
+                    HStack{//1
+                        
+                        
+                        drawView
+                        vButtons
+                    }.background(Color(.yellow))
+                    ////
                 }
-                
-                
-            } else {
-                //
-                HStack{//1
-                    
-                    
-                    drawView
-                    vButtons
-                }
-                ////
             }
+            
         }
+            
         
     }
     
@@ -78,6 +83,7 @@ struct ContentView: View {
                 .foregroundColor(.black)
                 .aspectRatio(1.0, contentMode: .fit)
         }//2
+        
     }
     
     var hButtons: some View {
@@ -133,6 +139,8 @@ struct ContentView: View {
         let paths = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)
         
         
+//        let image = drawView.saveImage(size: imageSize).jpegData(
+//            compressionQuality: 1)
         let image = drawView.saveImage(size: imageSize).jpegData(
             compressionQuality: 1)
         let path = try! FileManager.default.url(for: FileManager.SearchPathDirectory.documentDirectory, in: FileManager.SearchPathDomainMask.userDomainMask, appropriateFor: nil, create: false)
@@ -301,7 +309,10 @@ struct ContentView: View {
 }
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
-        ContentView()
+        Group {
+            ContentView()
+            ContentView()
+        }
     }
     
     
@@ -375,6 +386,7 @@ extension UIView {
     func saveImage() -> UIImage {
         let format = UIGraphicsImageRendererFormat()
         format.scale = 1
+//        format.opaque = false
         return UIGraphicsImageRenderer(size: self.layer.frame.size, format: format).image { context in
             
             self.drawHierarchy(in: self.layer.bounds, afterScreenUpdates: true)
@@ -383,10 +395,11 @@ extension UIView {
 }
 extension View {
     func saveImage(size: CGSize) -> UIImage {
-//        let originPoint = CGPoint(x: 0, y: UIApplication.shared.windows.first?.safeAreaInsets.top ?? 0)
+        let yPoint = UIApplication.shared.windows.first?.safeAreaInsets.top ?? 0
+        let originPoint = CGPoint(x: -10, y: -10 )
 //        print(originPoint)
         let controller = UIHostingController(rootView: self)
-        controller.view.bounds = CGRect(origin: .zero, size: size)
+        controller.view.bounds = CGRect(origin: originPoint, size: size)
         let image = controller.view.saveImage()
         return image
     }
