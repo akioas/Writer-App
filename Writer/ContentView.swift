@@ -136,26 +136,35 @@ struct ContentView: View {
     
     
     func saveImage(){
-        let paths = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)
-        
-        
+//        let paths = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)
+//
+//
 //        let image = drawView.saveImage(size: imageSize).jpegData(
 //            compressionQuality: 1)
-        let image = drawView.saveImage(size: imageSize).jpegData(
-            compressionQuality: 1)
-        let path = try! FileManager.default.url(for: FileManager.SearchPathDirectory.documentDirectory, in: FileManager.SearchPathDomainMask.userDomainMask, appropriateFor: nil, create: false)
-        var fileName = "saveImageFile1"
-        let fileURL = path.appendingPathComponent(fileName).appendingPathExtension("jpg")
-        print(fileURL)
+        let image = drawView.saveImage(size: imageSize)
+//        let image = drawView.saveImage(size: imageSize).jpegData(
+//            compressionQuality: 1)
+//        let path = try! FileManager.default.url(for: FileManager.SearchPathDirectory.documentDirectory, in: FileManager.SearchPathDomainMask.userDomainMask, appropriateFor: nil, create: false)
+//        var fileName = "saveImageFile1"
+//        let fileURL = path.appendingPathComponent(fileName).appendingPathExtension("jpg")
+//        print(fileURL)
+//
+//        do {
+//            let result = try image?.write(to: fileURL, options: .atomic)
+//        } catch let error {
+//            print(error)
+//        }
+//
         
-        do {
-            let result = try image?.write(to: fileURL, options: .atomic)
-        } catch let error {
-            print(error)
-        }
-        
+        UIImageWriteToSavedPhotosAlbum(image, nil, nil, nil)
+
         
     }
+    
+    
+    
+    
+    
     
     
     func addNewPoint(_ value: DragGesture.Value) {
@@ -412,6 +421,8 @@ extension View {
  }
  
  */
+
+
 
 
 
