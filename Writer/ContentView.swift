@@ -103,6 +103,11 @@ struct ContentView: View {
                 
             }.padding()
             
+            /*
+            Button("DELETE T"){
+                deleteView(deletedViewNum: 1,  maxViewNum: 2)
+            }
+             */
             
         }
         .background(Color(red: 0, green: 0.8, blue: 0.8))
@@ -340,8 +345,48 @@ struct ContentView_Previews: PreviewProvider {
 
 
 
+//var viewNum = 0
+//
+var currentViewNum = 0
+var maxViewNum = 1
+//
 
-let KeyForUserDefaults = "drawKey"
+
+
+
+var KeyForUserDefaults = "WriterAppKey" + String(currentViewNum)
+
+
+
+func deleteView(deletedViewNum: Int,  maxViewNum: Int)->([[CGPoint]]) {
+    if deletedViewNum == maxViewNum{
+        let keyToDelete = "WriterAppKey" + String(deletedViewNum)
+        UserDefaults.standard.removeObject(forKey: keyToDelete)
+            
+    }
+    else {
+        for viewNum in deletedViewNum...(maxViewNum - 1){
+            let keyToDelete = "WriterAppKey" + String(viewNum)
+            //
+            let keyToReassign = "WriterAppKey" + String(viewNum+1)
+            guard let encodedData = UserDefaults.standard.array(forKey: keyToReassign) as? [Data] else {
+                return [[]]
+            }
+            
+            let encodedReturn = encodedData.map { try! JSONDecoder().decode([CGPoint].self, from: $0) }
+            
+            let data = encodedReturn.map { try? JSONEncoder().encode($0) }
+            UserDefaults.standard.set(data as Any?, forKey: keyToDelete)
+            //
+        }
+        let keyToDelete = "WriterAppKey" + String(maxViewNum)
+        UserDefaults.standard.removeObject(forKey: keyToDelete)
+        
+    }
+    return [[]]
+}
+//вызов и после maxView = maxViewNum - 1
+
 
 
 func save(_ points: [[CGPoint]]) {
@@ -426,3 +471,23 @@ extension View {
 
 
 
+
+
+/*
+ struct RootView: View {
+     @State private var number = 0
+
+     var body: some View {
+         VStack {
+             Button(action: {
+                 self.number += 1
+             }) {
+                 Text("Tap to create")
+             }
+             ForEach(0 ..< number, id: \.self) { _ in
+                 MyRectView()
+             }
+         }
+     }
+ }
+ */
