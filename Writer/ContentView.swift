@@ -18,7 +18,15 @@ struct ContentView: View {
             NavigationView {
                 VStack {
                     NavigationLink(destination: FirstView()) {
-                    Text("1")
+//                        Image(packageResource: "image", ofType: "jpg").resizable()
+                        if #available(iOS 15.0, *) {
+                            AsyncImage(url: PreviewImage().path())
+                        } else {
+                            // Fallback on earlier versions
+                            Text(String(currentViewNum))
+                                
+                        }
+
                 }.navigationBarTitle("Choose Drawing", displayMode: .inline)
             }
         }
@@ -125,7 +133,7 @@ struct FirstView: View {
              */
             
             Button("SAVE PREVIEW"){
-                savePreviewImage()
+                PreviewImage().savePreviewImage()
                 
             }.padding()
             
@@ -512,27 +520,35 @@ extension View {
  }
  */
 
+struct PreviewImage{
+    func path()->(URL){
+        let paths = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)
 
-func savePreviewImage(){
-    let paths = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)
 
+        
+       
+        let path = try! FileManager.default.url(for: FileManager.SearchPathDirectory.documentDirectory, in: FileManager.SearchPathDomainMask.userDomainMask, appropriateFor: nil, create: false)
+        var fileName = String(currentViewNum)
+        return path.appendingPathComponent(fileName).appendingPathExtension("jpg")
+    
+    
+    }
+    
+    
+    
+    func savePreviewImage(){
+        let fileURL = path()
+        print(fileURL)
+        let image = FirstView().drawView.saveImage(size: imageSize).jpegData(
+            compressionQuality: 1)
 
-    let image = FirstView().drawView.saveImage(size: imageSize).jpegData(
-        compressionQuality: 1)
-   
-    let path = try! FileManager.default.url(for: FileManager.SearchPathDirectory.documentDirectory, in: FileManager.SearchPathDomainMask.userDomainMask, appropriateFor: nil, create: false)
-    var fileName = String(currentViewNum)
-    let fileURL = path.appendingPathComponent(fileName).appendingPathExtension("jpg")
-    print(fileURL)
-
-    do {
-        let result = try image?.write(to: fileURL, options: .atomic)
-    } catch let error {
-        print(error)
+        do {
+            let result = try image?.write(to: fileURL, options: .atomic)
+        } catch let error {
+            print(error)
+        }
     }
 
-    
 
-    
 }
 
