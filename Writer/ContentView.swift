@@ -13,8 +13,23 @@ var drawMode = 1 //
 var imageSize = CGSize(width: screenWidth+100, height: screenWidth+100)
 
 
-
 struct ContentView: View {
+       var body: some View {
+            NavigationView {
+                VStack {
+                    NavigationLink(destination: FirstView()) {
+                    Text("1")
+                }.navigationBarTitle("Choose Drawing", displayMode: .inline)
+            }
+        }
+    }
+}
+
+
+
+
+
+struct FirstView: View {
     
     @State var points: Array<[CGPoint]> = load()
     
@@ -109,6 +124,11 @@ struct ContentView: View {
             }
              */
             
+            Button("SAVE PREVIEW"){
+                savePreviewImage()
+                
+            }.padding()
+            
         }
         .background(Color(red: 0, green: 0.8, blue: 0.8))
         .foregroundColor(Color.black)
@@ -141,30 +161,29 @@ struct ContentView: View {
     
     
     func saveImage(){
-//        let paths = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)
-//
-//
-//        let image = drawView.saveImage(size: imageSize).jpegData(
-//            compressionQuality: 1)
+
         let image = drawView.saveImage(size: imageSize)
-//        let image = drawView.saveImage(size: imageSize).jpegData(
-//            compressionQuality: 1)
-//        let path = try! FileManager.default.url(for: FileManager.SearchPathDirectory.documentDirectory, in: FileManager.SearchPathDomainMask.userDomainMask, appropriateFor: nil, create: false)
-//        var fileName = "saveImageFile1"
-//        let fileURL = path.appendingPathComponent(fileName).appendingPathExtension("jpg")
-//        print(fileURL)
-//
-//        do {
-//            let result = try image?.write(to: fileURL, options: .atomic)
-//        } catch let error {
-//            print(error)
-//        }
-//
+
         
         UIImageWriteToSavedPhotosAlbum(image, nil, nil, nil)
 
         
     }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     
     
     
@@ -392,6 +411,7 @@ func deleteView(deletedViewNum: Int,  maxViewNum: Int)->([[CGPoint]]) {
 func save(_ points: [[CGPoint]]) {
     let data = points.map { try? JSONEncoder().encode($0) }
     UserDefaults.standard.set(data, forKey: KeyForUserDefaults)
+//    savePreviewImage()
 }
 
 
@@ -491,3 +511,28 @@ extension View {
      }
  }
  */
+
+
+func savePreviewImage(){
+    let paths = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)
+
+
+    let image = FirstView().drawView.saveImage(size: imageSize).jpegData(
+        compressionQuality: 1)
+   
+    let path = try! FileManager.default.url(for: FileManager.SearchPathDirectory.documentDirectory, in: FileManager.SearchPathDomainMask.userDomainMask, appropriateFor: nil, create: false)
+    var fileName = String(currentViewNum)
+    let fileURL = path.appendingPathComponent(fileName).appendingPathExtension("jpg")
+    print(fileURL)
+
+    do {
+        let result = try image?.write(to: fileURL, options: .atomic)
+    } catch let error {
+        print(error)
+    }
+
+    
+
+    
+}
+
