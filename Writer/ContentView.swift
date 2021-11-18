@@ -362,72 +362,7 @@ struct ContentView_Previews: PreviewProvider {
 }
 
 
-/*
- let res = str
- .components(separatedBy: " ")
- .map { CGPointFromString("{\($0)}") }
- */
 
-
-
-
-
-//var viewNum = 0
-//
-var currentViewNum = 0
-var maxViewNum = 1
-//
-
-let keyName = "WriterAppKey"
-
-
-var KeyForUserDefaults = keyName + String(currentViewNum)
-
-
-
-
-
-
-
-func save(_ points: [[CGPoint]]) {
-    let data = points.map { try? JSONEncoder().encode($0) }
-    UserDefaults.standard.set(data, forKey: KeyForUserDefaults)
-//    savePreviewImage()
-}
-
-
-
-
-func load() -> [[CGPoint]] {
-    
-    guard let encodedData = UserDefaults.standard.array(forKey: KeyForUserDefaults) as? [Data] else {
-        return [[]]
-    }
-    
-    
-    var encodedReturn = encodedData.map { try! JSONDecoder().decode([CGPoint].self, from: $0) }
-    currentLayer = encodedReturn.count - 1
-    pathVar = Path()
-    for currentNum in 0...currentLayer{
-        guard let firstPoint = encodedReturn[currentNum].first else { return [[]]
-            
-        }
-        
-        pathVar.move(to: firstPoint)
-        for pointIndex in 1..<encodedReturn[currentNum].count{
-            
-            pathVar.addLine(to: encodedReturn[currentNum][pointIndex])
-            
-        }
-        
-        
-        
-    }
-    
-    encodedReturn.append([])
-    currentLayer = currentLayer + 1
-    return encodedReturn
-}
 
 
 
