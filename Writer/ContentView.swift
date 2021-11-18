@@ -14,26 +14,45 @@ var imageSize = CGSize(width: screenWidth+100, height: screenWidth+100)
 
 
 struct ContentView: View {
+
+    @State var imgURL: URL = PreviewImage().path()
+    
        var body: some View {
+          
+       
+           
+           
             NavigationView {
                 VStack {
-                    NavigationLink(destination: FirstView()) {
-//                        Image(packageResource: "image", ofType: "jpg").resizable()
-                        if #available(iOS 15.0, *) {
-                            AsyncImage(url: PreviewImage().path())
-                        } else {
-                            // Fallback on earlier versions
-                            Text(String(currentViewNum))
+                    
                                 
+                        NavigationLink(destination: FirstView()) {
+                            if #available(iOS 15.0, *) {
+                                AsyncImage(url: imgURL,scale:2.0)
+                            } else {
+                                // Fallback on earlier versions
+                            }
+                            
+                            }
                         }
-
-                }.navigationBarTitle("Choose Drawing", displayMode: .inline)
-            }
+                            
+                            //                        Image(packageResource: "image", ofType: "jpg").resizable()
+                            
+                            
+                        }.navigationBarTitle("Choose Drawing", displayMode: .inline)
+               .navigationBarBackButtonHidden(true)
+              .navigationBarHidden(true)
+                            
+                }
         }
-    }
-}
+            
+                
+               
 
-
+       
+        
+    
+   
 
 
 
@@ -48,11 +67,16 @@ struct FirstView: View {
         return ZStack {
             Color(.yellow)
                 .ignoresSafeArea()
+            
             GeometryReader { proxy in
                 if proxy.size.width < proxy.size.height {
                     VStack{//1
+                        
                         drawView
                         hButtons
+                        NavigationLink(destination: ContentView()) {
+                            Text("Choose drawing")
+                        }
                         
                     }.background(Color(.yellow))
                     
@@ -64,12 +88,20 @@ struct FirstView: View {
                         
                         drawView
                         vButtons
+                        NavigationLink(destination: ContentView()) {
+                            Text("Choose drawing")
+                        }
                     }.background(Color(.yellow))
                     ////
                 }
             }
             
         }
+        .navigationBarBackButtonHidden(true)
+            .navigationBarHidden(true)
+
+     
+
             
         
     }
@@ -134,6 +166,8 @@ struct FirstView: View {
             
             Button("SAVE PREVIEW"){
                 PreviewImage().savePreviewImage()
+                ContentView().imgURL = PreviewImage().path()
+                print(ContentView().imgURL)
                 
             }.padding()
             
@@ -360,13 +394,6 @@ struct ContentView_Previews: PreviewProvider {
     
     
 }
-
-
-
-
-
-
-
 
 
 

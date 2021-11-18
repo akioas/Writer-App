@@ -1,7 +1,7 @@
 import SwiftUI
 import UIKit
 
-
+var fileNum = 1//save
 
 struct PreviewImage{
     func path()->(URL){
@@ -11,7 +11,8 @@ struct PreviewImage{
         
        
         let path = try! FileManager.default.url(for: FileManager.SearchPathDirectory.documentDirectory, in: FileManager.SearchPathDomainMask.userDomainMask, appropriateFor: nil, create: false)
-        var fileName = String(currentViewNum)
+        let fileName = String(fileNum)
+        
         return path.appendingPathComponent(fileName).appendingPathExtension("jpg")
     
     
@@ -20,6 +21,7 @@ struct PreviewImage{
     
     
     func savePreviewImage(){
+
         let fileURL = path()
         print(fileURL)
         let image = FirstView().drawView.saveImage(size: imageSize).jpegData(
