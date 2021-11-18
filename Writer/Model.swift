@@ -61,3 +61,46 @@ extension View {
         return image
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+ struct RootView: View {
+     @State private var number = 0
+
+     var body: some View {
+         VStack {
+             Button(action: {
+                 self.number += 1
+             }) {
+                 Text("Tap to create")
+             }
+             ForEach(0 ..< number, id: \.self) { _ in
+                 MyRectView()
+             }
+         }
+     }
+ }
+ */
+
+
