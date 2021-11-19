@@ -13,46 +13,83 @@ var drawMode = 1 //
 var imageSize = CGSize(width: screenWidth+100, height: screenWidth+100)
 
 
+
+var imgURL = PreviewImage().path(fileNum: ContentView().currentViewNum)
+
+
+
+
 struct ContentView: View {
-
-    @State var imgURL: URL = PreviewImage().path()
     
-       var body: some View {
-          
-       
-           
-           
-            NavigationView {
-                VStack {
-                    
-                                
-                        NavigationLink(destination: FirstView()) {
-                            if #available(iOS 15.0, *) {
-                                AsyncImage(url: imgURL,scale:2.0)
-                            } else {
-                                // Fallback on earlier versions
-                            }
-                            
-                            }
-                        }
-                            
-                            //                        Image(packageResource: "image", ofType: "jpg").resizable()
-                            
-                            
-                        }.navigationBarTitle("Choose Drawing", displayMode: .inline)
-               .navigationBarBackButtonHidden(true)
-              .navigationBarHidden(true)
-                            
-                }
-        }
-            
-                
-               
-
-       
+    
+    @State var currentViewNum = 0
+    @State var maxViewNum = 0
+    
+    
+    
+    
+    var body: some View {
         
+        var imgURL: URL = PreviewImage().path(fileNum: currentViewNum)
+        
+        
+        NavigationView {
+            VStack{
+                Button(action: {
+                    self.maxViewNum = maxViewNum + 1
+                    self.currentViewNum = maxViewNum
+                    print(currentViewNum)
+                 }) {
+                     Text("+")
+                     NavigationLink(destination: FirstView()) {
+                     
+                     }
+                     
+//                     .navigationBarBackButtonHidden(true)
+//                     .navigationBarHidden(true)
+                 }
+                 
+                     
+                
+                HStack {
+                    
+                    ForEach(0..<maxViewNum, id: \.self){num in
+                        Button(action: {
+                            self.currentViewNum = num
+                            
+                            print(currentViewNum)
+                         }) {
+                             NavigationLink(destination: FirstView()) {
+                                 if #available(iOS 15.0, *) {
+                                     AsyncImage(url: imgURL,scale:2.0)
+                                 } else {
+                                     // Fallback on earlier versions
+                                 }
+                                 
+                             }
+                             
+                             }
+                        
+                    
+                }
+            }
+                
+                //                        Image(packageResource: "image", ofType: "jpg").resizable()
+                
+                
+            }
+            
+        }.navigationBarTitle("Choose Drawing", displayMode: .inline)
+            .navigationBarBackButtonHidden(true)
+            .navigationBarHidden(true)
+    }
     
-   
+    
+}
+
+
+
+
 
 
 
@@ -98,11 +135,11 @@ struct FirstView: View {
             
         }
         .navigationBarBackButtonHidden(true)
-            .navigationBarHidden(true)
-
-     
-
-            
+        .navigationBarHidden(true)
+        
+        
+        
+        
         
     }
     
@@ -159,15 +196,15 @@ struct FirstView: View {
             }.padding()
             
             /*
-            Button("DELETE T"){
-                deleteView(deletedViewNum: 1,  maxViewNum: 2)
-            }
+             Button("DELETE T"){
+             deleteView(deletedViewNum: 1,  maxViewNum: 2)
+             }
              */
             
             Button("SAVE PREVIEW"){
-                PreviewImage().savePreviewImage()
-                ContentView().imgURL = PreviewImage().path()
-                print(ContentView().imgURL)
+                PreviewImage().savePreviewImage(fileNum: ContentView().currentViewNum)
+                imgURL = PreviewImage().path(fileNum: ContentView().currentViewNum)
+                print(imgURL)
                 
             }.padding()
             
@@ -203,12 +240,12 @@ struct FirstView: View {
     
     
     func saveImage(){
-
+        
         let image = drawView.saveImage(size: imageSize)
-
+        
         
         UIImageWriteToSavedPhotosAlbum(image, nil, nil, nil)
-
+        
         
     }
     
@@ -382,6 +419,29 @@ struct FirstView: View {
     }
     
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         Group {
@@ -404,3 +464,4 @@ struct ContentView_Previews: PreviewProvider {
 
 
 
+//placeholder image

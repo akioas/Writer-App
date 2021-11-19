@@ -1,10 +1,10 @@
 import SwiftUI
 import UIKit
 
-var fileNum = 1//save
+//var fileNum = 1//save
 
 struct PreviewImage{
-    func path()->(URL){
+    func path(fileNum: Int)->(URL){
         let paths = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)
 
 
@@ -20,9 +20,9 @@ struct PreviewImage{
     
     
     
-    func savePreviewImage(){
+    func savePreviewImage(fileNum: Int){
 
-        let fileURL = path()
+        let fileURL = path(fileNum: fileNum)
         print(fileURL)
         let image = FirstView().drawView.saveImage(size: imageSize).jpegData(
             compressionQuality: 1)
@@ -68,14 +68,13 @@ extension View {
 
 
 
-var currentViewNum = 0
-var maxViewNum = 1
+
 
 
 let keyName = "WriterAppKey"
 
 
-var KeyForUserDefaults = keyName + String(currentViewNum)
+var KeyForUserDefaults = keyName + String(ContentView().currentViewNum)
 
 
 
