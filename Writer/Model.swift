@@ -28,7 +28,7 @@ struct PreviewImage{
             compressionQuality: 1)
 
         do {
-            let result = try image?.write(to: fileURL, options: .atomic)
+            let result = try! image?.write(to: fileURL, options: .atomic)
         } catch let error {
             print(error)
         }
@@ -72,7 +72,7 @@ extension View {
 
 
 let keyPoints = "PointsKey"
-//var KeyForUserDefaults = keyPoints + String(loadViewNum(KeyForUserDefaults: keyCurrentViewNum))
+var KeyForUserDefaults = keyPoints + String(loadViewNum(KeyForUserDefaults: keyCurrentViewNum))
 
 
 func savePoints(_ points: [[CGPoint]]) {
@@ -131,8 +131,9 @@ let keyMaxViewNum = "MaxViewNumKey"
 
 
 func saveViewNum(_ num: Int, KeyForUserDefaults: String) {
-    let data = try! JSONEncoder().encode(num)
-    UserDefaults.standard.set(data, forKey: KeyForUserDefaults)
+//    let data = try! JSONEncoder().encode(num)
+    UserDefaults.standard.set(num, forKey: KeyForUserDefaults)
+    print("save")
 }
 
 
@@ -140,12 +141,13 @@ func saveViewNum(_ num: Int, KeyForUserDefaults: String) {
 
 func loadViewNum(KeyForUserDefaults: String) -> Int {
     
-    guard let encodedData = UserDefaults.standard.value(forKey: KeyForUserDefaults) as? Data else {
-        return 0
-    }
+    let encodedData = UserDefaults.standard.integer(forKey: KeyForUserDefaults)
     
-    let encodedReturn = try! JSONDecoder().decode(Int.self, from: encodedData)
-    return encodedReturn
+//    let encodedReturn = try! JSONDecoder().decode(Int.self, from: encodedData)
+    print("load")
+    print(KeyForUserDefaults)
+    print(encodedData)
+    return encodedData
 }
 
 

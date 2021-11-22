@@ -16,7 +16,7 @@ var imageSize = CGSize(width: screenWidth+100, height: screenWidth+100)
 
 //var imgURL = PreviewImage().path(fileNum: ContentView().currentViewNum)
 
-
+var selected: Int = 0
 
 
 struct ContentView: View {
@@ -25,7 +25,7 @@ struct ContentView: View {
     @State var currentViewNum:Int = loadViewNum(KeyForUserDefaults: keyCurrentViewNum)
     @State var maxViewNum:Int = loadViewNum(KeyForUserDefaults: keyMaxViewNum)
     
-    @State var selected: Int = 0
+    
     
     
     var body: some View {
@@ -37,8 +37,8 @@ struct ContentView: View {
             VStack{
                 Button(action: {
                     self.maxViewNum = maxViewNum + 1
-                    self.currentViewNum = maxViewNum
-                    saveViewNum(currentViewNum, KeyForUserDefaults: keyCurrentViewNum)
+//                    self.currentViewNum = maxViewNum
+//                    saveViewNum(currentViewNum, KeyForUserDefaults: keyCurrentViewNum)
                     saveViewNum(maxViewNum, KeyForUserDefaults: keyMaxViewNum)
                     print(currentViewNum)
                  }) {
@@ -59,14 +59,14 @@ struct ContentView: View {
                         Button(action: {
                             print("num")
                             print(num)
-                            self.currentViewNum = num
+//                            self.currentViewNum = num
                             selected = num
                             print("selected")
                             print(selected)
-                            saveViewNum(num, KeyForUserDefaults: keyCurrentViewNum)
+                            saveViewNum(selected, KeyForUserDefaults: keyCurrentViewNum)
                             print(currentViewNum)
 
-                        }) {    Text(String(currentViewNum))
+                        }) {    Text(String(num))
                             NavigationLink(destination: FirstView()) {
                             if #available(iOS 15.0, *) {
                                 AsyncImage(url: PreviewImage().path(fileNum: num),scale:2.0)
@@ -273,6 +273,7 @@ struct FirstView: View {
         
         UIImageWriteToSavedPhotosAlbum(image, nil, nil, nil)
         
+
         
     }
     
