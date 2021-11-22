@@ -24,7 +24,7 @@ struct ContentView: View {
     
     @State var currentViewNum:Int = loadViewNum(KeyForUserDefaults: keyCurrentViewNum)
     @State var maxViewNum:Int = loadViewNum(KeyForUserDefaults: keyMaxViewNum)
-    
+//    @State var buttonVar: Bool = false
     
     
     
@@ -35,73 +35,71 @@ struct ContentView: View {
         
         NavigationView {
             VStack{
+                //                NavigationView {
                 Button(action: {
                     self.maxViewNum = maxViewNum + 1
-//                    self.currentViewNum = maxViewNum
-//                    saveViewNum(currentViewNum, KeyForUserDefaults: keyCurrentViewNum)
+                    //                    self.currentViewNum = maxViewNum
+                    //                    saveViewNum(currentViewNum, KeyForUserDefaults: keyCurrentViewNum)
                     saveViewNum(maxViewNum, KeyForUserDefaults: keyMaxViewNum)
                     print(currentViewNum)
-                 }) {
-                     Text("+")
-                     NavigationLink(destination: FirstView()) {
-                     
-                     }
-                     
-//                     .navigationBarBackButtonHidden(true)
-//                     .navigationBarHidden(true)
-                 }
-                 
-                     
-                
-                HStack {
+                }) {
+                    Text("+")
+                    //                    NavigationLink(destination: FirstView()) {
                     
-                    ForEach(0..<maxViewNum, id: \.self){num in
-                        Button(action: {
-                            print("num")
-                            print(num)
-//                            self.currentViewNum = num
-                            selected = num
-                            print("selected")
-                            print(selected)
-                            saveViewNum(selected, KeyForUserDefaults: keyCurrentViewNum)
-                            print(currentViewNum)
-
-                        }) {    Text(String(num))
-                            NavigationLink(destination: FirstView()) {
+                    //                    }
+                    
+                    //                     .navigationBarBackButtonHidden(true)
+                    //                     .navigationBarHidden(true)
+                }
+                
+                
+                
+                
+                
+                //problem Button to NavLink
+                ForEach(0..<maxViewNum, id: \.self)
+                {
+                    num in
+                    //                        NavigationView {
+                    NavigationLink(destination: FirstView())
+                    {
+                        //link
+                        
+                        
+                        
+                        
+                        
+                            Text(String(num))
+                            
                             if #available(iOS 15.0, *) {
                                 AsyncImage(url: PreviewImage().path(fileNum: num),scale:2.0)
                                 
                                 { image in
-                                           image
-                                               .resizable()
-                                               .aspectRatio(contentMode: .fit)
-                                       } placeholder: {
-                                           Image(systemName: "photo")
-                                               .imageScale(.large)
-                                               .foregroundColor(.gray)
-                                       }
+                                    image
+                                        .resizable()
+                                        .aspectRatio(contentMode: .fit)
+                                } placeholder: {
+                                    Image(systemName: "photo")
+                                        .imageScale(.large)
+                                        .foregroundColor(.gray)
+                                }
                                 
                             } else {
                                 // Fallback on earlier versions
                             }
                             
-                        }}/*{
-                             NavigationLink(destination: FirstView()) {
-                                 if #available(iOS 15.0, *) {
-                                     AsyncImage(url: PreviewImage().path(fileNum: loadViewNum(KeyForUserDefaults: keyCurrentViewNum)),scale:2.0)
-                                 } else {
-                                     // Fallback on earlier versions
-                                 }
-                                 
-                             }
-                             
-                             }*/
+                    }.simultaneousGesture(TapGesture().onEnded{
+                            self.butFun(num: num)
+//                            print("!!!!")
+//                            print(num)
+//                            self.currentViewNum = num
+//                            print(currentViewNum)
+                        })
                         
+                        
+                    }
                     
-                }
-            }
                 
-                //                        Image(packageResource: "image", ofType: "jpg").resizable()
                 
                 
             }
@@ -111,7 +109,23 @@ struct ContentView: View {
             .navigationBarHidden(true)
     }
     
-    
+    func butFun(num: Int){
+        print("num")
+        print(num)
+        //                            self.currentViewNum = num
+        selected = num
+        self.currentViewNum = selected
+        print("selected")
+        print(selected)
+        saveViewNum(selected, KeyForUserDefaults: keyCurrentViewNum)
+        print("current")
+        print("current")
+        print("current")
+        print("current")
+        print("current")
+        print("current")
+        print(currentViewNum)
+    }
 }
 
 
@@ -273,7 +287,7 @@ struct FirstView: View {
         
         UIImageWriteToSavedPhotosAlbum(image, nil, nil, nil)
         
-
+        
         
     }
     
@@ -493,3 +507,7 @@ struct ContentView_Previews: PreviewProvider {
 
 
 //placeholder image
+
+
+
+//foreach write to file
