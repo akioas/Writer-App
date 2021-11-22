@@ -72,10 +72,11 @@ extension View {
 
 
 let keyPoints = "PointsKey"
-let KeyForUserDefaults = keyPoints + String(ContentView().currentViewNum)
+//var KeyForUserDefaults = keyPoints + String(loadViewNum(KeyForUserDefaults: keyCurrentViewNum))
 
 
 func savePoints(_ points: [[CGPoint]]) {
+    let KeyForUserDefaults = keyPoints + String(loadViewNum(KeyForUserDefaults: keyCurrentViewNum))
     let data = points.map { try? JSONEncoder().encode($0) }
     UserDefaults.standard.set(data, forKey: KeyForUserDefaults)
 //    savePreviewImage()
@@ -85,6 +86,7 @@ func savePoints(_ points: [[CGPoint]]) {
 
 
 func loadPoints() -> [[CGPoint]] {
+    let KeyForUserDefaults = keyPoints + String(loadViewNum(KeyForUserDefaults: keyCurrentViewNum))
     
     guard let encodedData = UserDefaults.standard.array(forKey: KeyForUserDefaults) as? [Data] else {
         return [[]]
@@ -129,7 +131,7 @@ let keyMaxViewNum = "MaxViewNumKey"
 
 
 func saveViewNum(_ num: Int, KeyForUserDefaults: String) {
-    let data = try? JSONEncoder().encode(num)
+    let data = try! JSONEncoder().encode(num)
     UserDefaults.standard.set(data, forKey: KeyForUserDefaults)
 }
 

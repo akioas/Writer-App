@@ -25,7 +25,7 @@ struct ContentView: View {
     @State var currentViewNum:Int = loadViewNum(KeyForUserDefaults: keyCurrentViewNum)
     @State var maxViewNum:Int = loadViewNum(KeyForUserDefaults: keyMaxViewNum)
     
-    
+    @State var selected: Int = 0
     
     
     var body: some View {
@@ -57,20 +57,45 @@ struct ContentView: View {
                     
                     ForEach(0..<maxViewNum, id: \.self){num in
                         Button(action: {
+                            print("num")
+                            print(num)
                             self.currentViewNum = num
-                            saveViewNum(currentViewNum, KeyForUserDefaults: keyCurrentViewNum)
+                            selected = num
+                            print("selected")
+                            print(selected)
+                            saveViewNum(num, KeyForUserDefaults: keyCurrentViewNum)
                             print(currentViewNum)
-                         }) {
+
+                        }) {    Text(String(currentViewNum))
+                            NavigationLink(destination: FirstView()) {
+                            if #available(iOS 15.0, *) {
+                                AsyncImage(url: PreviewImage().path(fileNum: num),scale:2.0)
+                                
+                                { image in
+                                           image
+                                               .resizable()
+                                               .aspectRatio(contentMode: .fit)
+                                       } placeholder: {
+                                           Image(systemName: "photo")
+                                               .imageScale(.large)
+                                               .foregroundColor(.gray)
+                                       }
+                                
+                            } else {
+                                // Fallback on earlier versions
+                            }
+                            
+                        }}/*{
                              NavigationLink(destination: FirstView()) {
                                  if #available(iOS 15.0, *) {
-                                     AsyncImage(url: imgURL,scale:2.0)
+                                     AsyncImage(url: PreviewImage().path(fileNum: loadViewNum(KeyForUserDefaults: keyCurrentViewNum)),scale:2.0)
                                  } else {
                                      // Fallback on earlier versions
                                  }
                                  
                              }
                              
-                             }
+                             }*/
                         
                     
                 }
