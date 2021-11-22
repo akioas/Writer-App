@@ -4,15 +4,15 @@ import SwiftUI
 
 func deleteView(deletedViewNum: Int,  maxViewNum: Int)->([[CGPoint]]) {
     if deletedViewNum == maxViewNum{
-        let keyToDelete = keyName + String(deletedViewNum)
+        let keyToDelete = keyPoints + String(deletedViewNum)
         UserDefaults.standard.removeObject(forKey: keyToDelete)
             
     }
     else {
         for viewNum in deletedViewNum...(maxViewNum - 1){
-            let keyToDelete = keyName + String(viewNum)
+            let keyToDelete = keyPoints + String(viewNum)
             //
-            let keyToReassign = keyName + String(viewNum+1)
+            let keyToReassign = keyPoints + String(viewNum+1)
             guard let encodedData = UserDefaults.standard.array(forKey: keyToReassign) as? [Data] else {
                 return [[]]
             }
@@ -23,7 +23,7 @@ func deleteView(deletedViewNum: Int,  maxViewNum: Int)->([[CGPoint]]) {
             UserDefaults.standard.set(data as Any?, forKey: keyToDelete)
             //
         }
-        let keyToDelete = keyName + String(maxViewNum)
+        let keyToDelete = keyPoints + String(maxViewNum)
         UserDefaults.standard.removeObject(forKey: keyToDelete)
         
     }

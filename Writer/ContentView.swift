@@ -95,7 +95,7 @@ struct ContentView: View {
 
 struct FirstView: View {
     
-    @State var points: Array<[CGPoint]> = load()
+    @State var points: Array<[CGPoint]> = loadPoints()
     
     
     
@@ -159,7 +159,7 @@ struct FirstView: View {
                     
                 })
                             .onEnded( { _ in
-                    save(points)
+                    savePoints(points)
                     if drawMode == 1{
                         currentLayer = currentLayer + 1
                         
@@ -314,7 +314,7 @@ struct FirstView: View {
         
         points = [[]]
         pathVar = Path()
-        save(points)
+        savePoints(points)
         currentLayer = 0
     }
     
@@ -338,7 +338,7 @@ struct FirstView: View {
             if currentLayer  < 0 {
                 points = [[]]
                 pathVar = Path()
-                save(points)
+                savePoints(points)
                 currentLayer = 0
             } else {
                 currentLayer = points.count - 1
@@ -353,7 +353,7 @@ struct FirstView: View {
                         
                     }
                     
-                    save(points)
+                    savePoints(points)
                     
                 }
                 
@@ -368,7 +368,7 @@ struct FirstView: View {
         } else{
             points = [[]]
             pathVar = Path()
-            save(points)
+            savePoints(points)
             currentLayer = 0
         }//backButton
         
@@ -405,7 +405,7 @@ struct FirstView: View {
             for pointIndex in 1..<points[currentLayer].count{
                 
                 pathVar.addLine(to: points[currentLayer][pointIndex])
-                save(points)
+                savePoints(points)
                 //                    save(points)
                 
             }

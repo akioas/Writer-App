@@ -71,18 +71,11 @@ extension View {
 
 
 
-let keyName = "WriterAppKey"
+let keyPoints = "PointsKey"
+let KeyForUserDefaults = keyPoints + String(ContentView().currentViewNum)
 
 
-var KeyForUserDefaults = keyName + String(ContentView().currentViewNum)
-
-
-
-
-
-
-
-func save(_ points: [[CGPoint]]) {
+func savePoints(_ points: [[CGPoint]]) {
     let data = points.map { try? JSONEncoder().encode($0) }
     UserDefaults.standard.set(data, forKey: KeyForUserDefaults)
 //    savePreviewImage()
@@ -91,7 +84,7 @@ func save(_ points: [[CGPoint]]) {
 
 
 
-func load() -> [[CGPoint]] {
+func loadPoints() -> [[CGPoint]] {
     
     guard let encodedData = UserDefaults.standard.array(forKey: KeyForUserDefaults) as? [Data] else {
         return [[]]
@@ -112,9 +105,7 @@ func load() -> [[CGPoint]] {
             pathVar.addLine(to: encodedReturn[currentNum][pointIndex])
             
         }
-        
-        
-        
+
     }
     
     encodedReturn.append([])
@@ -128,53 +119,36 @@ func load() -> [[CGPoint]] {
 
 
 
+//@State var currentViewNum = 0
+//@State var maxViewNum = 0
+
+
+
+let keyCurrentViewNum = "CurrentViewNumKey"
+let keyMaxViewNum = "MaxViewNumKey"
+
+
+func saveViewNum(_ num: Int, KeyForUserDefaults: String) {
+    let data = {try JSONEncoder().encode(num)}
+    UserDefaults.standard.set(data, forKey: KeyForUserDefaults)
+}
+
+
+
+
+func loadViewNum(KeyForUserDefaults: String) -> Int {
+    
+    guard let encodedData = UserDefaults.standard.array(forKey: KeyForUserDefaults) as? Data else {
+        return 0
+    }
+    
+    let encodedReturn = try! JSONDecoder().decode(Int.self, from: encodedData)
+    return encodedReturn
+}
 
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/*
- struct RootView: View {
-     @State private var number = 0
-
-     var body: some View {
-         VStack {
-             Button(action: {
-                 self.number += 1
-             }) {
-                 Text("Tap to create")
-             }
-             ForEach(0 ..< number, id: \.self) { _ in
-                 MyRectView()
-             }
-         }
-     }
- }
- */
 
 
