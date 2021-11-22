@@ -14,7 +14,7 @@ var imageSize = CGSize(width: screenWidth+100, height: screenWidth+100)
 
 
 
-var imgURL = PreviewImage().path(fileNum: ContentView().currentViewNum)
+//var imgURL = PreviewImage().path(fileNum: ContentView().currentViewNum)
 
 
 
@@ -22,15 +22,15 @@ var imgURL = PreviewImage().path(fileNum: ContentView().currentViewNum)
 struct ContentView: View {
     
     
-    @State var currentViewNum = 0
-    @State var maxViewNum = 0
+    @State var currentViewNum:Int = loadViewNum(KeyForUserDefaults: keyCurrentViewNum)
+    @State var maxViewNum:Int = loadViewNum(KeyForUserDefaults: keyMaxViewNum)
     
     
     
     
     var body: some View {
         
-        var imgURL: URL = PreviewImage().path(fileNum: currentViewNum)
+        var imgURL: URL = PreviewImage().path(fileNum: loadViewNum(KeyForUserDefaults: keyCurrentViewNum))
         
         
         NavigationView {
@@ -38,6 +38,8 @@ struct ContentView: View {
                 Button(action: {
                     self.maxViewNum = maxViewNum + 1
                     self.currentViewNum = maxViewNum
+                    saveViewNum(currentViewNum, KeyForUserDefaults: keyCurrentViewNum)
+                    saveViewNum(maxViewNum, KeyForUserDefaults: keyMaxViewNum)
                     print(currentViewNum)
                  }) {
                      Text("+")
@@ -56,7 +58,7 @@ struct ContentView: View {
                     ForEach(0..<maxViewNum, id: \.self){num in
                         Button(action: {
                             self.currentViewNum = num
-                            
+                            saveViewNum(currentViewNum, KeyForUserDefaults: keyCurrentViewNum)
                             print(currentViewNum)
                          }) {
                              NavigationLink(destination: FirstView()) {
@@ -202,8 +204,8 @@ struct FirstView: View {
              */
             
             Button("SAVE PREVIEW"){
-                PreviewImage().savePreviewImage(fileNum: ContentView().currentViewNum)
-                imgURL = PreviewImage().path(fileNum: ContentView().currentViewNum)
+                PreviewImage().savePreviewImage(fileNum: loadViewNum(KeyForUserDefaults: keyCurrentViewNum))
+                let imgURL = PreviewImage().path(fileNum: loadViewNum(KeyForUserDefaults: keyCurrentViewNum))
                 print(imgURL)
                 
             }.padding()

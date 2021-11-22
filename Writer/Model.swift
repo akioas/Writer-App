@@ -129,7 +129,7 @@ let keyMaxViewNum = "MaxViewNumKey"
 
 
 func saveViewNum(_ num: Int, KeyForUserDefaults: String) {
-    let data = {try JSONEncoder().encode(num)}
+    let data = try? JSONEncoder().encode(num)
     UserDefaults.standard.set(data, forKey: KeyForUserDefaults)
 }
 
@@ -138,7 +138,7 @@ func saveViewNum(_ num: Int, KeyForUserDefaults: String) {
 
 func loadViewNum(KeyForUserDefaults: String) -> Int {
     
-    guard let encodedData = UserDefaults.standard.array(forKey: KeyForUserDefaults) as? Data else {
+    guard let encodedData = UserDefaults.standard.value(forKey: KeyForUserDefaults) as? Data else {
         return 0
     }
     
