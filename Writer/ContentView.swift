@@ -135,7 +135,7 @@ struct ContentView: View {
 
 
 struct FirstView: View {
-    
+    @State var currentViewNum:Int = loadViewNum(KeyForUserDefaults: keyCurrentViewNum)
     @State var points: Array<[CGPoint]> = loadPoints()
     
     

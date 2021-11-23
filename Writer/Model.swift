@@ -45,13 +45,18 @@ extension UIView {
     func saveImage() -> UIImage {
         let format = UIGraphicsImageRendererFormat()
         format.scale = 1
-//        format.opaque = false
-        return UIGraphicsImageRenderer(size: self.layer.frame.size, format: format).image { context in
-            
-            self.drawHierarchy(in: self.layer.bounds, afterScreenUpdates: true)
-        }
+        format.opaque = false
+        UIGraphicsBeginImageContextWithOptions(self.layer.frame.size, false, 1.0)
+        self.drawHierarchy(in: self.layer.frame, afterScreenUpdates: true)
+        let img = UIGraphicsGetImageFromCurrentImageContext()
+
+        UIGraphicsEndImageContext()
+        return img!
+            //change bounds
+        
     }
 }
+
 extension View {
     func saveImage(size: CGSize) -> UIImage {
         let yPoint = UIApplication.shared.windows.first?.safeAreaInsets.top ?? 0
@@ -63,6 +68,28 @@ extension View {
         return image
     }
 }
+
+/*
+ let cropRect = mapVC.view.frame.inset(by: mapVC.view.safeAreaInsets).inset(by: mapVC.mapEdgeInsets)
+ let mapRenderer = UIGraphicsImageRenderer(bounds: cropRect)
+ let img = renderer.image(actions:  { _ in
+     mapVC.view.drawHierarchy(in: mapVC.view.bounds, afterScreenUpdates: true)
+ })
+ */
+
+/*
+ let cropRect = mapVC.view.frame.inset(by: mapVC.view.safeAreaInsets).inset(by: mapVC.mapEdgeInsets)
+
+ UIGraphicsBeginImageContextWithOptions(cropRect.size, false, 1.0)
+
+ mapVC.view.drawHierarchy(in: mapVC.view.bounds afterScreenUpdates: true)
+ let img = UIGraphicsGetImageFromCurrentImageContext()
+
+ UIGraphicsEndImageContext()
+ */
+
+
+
 
 
 
