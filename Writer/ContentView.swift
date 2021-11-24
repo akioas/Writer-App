@@ -126,6 +126,11 @@ struct ContentView: View {
         print("current")
         print(currentViewNum)
     }
+    
+    
+    
+    
+    
 }
 
 
@@ -137,7 +142,8 @@ struct ContentView: View {
 struct FirstView: View {
     @State var currentViewNum:Int = loadViewNum(KeyForUserDefaults: keyCurrentViewNum)
     @State var points: Array<[CGPoint]> = loadPoints()
-    
+
+
     
     
     var body: some View {
@@ -150,7 +156,8 @@ struct FirstView: View {
                 if proxy.size.width < proxy.size.height {
                     VStack{//1
                         
-                        drawView
+                            drawView
+                        
                         hButtons
                         NavigationLink(destination: ContentView()) {
                             Text("Choose drawing")
@@ -177,7 +184,14 @@ struct FirstView: View {
         }
         .navigationBarBackButtonHidden(true)
         .navigationBarHidden(true)
-        
+        //h
+        .onAppear {
+                    
+                        points = loadPoints()
+            currentLayer = points.count - 1
+                       
+                    
+        }
         
         
         
@@ -216,6 +230,7 @@ struct FirstView: View {
                 .foregroundColor(.black)
                 .aspectRatio(1.0, contentMode: .fit)
         }//2
+        
         
     }
     
@@ -305,9 +320,7 @@ struct FirstView: View {
     
     
     
-    
-    
-    
+
     
     
     
