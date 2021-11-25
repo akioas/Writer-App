@@ -16,6 +16,13 @@ var imageSize = CGSize(width: screenWidth+100, height: screenWidth+100)
 
 //var imgURL = PreviewImage().path(fileNum: ContentView().currentViewNum)
 
+
+
+
+//     BACK
+
+
+
 var selected: Int = 0
 
 
@@ -189,7 +196,53 @@ struct FirstView: View {
                     
                         points = loadPoints()
             currentLayer = points.count - 1
-                       
+            if points.isEmpty == false{
+                points.removeAll{$0.isEmpty}
+
+//                currentLayer = points.count - 1
+                print(currentLayer)
+                print(points)
+                pathVar = Path()
+                
+                
+                    for currentNum in 0..<currentLayer{
+                        let firstPoint = points[currentNum].first
+                        
+                        if firstPoint != nil{
+                        pathVar.move(to: firstPoint!)
+                        for pointIndex in 1..<points[currentNum].count{
+                            
+                            pathVar.addLine(to: points[currentNum][pointIndex])
+                            
+                        }
+                        } else {
+//                            pathVar = Path()
+                            
+                        }
+                        
+                        savePoints(points)
+                        
+                    
+                    
+                }
+                
+                
+                
+                points.append([])
+                currentLayer = points.count - 1
+                if currentLayer < 0{
+                    currentLayer = 0
+                    points = [[]]
+                    pathVar = Path()
+                    savePoints(points)
+                }
+                
+            } else{
+                points = [[]]
+                pathVar = Path()
+                savePoints(points)
+                currentLayer = 0
+            }
                     
         }
         
