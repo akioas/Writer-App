@@ -149,6 +149,7 @@ struct ContentView: View {
 struct FirstView: View {
     @State var currentViewNum:Int = loadViewNum(KeyForUserDefaults: keyCurrentViewNum)
     @State var points: Array<[CGPoint]> = loadPoints()
+    @Environment(\.presentationMode) var presentationMode
 
 
     
@@ -171,6 +172,9 @@ struct FirstView: View {
                         }
                         
                     }.background(Color(.yellow))
+                        .simultaneousGesture(TapGesture().onEnded{
+                    presentationMode.wrappedValue.dismiss()
+                        })
                     
                     
                 } else {
