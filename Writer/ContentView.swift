@@ -31,12 +31,12 @@ struct ContentView: View {
     
     @State var currentViewNum:Int = loadNum(KeyForUserDefaults: keyCurrentViewNum)
     @State var maxViewNum:Int = loadNum(KeyForUserDefaults: keyMaxViewNum)
-//    @State var buttonVar: Bool = false
-//    @State var imgURL: URL = PreviewImage().path(fileNum: loadNum(KeyForUserDefaults: keyCurrentViewNum))
-   
-@State var points = loadPoints()
+    //    @State var buttonVar: Bool = false
+    //    @State var imgURL: [URL] = PreviewImage().path(fileNum: loadNum(KeyForUserDefaults: keyCurrentViewNum))
+    @State var imgURL: [URL] = loadURL()
+    @State var points = loadPoints()
     
-    
+    @State var URLStoSave:[URL] = []
     var body: some View {
         
         
@@ -69,6 +69,7 @@ struct ContentView: View {
                 ForEach(0..<maxViewNum, id: \.self)
                 {
                     num in
+                    
                     //                        NavigationView {
                     NavigationLink(destination: FirstView())
                     {
@@ -76,40 +77,59 @@ struct ContentView: View {
                         
                         
                         
-                        let numURL = PreviewImage().path(fileNum: num)
                         
-                            Text(String(num))
+                        let numURL = imgURL[num]
+                        
+                        Text(String(num))
+                        
+                        if #available(iOS 15.0, *) {
+                            AsyncImage(url: numURL,scale:2.0)
                             
-                            if #available(iOS 15.0, *) {
-                                AsyncImage(url: numURL,scale:2.0)
-                                
-                                { image in
-                                    image
-                                        .resizable()
-                                        .aspectRatio(contentMode: .fit)
-                                } placeholder: {
-                                    Image(systemName: "photo")
-                                        .imageScale(.large)
-                                        .foregroundColor(.gray)
-                                }
-                                
-                            } else {
-                                // Fallback on earlier versions
+                            { image in
+                                image
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fit)
+                            } placeholder: {
+                                Image(systemName: "photo")
+                                    .imageScale(.large)
+                                    .foregroundColor(.gray)
                             }
                             
+                            
+                        } else {
+                            // Fallback on earlier versions
+                        }
+                        
+                        
                     }.simultaneousGesture(TapGesture().onEnded{
-                            self.butFun(num: num)
-//                        showingDetail = true
-
-//                            print("!!!!")
-//                            print(num)
-//                            self.currentViewNum = num
-//                            print(currentViewNum)
+                        self.butFun(num: num)
+                        
+                        
+                        URLStoSave=[]
+                        for number in 0...maxViewNum{
+                            
+                            URLStoSave.append(PreviewImage().path(fileNum: number))
+                        }
+                        //                        showingDetail = true
+                        
+                        //                            print("!!!!")
+                        //                            print(num)
+                        //                            self.currentViewNum = num
+                        //                            print(currentViewNum)
+                    })
+                        .onAppear(perform: {
+                            URLStoSave=[]
+                            for number in 0...maxViewNum{
+                                
+                                URLStoSave.append(PreviewImage().path(fileNum: number))
+                            }
+                            print(URLStoSave)
+                            saveURL(URLStoSave)
                         })
-                        
-                        
-                    }
                     
+                    
+                }
+                
                 
                 
                 
@@ -118,6 +138,7 @@ struct ContentView: View {
         }.navigationBarTitle("Choose Drawing", displayMode: .inline)
             .navigationBarBackButtonHidden(true)
             .navigationBarHidden(true)
+        
     }
     
     func butFun(num: Int){
@@ -141,57 +162,57 @@ struct ContentView: View {
         
         
         points = loadPoints()
-currentLayer = points.count - 1
-if points.isEmpty == false{
-    points.removeAll{$0.isEmpty}
-
-//                currentLayer = points.count - 1
-    print(currentLayer)
-    print(points)
-    pathVar = Path()
-    
-    
-        for currentNum in 0..<currentLayer{
-            let firstPoint = points[currentNum].first
+        currentLayer = points.count - 1
+        if points.isEmpty == false{
+            points.removeAll{$0.isEmpty}
             
-            if firstPoint != nil{
-            pathVar.move(to: firstPoint!)
-            for pointIndex in 1..<points[currentNum].count{
+            //                currentLayer = points.count - 1
+            print(currentLayer)
+            print(points)
+            pathVar = Path()
+            
+            
+            for currentNum in 0..<currentLayer{
+                let firstPoint = points[currentNum].first
                 
-                pathVar.addLine(to: points[currentNum][pointIndex])
+                if firstPoint != nil{
+                    pathVar.move(to: firstPoint!)
+                    for pointIndex in 1..<points[currentNum].count{
+                        
+                        pathVar.addLine(to: points[currentNum][pointIndex])
+                        
+                    }
+                } else {
+                    //                            pathVar = Path()
+                    
+                }
+                
+                savePoints(points)
+                
+                
                 
             }
-            } else {
-//                            pathVar = Path()
-                
+            
+            
+            
+            points.append([])
+            currentLayer = points.count - 1
+            if currentLayer < 0{
+                currentLayer = 0
+                points = [[]]
+                pathVar = Path()
+                savePoints(points)
             }
             
+        } else{
+            points = [[]]
+            pathVar = Path()
             savePoints(points)
-            
+            currentLayer = 0
+        }
         
         
-    }
-    
-    
-    
-    points.append([])
-    currentLayer = points.count - 1
-    if currentLayer < 0{
-        currentLayer = 0
-        points = [[]]
-        pathVar = Path()
-        savePoints(points)
-    }
-    
-} else{
-    points = [[]]
-    pathVar = Path()
-    savePoints(points)
-    currentLayer = 0
-}
         
-
-
     }
     
     
@@ -210,8 +231,8 @@ struct FirstView: View {
     @State var currentViewNum:Int = loadNum(KeyForUserDefaults: keyCurrentViewNum)
     @State var points: Array<[CGPoint]> = loadPoints()
     @Environment(\.presentationMode) var presentationMode
-
-
+    
+    
     
     
     var body: some View {
@@ -224,7 +245,7 @@ struct FirstView: View {
                 if proxy.size.width < proxy.size.height {
                     VStack{//1
                         
-                            drawView
+                        drawView
                         
                         hButtons
                         NavigationLink(destination: ContentView()) {
@@ -233,9 +254,16 @@ struct FirstView: View {
                         
                     }.background(Color(.yellow))
                         .simultaneousGesture(TapGesture().onEnded{
+                            PreviewImage().changeNum()
+                            ContentView().URLStoSave=[]
+                            for number in 0...ContentView().maxViewNum{
+                                
+                                ContentView().URLStoSave.append(PreviewImage().path(fileNum: number))
+                            }
+                            saveURL(ContentView().URLStoSave)
                             presentationMode.wrappedValue.dismiss()
-
-                            })
+                            
+                        })
                     
                     
                 } else {
@@ -259,7 +287,7 @@ struct FirstView: View {
         .navigationBarHidden(true)
         //h
         .onAppear {
-//            selected = num
+            //            selected = num
             self.currentViewNum = selected
             print("selected")
             print(selected)
@@ -276,60 +304,60 @@ struct FirstView: View {
             
             
             points = loadPoints()
-    currentLayer = points.count - 1
-    if points.isEmpty == false{
-        points.removeAll{$0.isEmpty}
-
-    //                currentLayer = points.count - 1
-        print(currentLayer)
-        print(points)
-        pathVar = Path()
-        
-        
-            for currentNum in 0..<currentLayer{
-                let firstPoint = points[currentNum].first
+            currentLayer = points.count - 1
+            if points.isEmpty == false{
+                points.removeAll{$0.isEmpty}
                 
-                if firstPoint != nil{
-                pathVar.move(to: firstPoint!)
-                for pointIndex in 1..<points[currentNum].count{
+                //                currentLayer = points.count - 1
+                print(currentLayer)
+                print(points)
+                pathVar = Path()
+                
+                
+                for currentNum in 0..<currentLayer{
+                    let firstPoint = points[currentNum].first
                     
-                    pathVar.addLine(to: points[currentNum][pointIndex])
+                    if firstPoint != nil{
+                        pathVar.move(to: firstPoint!)
+                        for pointIndex in 1..<points[currentNum].count{
+                            
+                            pathVar.addLine(to: points[currentNum][pointIndex])
+                            
+                        }
+                    } else {
+                        //                            pathVar = Path()
+                        
+                    }
+                    
+                    savePoints(points)
+                    
+                    
                     
                 }
-                } else {
-    //                            pathVar = Path()
-                    
+                
+                
+                
+                points.append([])
+                currentLayer = points.count - 1
+                if currentLayer < 0{
+                    currentLayer = 0
+                    points = [[]]
+                    pathVar = Path()
+                    savePoints(points)
                 }
                 
+            } else{
+                points = [[]]
+                pathVar = Path()
                 savePoints(points)
-                
+                currentLayer = 0
+            }
             
             
-        }
-        
-        
-        
-        points.append([])
-        currentLayer = points.count - 1
-        if currentLayer < 0{
-            currentLayer = 0
-            points = [[]]
-            pathVar = Path()
-            savePoints(points)
-        }
-        
-    } else{
-        points = [[]]
-        pathVar = Path()
-        savePoints(points)
-        currentLayer = 0
-    }
             
-
-
-        
-        
-        
+            
+            
+            
         }
         
         
@@ -458,7 +486,7 @@ struct FirstView: View {
     
     
     
-
+    
     
     
     

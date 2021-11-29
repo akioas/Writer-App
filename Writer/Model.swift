@@ -13,21 +13,26 @@ struct PreviewImage{
        
         let path = try! FileManager.default.url(for: FileManager.SearchPathDirectory.documentDirectory, in: FileManager.SearchPathDomainMask.userDomainMask, appropriateFor: nil, create: false)
         let fileName = String(fileNum) + String("f") + String(fileNumVar)
+        
+        changeNum()
+        let pathReturn = path.appendingPathComponent(fileName).appendingPathExtension("jpg")
+//        saveURL(pathReturn)
+        
+        return pathReturn
+    
+    
+    }
+    
+    func changeNum(){
+        var fileNumVar = loadNum(KeyForUserDefaults: "fileNumVar")
         fileNumVar = fileNumVar + 1
         if fileNumVar > 0 {
             fileNumVar = 0
         } else {
             fileNumVar = 1
         }
-        
-        let pathReturn = path.appendingPathComponent(fileName).appendingPathExtension("jpg")
-//        saveURL(pathReturn)
         saveNum(fileNumVar, KeyForUserDefaults: "fileNumVar")
-        return pathReturn
-    
-    
     }
-    
     
     
     func savePreviewImage(fileNum: Int){
@@ -210,7 +215,14 @@ func loadURL() -> [URL] {
     let KeyForUserDefaults = keyURL
     
     guard let encodedData = UserDefaults.standard.array(forKey: KeyForUserDefaults) as? [Data] else {
-        return []
+        var returnN:[URL]=[]
+        for i in 0...30{
+            
+        
+            returnN.append(PreviewImage().path(fileNum: i))
+        
+        }
+        return returnN
     }
     
     
