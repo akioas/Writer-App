@@ -29,16 +29,17 @@ var selected: Int = 0
 struct ContentView: View {
     
     
-    @State var currentViewNum:Int = loadViewNum(KeyForUserDefaults: keyCurrentViewNum)
-    @State var maxViewNum:Int = loadViewNum(KeyForUserDefaults: keyMaxViewNum)
+    @State var currentViewNum:Int = loadNum(KeyForUserDefaults: keyCurrentViewNum)
+    @State var maxViewNum:Int = loadNum(KeyForUserDefaults: keyMaxViewNum)
 //    @State var buttonVar: Bool = false
+//    @State var imgURL: URL = PreviewImage().path(fileNum: loadNum(KeyForUserDefaults: keyCurrentViewNum))
    
 @State var points = loadPoints()
     
     
     var body: some View {
         
-        var imgURL: URL = PreviewImage().path(fileNum: loadViewNum(KeyForUserDefaults: keyCurrentViewNum))
+        
         
         
         NavigationView {
@@ -48,7 +49,7 @@ struct ContentView: View {
                     self.maxViewNum = maxViewNum + 1
                     //                    self.currentViewNum = maxViewNum
                     //                    saveViewNum(currentViewNum, KeyForUserDefaults: keyCurrentViewNum)
-                    saveViewNum(maxViewNum, KeyForUserDefaults: keyMaxViewNum)
+                    saveNum(maxViewNum, KeyForUserDefaults: keyMaxViewNum)
                     print(currentViewNum)
                 }) {
                     Text("+")
@@ -75,12 +76,12 @@ struct ContentView: View {
                         
                         
                         
-                        
+                        let numURL = PreviewImage().path(fileNum: num)
                         
                             Text(String(num))
                             
                             if #available(iOS 15.0, *) {
-                                AsyncImage(url: PreviewImage().path(fileNum: num),scale:2.0)
+                                AsyncImage(url: numURL,scale:2.0)
                                 
                                 { image in
                                     image
@@ -127,7 +128,7 @@ struct ContentView: View {
         self.currentViewNum = selected
         print("selected")
         print(selected)
-        saveViewNum(selected, KeyForUserDefaults: keyCurrentViewNum)
+        saveNum(selected, KeyForUserDefaults: keyCurrentViewNum)
         print("current")
         print("current")
         print("current")
@@ -206,7 +207,7 @@ if points.isEmpty == false{
 
 
 struct FirstView: View {
-    @State var currentViewNum:Int = loadViewNum(KeyForUserDefaults: keyCurrentViewNum)
+    @State var currentViewNum:Int = loadNum(KeyForUserDefaults: keyCurrentViewNum)
     @State var points: Array<[CGPoint]> = loadPoints()
     @Environment(\.presentationMode) var presentationMode
 
@@ -262,7 +263,7 @@ struct FirstView: View {
             self.currentViewNum = selected
             print("selected")
             print(selected)
-            saveViewNum(selected, KeyForUserDefaults: keyCurrentViewNum)
+            saveNum(selected, KeyForUserDefaults: keyCurrentViewNum)
             print("current")
             print("current")
             print("current")
@@ -395,8 +396,8 @@ struct FirstView: View {
              */
             
             Button("SAVE PREVIEW"){
-                PreviewImage().savePreviewImage(fileNum: loadViewNum(KeyForUserDefaults: keyCurrentViewNum))
-                let imgURL = PreviewImage().path(fileNum: loadViewNum(KeyForUserDefaults: keyCurrentViewNum))
+                PreviewImage().savePreviewImage(fileNum: loadNum(KeyForUserDefaults: keyCurrentViewNum))
+                let imgURL = PreviewImage().path(fileNum: loadNum(KeyForUserDefaults: keyCurrentViewNum))
                 print(imgURL)
                 
             }.padding()

@@ -1,19 +1,29 @@
 import SwiftUI
 import UIKit
 
-//var fileNum = 1//save
+
 
 struct PreviewImage{
     func path(fileNum: Int)->(URL){
         let paths = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)
 
 
-        
+        var fileNumVar = loadNum(KeyForUserDefaults: "fileNumVar")
+        print(fileNumVar)
        
         let path = try! FileManager.default.url(for: FileManager.SearchPathDirectory.documentDirectory, in: FileManager.SearchPathDomainMask.userDomainMask, appropriateFor: nil, create: false)
-        let fileName = String(fileNum)
+        let fileName = String(fileNum) + String("f") + String(fileNumVar)
+        fileNumVar = fileNumVar + 1
+        if fileNumVar > 0 {
+            fileNumVar = 0
+        } else {
+            fileNumVar = 1
+        }
         
-        return path.appendingPathComponent(fileName).appendingPathExtension("jpg")
+        let pathReturn = path.appendingPathComponent(fileName).appendingPathExtension("jpg")
+//        saveURL(pathReturn)
+        saveNum(fileNumVar, KeyForUserDefaults: "fileNumVar")
+        return pathReturn
     
     
     }
@@ -23,12 +33,24 @@ struct PreviewImage{
     func savePreviewImage(fileNum: Int){
 
         let fileURL = path(fileNum: fileNum)
+        let urlString = String(describing:fileURL)
         print(fileURL)
+        var newURL: String
+        var fileNumVar = loadNum(KeyForUserDefaults: "fileNumVar")
+        if fileNumVar > 0 {
+            newURL = urlString.replacingOccurrences(of: "f1", with: "f0")
+        } else {
+            newURL = urlString.replacingOccurrences(of: "f0", with: "f1")
+        }
+        
+        
+        
         let image = FirstView().drawView.saveImage(size: imageSize).jpegData(
             compressionQuality: 1)
 
         do {
             let result = try! image?.write(to: fileURL, options: .atomic)
+            try! image?.write(to: URL(string:newURL)!, options: .atomic)
         } catch let error {
             print(error)
         }
@@ -95,21 +117,19 @@ extension View {
 
 
 let keyPoints = "PointsKey"
-var KeyForUserDefaults = keyPoints + String(loadViewNum(KeyForUserDefaults: keyCurrentViewNum))
+var KeyForUserDefaults = keyPoints + String(loadNum(KeyForUserDefaults: keyCurrentViewNum))
 
 
 func savePoints(_ points: [[CGPoint]]) {
-    let KeyForUserDefaults = keyPoints + String(loadViewNum(KeyForUserDefaults: keyCurrentViewNum))
+    let KeyForUserDefaults = keyPoints + String(loadNum(KeyForUserDefaults: keyCurrentViewNum))
     let data = points.map { try? JSONEncoder().encode($0) }
     UserDefaults.standard.set(data, forKey: KeyForUserDefaults)
 //    savePreviewImage()
 }
 
 
-
-
 func loadPoints() -> [[CGPoint]] {
-    let KeyForUserDefaults = keyPoints + String(loadViewNum(KeyForUserDefaults: keyCurrentViewNum))
+    let KeyForUserDefaults = keyPoints + String(loadNum(KeyForUserDefaults: keyCurrentViewNum))
     
     guard let encodedData = UserDefaults.standard.array(forKey: KeyForUserDefaults) as? [Data] else {
         return [[]]
@@ -153,7 +173,7 @@ let keyCurrentViewNum = "CurrentViewNumKey"
 let keyMaxViewNum = "MaxViewNumKey"
 
 
-func saveViewNum(_ num: Int, KeyForUserDefaults: String) {
+func saveNum(_ num: Int, KeyForUserDefaults: String) {
 //    let data = try! JSONEncoder().encode(num)
     UserDefaults.standard.set(num, forKey: KeyForUserDefaults)
     print("save")
@@ -162,7 +182,7 @@ func saveViewNum(_ num: Int, KeyForUserDefaults: String) {
 
 
 
-func loadViewNum(KeyForUserDefaults: String) -> Int {
+func loadNum(KeyForUserDefaults: String) -> Int {
     
     let encodedData = UserDefaults.standard.integer(forKey: KeyForUserDefaults)
     
@@ -176,6 +196,32 @@ func loadViewNum(KeyForUserDefaults: String) -> Int {
 
 
 
+let keyURL = "URLKEY"
+
+func saveURL(_ myURL: [URL]) {
+    let KeyForUserDefaults = keyURL
+    let data = myURL.map { try? JSONEncoder().encode($0) }
+    UserDefaults.standard.set(data, forKey: KeyForUserDefaults)
+//    savePreviewImage()
+}
+
+
+func loadURL() -> [URL] {
+    let KeyForUserDefaults = keyURL
+    
+    guard let encodedData = UserDefaults.standard.array(forKey: KeyForUserDefaults) as? [Data] else {
+        return []
+    }
+    
+    
+    let encodedReturn = encodedData.map { try! JSONDecoder().decode(URL.self, from: $0) }
+    return encodedReturn
+}
 
 
 
+//построю функцию которая копирует изображания все
+//в конце будет 0 или 1
+//это число хранится
+//после сохранения оно меняется
+//и при этом копируются все картинки
