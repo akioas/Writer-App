@@ -32,7 +32,8 @@ struct ContentView: View {
     @State var currentViewNum:Int = loadViewNum(KeyForUserDefaults: keyCurrentViewNum)
     @State var maxViewNum:Int = loadViewNum(KeyForUserDefaults: keyMaxViewNum)
 //    @State var buttonVar: Bool = false
-    
+   
+@State var points = loadPoints()
     
     
     var body: some View {
@@ -97,6 +98,8 @@ struct ContentView: View {
                             
                     }.simultaneousGesture(TapGesture().onEnded{
                             self.butFun(num: num)
+//                        showingDetail = true
+
 //                            print("!!!!")
 //                            print(num)
 //                            self.currentViewNum = num
@@ -132,6 +135,62 @@ struct ContentView: View {
         print("current")
         print("current")
         print(currentViewNum)
+        
+        
+        
+        
+        points = loadPoints()
+currentLayer = points.count - 1
+if points.isEmpty == false{
+    points.removeAll{$0.isEmpty}
+
+//                currentLayer = points.count - 1
+    print(currentLayer)
+    print(points)
+    pathVar = Path()
+    
+    
+        for currentNum in 0..<currentLayer{
+            let firstPoint = points[currentNum].first
+            
+            if firstPoint != nil{
+            pathVar.move(to: firstPoint!)
+            for pointIndex in 1..<points[currentNum].count{
+                
+                pathVar.addLine(to: points[currentNum][pointIndex])
+                
+            }
+            } else {
+//                            pathVar = Path()
+                
+            }
+            
+            savePoints(points)
+            
+        
+        
+    }
+    
+    
+    
+    points.append([])
+    currentLayer = points.count - 1
+    if currentLayer < 0{
+        currentLayer = 0
+        points = [[]]
+        pathVar = Path()
+        savePoints(points)
+    }
+    
+} else{
+    points = [[]]
+    pathVar = Path()
+    savePoints(points)
+    currentLayer = 0
+}
+        
+
+
     }
     
     
@@ -173,8 +232,9 @@ struct FirstView: View {
                         
                     }.background(Color(.yellow))
                         .simultaneousGesture(TapGesture().onEnded{
-                    presentationMode.wrappedValue.dismiss()
-                        })
+                            presentationMode.wrappedValue.dismiss()
+
+                            })
                     
                     
                 } else {
@@ -188,6 +248,7 @@ struct FirstView: View {
                             Text("Choose drawing")
                         }
                     }.background(Color(.yellow))
+                    
                     ////
                 }
             }
@@ -197,59 +258,78 @@ struct FirstView: View {
         .navigationBarHidden(true)
         //h
         .onAppear {
-                    
-                        points = loadPoints()
-            currentLayer = points.count - 1
-            if points.isEmpty == false{
-                points.removeAll{$0.isEmpty}
+//            selected = num
+            self.currentViewNum = selected
+            print("selected")
+            print(selected)
+            saveViewNum(selected, KeyForUserDefaults: keyCurrentViewNum)
+            print("current")
+            print("current")
+            print("current")
+            print("current")
+            print("current")
+            print("current")
+            print(currentViewNum)
+            
+            
+            
+            
+            points = loadPoints()
+    currentLayer = points.count - 1
+    if points.isEmpty == false{
+        points.removeAll{$0.isEmpty}
 
-//                currentLayer = points.count - 1
-                print(currentLayer)
-                print(points)
-                pathVar = Path()
+    //                currentLayer = points.count - 1
+        print(currentLayer)
+        print(points)
+        pathVar = Path()
+        
+        
+            for currentNum in 0..<currentLayer{
+                let firstPoint = points[currentNum].first
                 
-                
-                    for currentNum in 0..<currentLayer{
-                        let firstPoint = points[currentNum].first
-                        
-                        if firstPoint != nil{
-                        pathVar.move(to: firstPoint!)
-                        for pointIndex in 1..<points[currentNum].count{
-                            
-                            pathVar.addLine(to: points[currentNum][pointIndex])
-                            
-                        }
-                        } else {
-//                            pathVar = Path()
-                            
-                        }
-                        
-                        savePoints(points)
-                        
+                if firstPoint != nil{
+                pathVar.move(to: firstPoint!)
+                for pointIndex in 1..<points[currentNum].count{
                     
+                    pathVar.addLine(to: points[currentNum][pointIndex])
+                    
+                }
+                } else {
+    //                            pathVar = Path()
                     
                 }
                 
-                
-                
-                points.append([])
-                currentLayer = points.count - 1
-                if currentLayer < 0{
-                    currentLayer = 0
-                    points = [[]]
-                    pathVar = Path()
-                    savePoints(points)
-                }
-                
-            } else{
-                points = [[]]
-                pathVar = Path()
                 savePoints(points)
-                currentLayer = 0
-            }
-                    
+                
+            
+            
         }
         
+        
+        
+        points.append([])
+        currentLayer = points.count - 1
+        if currentLayer < 0{
+            currentLayer = 0
+            points = [[]]
+            pathVar = Path()
+            savePoints(points)
+        }
+        
+    } else{
+        points = [[]]
+        pathVar = Path()
+        savePoints(points)
+        currentLayer = 0
+    }
+            
+
+
+        
+        
+        
+        }
         
         
         
@@ -508,7 +588,8 @@ struct FirstView: View {
         
         func path(in rect: CGRect) -> Path {
             
-            
+            print(points)
+            currentLayer = points.count - 1
             guard let firstPoint = points[currentLayer].first else { return pathVar
                 
             }
