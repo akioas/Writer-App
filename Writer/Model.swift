@@ -165,12 +165,48 @@ func loadPoints() -> [[CGPoint]] {
 
 
 
+func loadPointsForPreview() -> [[[CGPoint]]] {
+    var encodedReturn:[[[CGPoint]]] = [[[]]]
+    let maxViewNum:Int = loadNum(KeyForUserDefaults: keyMaxViewNum)
+    for num in 0..<maxViewNum{
+    let KeyForUserDefaults = keyPoints + String(num)
+    
+    guard let encodedData = UserDefaults.standard.array(forKey: KeyForUserDefaults) as? [Data] else {
+        return [[]]
+    }
+    
+    
+        encodedReturn.append(encodedData.map { try! JSONDecoder().decode([CGPoint].self, from: $0) })
+        /*
+    currentLayerPreview = encodedReturn.count - 1
+    pathVarPreview = Path()
+    for currentNum in 0...currentLayerPreview{
+        guard let firstPointPreview = encodedReturn[currentNum].first else { return [[]]
+            
+        }
+        
+        pathVarPreview.move(to: firstPointPreview)
+        for pointIndex in 1..<encodedReturn[currentNum].count{
+            
+            pathVarPreview.addLine(to: encodedReturn[currentNum][pointIndex])
+            
+        }
+         
+
+    }
+         */
+//    encodedReturn.append([])
+//    currentLayerPreview = currentLayerPreview + 1
+    }
+  
+    if encodedReturn[0] == [[]]{
+        encodedReturn.remove(at: 0)
+    }
+    
+    return encodedReturn
+}
 
 
-
-
-//@State var currentViewNum = 0
-//@State var maxViewNum = 0
 
 
 
@@ -231,9 +267,3 @@ func loadURL() -> [URL] {
 }
 
 
-
-//построю функцию которая копирует изображания все
-//в конце будет 0 или 1
-//это число хранится
-//после сохранения оно меняется
-//и при этом копируются все картинки

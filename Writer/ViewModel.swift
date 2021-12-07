@@ -3,6 +3,7 @@ import SwiftUI
 
 
 func deleteView(deletedViewNum: Int,  maxViewNum: Int)->([[CGPoint]]) {
+    saveNum(maxViewNum - 1, KeyForUserDefaults: keyMaxViewNum)
     if deletedViewNum == maxViewNum{
         let keyToDelete = keyPoints + String(deletedViewNum)
         UserDefaults.standard.removeObject(forKey: keyToDelete)

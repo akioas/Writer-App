@@ -9,15 +9,15 @@ var screenHeight = UIScreen.main.bounds.height
 
 var currentLayer = 0
 var pathVar = Path()
-var drawMode = 1 //
+var drawMode = 1
 var imageSize = CGSize(width: screenWidth+100, height: screenWidth+100)
 
 
-
-//var imgURL = PreviewImage().path(fileNum: ContentView().currentViewNum)
-
-
-
+var pathVarPreview = Path()
+var currentNum = 0
+var currentLayerPreview = 0
+var rectWidth: Double = screenWidth
+var rectHeight: Double = screenHeight
 
 //     BACK
 
@@ -33,10 +33,12 @@ struct ContentView: View {
     @State var maxViewNum:Int = loadNum(KeyForUserDefaults: keyMaxViewNum)
     //    @State var buttonVar: Bool = false
     //    @State var imgURL: [URL] = PreviewImage().path(fileNum: loadNum(KeyForUserDefaults: keyCurrentViewNum))
-    @State var imgURL: [URL] = loadURL()
+    //    @State var imgURL: [URL] = loadURL()
     @State var points = loadPoints()
+    @State var pointsPreview = loadPointsForPreview()
     
-    @State var URLStoSave:[URL] = []
+    
+    //    @State var URLStoSave:[URL] = []
     var body: some View {
         
         
@@ -44,6 +46,7 @@ struct ContentView: View {
         
         NavigationView {
             VStack{
+                //                Text(" ")
                 //                NavigationView {
                 Button(action: {
                     self.maxViewNum = maxViewNum + 1
@@ -51,8 +54,10 @@ struct ContentView: View {
                     //                    saveViewNum(currentViewNum, KeyForUserDefaults: keyCurrentViewNum)
                     saveNum(maxViewNum, KeyForUserDefaults: keyMaxViewNum)
                     print(currentViewNum)
+                    pointsPreview.append([[]])
                 }) {
-                    Text("+")
+                    
+                    Image(systemName: "plus")
                     //                    NavigationLink(destination: FirstView()) {
                     
                     //                    }
@@ -71,6 +76,7 @@ struct ContentView: View {
                     num in
                     
                     //                        NavigationView {
+                    
                     NavigationLink(destination: FirstView())
                     {
                         //link
@@ -78,62 +84,47 @@ struct ContentView: View {
                         
                         
                         
-                        let numURL = imgURL[num]
+                        //let numURL = imgURL[num]
                         
-                        Text(String(num))
+                        //                        Text(String(num))
+                        drawView(num:num)
                         
-                        if #available(iOS 15.0, *) {
-                            AsyncImage(url: numURL,scale:2.0)
-                            
-                            { image in
-                                image
-                                    .resizable()
-                                    .aspectRatio(contentMode: .fit)
-                            } placeholder: {
-                                Image(systemName: "photo")
-                                    .imageScale(.large)
-                                    .foregroundColor(.gray)
-                            }
-                            
-                            
-                        } else {
-                            // Fallback on earlier versions
-                        }
+                        
                         
                         
                     }.simultaneousGesture(TapGesture().onEnded{
                         self.butFun(num: num)
                         
                         
-                        URLStoSave=[]
-                        for number in 0...maxViewNum{
-                            
-                            URLStoSave.append(PreviewImage().path(fileNum: number))
-                        }
-                        //                        showingDetail = true
                         
-                        //                            print("!!!!")
-                        //                            print(num)
-                        //                            self.currentViewNum = num
-                        //                            print(currentViewNum)
-                    })
-                        .onAppear(perform: {
-                            URLStoSave=[]
-                            for number in 0...maxViewNum{
-                                
-                                URLStoSave.append(PreviewImage().path(fileNum: number))
-                            }
-                            print(URLStoSave)
-                            saveURL(URLStoSave)
-                        })
+                    }
+                                          
+                                          //                        showingDetail = true
+                                          
+                                          //                            print("!!!!")
+                                          //                            print(num)
+                                          //                            self.currentViewNum = num
+                                          //                            print(currentViewNum)
+                    )
                     
                     
+                    
+                    Button(action:{
+                        _ = deleteView(deletedViewNum: num, maxViewNum: maxViewNum)
+                        maxViewNum = maxViewNum - 1
+                    }){
+                        Image(systemName: "trash.circle.fill")
+                    }
+                    //                        .frame( alignment: )
                 }
                 
+                
+                Text(" ")//?
                 
                 
                 
             }
+            
             
         }.navigationBarTitle("Choose Drawing", displayMode: .inline)
             .navigationBarBackButtonHidden(true)
@@ -216,10 +207,168 @@ struct ContentView: View {
     }
     
     
+    /*
+     func drawOnAppear(num:Int){
+     
+     var pointsPreview = loadPointsFirst(num: num)
+     currentLayer = pointsPreview.count - 1
+     
+     if pointsPreview.isEmpty == false{
+     pointsPreview.removeAll{$0.isEmpty}
+     
+     
+     
+     
+     for currentNum in 0..<currentLayer{
+     let firstPoint = pointsPreview[currentNum].first
+     
+     if firstPoint != nil{
+     pathVarPreview.move(to: firstPoint!)
+     for pointIndex in 1..<pointsPreview[currentNum].count{
+     
+     pathVarPreview.addLine(to: pointsPreview[currentNum][pointIndex])
+     
+     }
+     }
+     
+     
+     
+     }
+     
+     pointsPreview.append([])
+     currentLayer = pointsPreview.count - 1
+     if currentLayer < 0{
+     currentLayer = 0
+     pointsPreview = [[]]
+     pathVarPreview = Path()
+     
+     }
+     
+     } else{
+     pointsPreview = [[]]
+     pathVarPreview = Path()
+     
+     currentLayer = 0
+     }
+     
+     }
+     */
+    
+    func drawView(num:Int) -> some View {
+        ZStack {//2
+            /*
+             GeometryReader { (geometry) in
+             self.makeView(geometry)
+             }
+             */
+            DrawShape(pointsPreviewArray: pointsPreview, num: num)
+            
+                .stroke(lineWidth: 5)
+                .foregroundColor(.black)
+                .scaleEffect(CGSize(width: 1/(Double(maxViewNum) ) ,height: 1/Double(maxViewNum) ) )
+                .padding()
+            
+            
+        }
+    }
+    func makeView(_ geometry: GeometryProxy) -> some View {
+        rectWidth = geometry.size.width / Double(maxViewNum) //- 20
+        rectHeight = geometry.size.height / Double(maxViewNum) //- 20
+        if maxViewNum < 2 {
+            rectWidth = rectWidth / Double(2)
+            rectHeight = rectHeight / Double(2)
+        }
+        
+        //            DispatchQueue.main.async { self.frame = geometry.size }
+        
+        return
+        Rectangle()
+        
+            .foregroundColor(.yellow)
+            .aspectRatio(1.0, contentMode: .fit)
+        
+        //
+        //                    .frame(width: rectWidth, alignment: .bottomLeading)
+    }
+    
+    
+    /*
+     var Rect: some View{
+     Rectangle()
+     
+     .foregroundColor(.yellow)
+     .aspectRatio(1.0, contentMode: .fit)
+     }*/
+    
+    
+    
+    struct DrawShape: Shape {
+        
+        
+        
+        var pointsPreviewArray: Array<[[CGPoint]]>
+        //    let layer = CAShapeLayer()
+        
+        //        var size: CGSize
+        var num: Int
+        
+        func path(in rect: CGRect) -> Path {
+            /*
+             var pointsCurrent = pointsPreview
+             for num in 0..<currentLayerPreview{
+             for number in 0..<pointsCurrent[num].count {
+             pointsCurrent[num][number] = CGPointMultiply(pointsCurrent[num][number], multiply:0.001)
+             }
+             */
+            //            }
+            var pointsPreview = pointsPreviewArray
+            print("num")
+            print(num)
+            var pointer = num - 1
+            pointsPreview.removeAll{$0.isEmpty}
+            if pointsPreview.count > num {
+                //                pointsPreview[num] = [[]]
+                /*
+                 if !pointsPreview[num].isEmpty {
+                 */
+                for currentLayerPreview in 0...(pointsPreview[num].count - 1) {
+                /*
+                if currentLayerPreview < 0 {
+                    currentLayerPreview = 0
+                }*/
+                
+                guard let firstPointPreview = pointsPreview[num][currentLayerPreview].first else { return pathVarPreview
+                    
+                }
+                
+                pathVarPreview.move(to: firstPointPreview)
+                for pointIndex in 1..<pointsPreview[num][currentLayerPreview].count{
+                    
+                    pathVarPreview.addLine(to: pointsPreview[num][currentLayerPreview][pointIndex])
+                    //                    save(points)
+                }
+            }
+            }
+            //            }
+            
+            let varReturn = pathVarPreview
+            pathVarPreview = Path()
+            //                .applying(CGAffineTransform(scaleX: 0.0050, y: 0.0050))
+            return varReturn
+            
+        }
+        
+    }
     
     
     
 }
+
+
+
+
+
+
 
 
 
@@ -254,13 +403,7 @@ struct FirstView: View {
                         
                     }.background(Color(.yellow))
                         .simultaneousGesture(TapGesture().onEnded{
-                            PreviewImage().changeNum()
-                            ContentView().URLStoSave=[]
-                            for number in 0...ContentView().maxViewNum{
-                                
-                                ContentView().URLStoSave.append(PreviewImage().path(fileNum: number))
-                            }
-                            saveURL(ContentView().URLStoSave)
+                            
                             presentationMode.wrappedValue.dismiss()
                             
                         })
@@ -287,78 +430,13 @@ struct FirstView: View {
         .navigationBarHidden(true)
         //h
         .onAppear {
-            //            selected = num
-            self.currentViewNum = selected
-            print("selected")
-            print(selected)
-            saveNum(selected, KeyForUserDefaults: keyCurrentViewNum)
-            print("current")
-            print("current")
-            print("current")
-            print("current")
-            print("current")
-            print("current")
-            print(currentViewNum)
-            
-            
-            
-            
-            points = loadPoints()
-            currentLayer = points.count - 1
-            if points.isEmpty == false{
-                points.removeAll{$0.isEmpty}
-                
-                //                currentLayer = points.count - 1
-                print(currentLayer)
-                print(points)
-                pathVar = Path()
-                
-                
-                for currentNum in 0..<currentLayer{
-                    let firstPoint = points[currentNum].first
-                    
-                    if firstPoint != nil{
-                        pathVar.move(to: firstPoint!)
-                        for pointIndex in 1..<points[currentNum].count{
-                            
-                            pathVar.addLine(to: points[currentNum][pointIndex])
-                            
-                        }
-                    } else {
-                        //                            pathVar = Path()
-                        
-                    }
-                    
-                    savePoints(points)
-                    
-                    
-                    
-                }
-                
-                
-                
-                points.append([])
-                currentLayer = points.count - 1
-                if currentLayer < 0{
-                    currentLayer = 0
-                    points = [[]]
-                    pathVar = Path()
-                    savePoints(points)
-                }
-                
-            } else{
-                points = [[]]
-                pathVar = Path()
-                savePoints(points)
-                currentLayer = 0
-            }
-            
-            
-            
-            
-            
-            
+            drawOnAppear()
         }
+        
+        
+        
+        
+        
         
         
         
@@ -485,20 +563,63 @@ struct FirstView: View {
     
     
     
-    
+    func drawOnAppear(){
+        
+        self.currentViewNum = selected
+        
+        saveNum(selected, KeyForUserDefaults: keyCurrentViewNum)
+        
+        
+        points = loadPoints()
+        currentLayer = points.count - 1
+        if points.isEmpty == false{
+            points.removeAll{$0.isEmpty}
+            
+            pathVar = Path()
+            
+            
+            for currentNum in 0..<currentLayer{
+                let firstPoint = points[currentNum].first
+                
+                if firstPoint != nil{
+                    pathVar.move(to: firstPoint!)
+                    for pointIndex in 1..<points[currentNum].count{
+                        
+                        pathVar.addLine(to: points[currentNum][pointIndex])
+                        
+                    }
+                }
+                
+                savePoints(points)
+                
+            }
+            
+            points.append([])
+            currentLayer = points.count - 1
+            if currentLayer < 0{
+                currentLayer = 0
+                points = [[]]
+                pathVar = Path()
+                savePoints(points)
+            }
+            
+        } else{
+            points = [[]]
+            pathVar = Path()
+            savePoints(points)
+            currentLayer = 0
+        }
+        
+    }
     
     
     
     
     
     func addNewPoint(_ value: DragGesture.Value) {
-        //
+        
         var pointToAppend = value.location
         if (value.location.x < screenWidth)&&(value.location.y < screenWidth) {
-            //        points[currentLayer].append(value.location)
-            
-            //save(points)
-            
         } else if (value.location.x > screenWidth)&&(value.location.y < screenWidth) {
             pointToAppend.x = screenWidth
         } else if (value.location.x < screenWidth)&&(value.location.y > screenWidth) {
@@ -596,16 +717,6 @@ struct FirstView: View {
         
         
         
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
     }
     
     struct DrawShape: Shape {
@@ -684,10 +795,7 @@ struct ContentView_Previews: PreviewProvider {
 
 
 
+func CGPointMultiply (_ point : CGPoint , multiply : CGFloat) -> CGPoint {
+    return CGPoint(x: point.x * multiply, y: point.y * multiply)
+}
 
-
-//placeholder image
-
-
-
-//foreach write to file
