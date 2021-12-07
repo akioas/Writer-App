@@ -175,7 +175,8 @@ struct FirstView: View {
     @State var currentViewNum:Int = loadNum(KeyForUserDefaults: keyCurrentViewNum)
     @State var points: Array<[CGPoint]> = loadPoints()
     @Environment(\.presentationMode) var presentationMode
-    
+  
+
     
     
     
@@ -288,10 +289,17 @@ struct FirstView: View {
                 saveImage()
                 
             }.padding()
+            Button(action: {
+                Writer.actionSheet()
+                        }) {
+                            Text("SHARE")
+                        }
+        
             
         }
         .background(Color(red: 0, green: 0.8, blue: 0.8))
         .foregroundColor(Color.black)
+        
     }
     
     
@@ -323,8 +331,7 @@ struct FirstView: View {
     func saveImage(){
         
         let image = drawView.saveImage(size: imageSize)
-        
-        
+
         UIImageWriteToSavedPhotosAlbum(image, nil, nil, nil)
         
         
@@ -518,8 +525,6 @@ struct FirstView: View {
                 
             }
             
-            
-            
             return pathVar
             
         }
@@ -568,10 +573,11 @@ struct ContentView_Previews: PreviewProvider {
 
 
 
-/*
 
-func CGPointMultiply (_ point : CGPoint , multiply : CGFloat) -> CGPoint {
-    return CGPoint(x: point.x * multiply, y: point.y * multiply)
-}
 
-*/
+
+func actionSheet() {
+    let imgShare = FirstView().drawView.saveImage(size: imageSize)
+        let activityVC = UIActivityViewController(activityItems: [imgShare], applicationActivities: nil)
+        UIApplication.shared.windows.first?.rootViewController?.present(activityVC, animated: true, completion: nil)
+    }
