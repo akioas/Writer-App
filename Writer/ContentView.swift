@@ -177,6 +177,7 @@ struct FirstView: View {
     @Environment(\.presentationMode) var presentationMode
   
 
+
     
     
     
@@ -196,8 +197,6 @@ struct FirstView: View {
                         NavigationLink(destination: ContentView()) {
                             Text("Choose drawing")
                         }
-                        
-                    }.background(Color(.yellow))
                         .simultaneousGesture(TapGesture().onEnded{
                             
                             presentationMode.wrappedValue.dismiss()
@@ -205,7 +204,11 @@ struct FirstView: View {
                         })
                     
                     
-                } else {
+                
+                        
+                    }.background(Color(.yellow))
+                }
+                         else {
                  
                     HStack{//1
                         
@@ -215,20 +218,25 @@ struct FirstView: View {
                         NavigationLink(destination: ContentView()) {
                             Text("Choose drawing")
                         }
-                        
-                    }.background(Color(.yellow))
                         .simultaneousGesture(TapGesture().onEnded{
                             
                             presentationMode.wrappedValue.dismiss()
                             
                         })
-
+                        
+                    }.background(Color(.yellow))
+                        
+                    
                 }
+                
             }
+  
+
             
         }
         .navigationBarBackButtonHidden(true)
         .navigationBarHidden(true)
+        
         //h
         .onAppear {
             drawOnAppear()
