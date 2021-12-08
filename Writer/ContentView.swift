@@ -203,18 +203,24 @@ struct FirstView: View {
             GeometryReader { proxy in
                 if proxy.size.width < proxy.size.height {
                     VStack{//1
-                        
-                        drawView
-                        
-                        hButtons
+                        Spacer()
                         NavigationLink(destination: ContentView()) {
-                            Text("Choose drawing")
+                            
+                            Image(systemName: "arrowshape.turn.up.backward.2.fill")
+                                .resizable()
+                                .frame(width: 50, height: 50)
+                            
                         }
                         .simultaneousGesture(TapGesture().onEnded{
                             
                             presentationMode.wrappedValue.dismiss()
                             
                         })
+                        Spacer()
+                        drawView
+                        Spacer()
+                        hButtons
+                        
                     
                     
                 
@@ -224,18 +230,24 @@ struct FirstView: View {
                          else {
                  
                     HStack{//1
-                        
-                        
-                        drawView
-                        vButtons
+                        Spacer()
                         NavigationLink(destination: ContentView()) {
-                            Text("Choose drawing")
+                            Image(systemName: "arrowshape.turn.up.backward.2.fill")
+                                .resizable()
+                                .frame(width: 50, height: 50)
                         }
                         .simultaneousGesture(TapGesture().onEnded{
                             
                             presentationMode.wrappedValue.dismiss()
                             
                         })
+                        Spacer()
+
+                        drawView
+                        Spacer()
+
+                        vButtons
+                        
                         
                     }.background(Color(.yellow))
                         
@@ -296,24 +308,34 @@ struct FirstView: View {
     
     var hButtons: some View {
         HStack{
-            Button("CLEAR"){
-                clearButton()
-            }.padding()
-            Button("BACK"){
-                backButton()
-            }.padding()
-            Button("CONTINUOUS"){
-                continuousLine()
-                
-            }.padding()
-            Button("SAVE"){
-                saveImage()
-                
-            }.padding()
+            Button(action: {clearButton()}){
+               
+                Image(systemName: "trash.circle")
+                    .resizable()
+                    .frame(width: 50, height: 50)
+            }
+           
+            Button(action: {continuousLine()}){
+               
+                Image(systemName: "pencil.and.outline")
+                    .resizable()
+                    .frame(width: 50, height: 50)
+            }
+            
+            Button(action: {backButton()}){
+               
+                Image(systemName: "delete.backward")
+                    .resizable()
+                    .frame(width: 50, height: 50)
+            }
+            
+            
             Button(action: {
                 Writer.actionSheet()
                         }) {
-                            Text("SHARE")
+                            Image(systemName: "square.and.arrow.up.circle")
+                                .resizable()
+                                .frame(width: 50, height: 50)
                         }
         
             
@@ -326,21 +348,36 @@ struct FirstView: View {
     
     var vButtons: some View {
         VStack{
-            Button("CLEAR"){
-                clearButton()
-            }.padding()
-            Button("BACK"){
-                backButton()
-            }.padding()
-            Button("CONTINUOUS"){
-                continuousLine()
-                
-            }.padding()
-            Button("SAVE"){
-                saveImage()
-                
-            }.padding()
+            Button(action: {clearButton()}){
+               
+                Image(systemName: "trash.circle")
+                    .resizable()
+                    .frame(width: 50, height: 50)
+            }
+           
+            Button(action: {continuousLine()}){
+               
+                Image(systemName: "pencil.and.outline")
+                    .resizable()
+                    .frame(width: 50, height: 50)
+            }
             
+            Button(action: {backButton()}){
+               
+                Image(systemName: "delete.backward")
+                    .resizable()
+                    .frame(width: 50, height: 50)
+            }
+            
+            
+            Button(action: {
+                Writer.actionSheet()
+                        }) {
+                            Image(systemName: "square.and.arrow.up.circle")
+                                .resizable()
+                                .frame(width: 50, height: 50)
+                        }
+        
             
         }
         .background(Color(red: 0, green: 0.8, blue: 0.8))
