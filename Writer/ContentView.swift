@@ -36,7 +36,7 @@ struct ContentView: View {
                     NavigationLink(destination: FirstView())
                     {
                         drawView(num:num)
-                            .frame(width: 300, height: 300)
+                            .frame(width: screenWidth*0.8, height: screenWidth*0.8)
                     }
                     .simultaneousGesture(TapGesture().onEnded{
                         self.navigationFunction(num: num)
@@ -49,6 +49,8 @@ struct ContentView: View {
                     })
                     {
                         Image(systemName: "trash.circle.fill")
+                            .resizable()
+                            .frame(width: 50, height: 50)
                     }
                   
                 }
