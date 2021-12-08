@@ -27,6 +27,8 @@ struct ContentView: View {
                     
                     Image(systemName: "plus")
                 }
+                ScrollView {
+
  
                 ForEach(0..<maxViewNum, id: \.self)
                 {
@@ -34,6 +36,7 @@ struct ContentView: View {
                     NavigationLink(destination: FirstView())
                     {
                         drawView(num:num)
+                            .frame(width: 300, height: 300)
                     }
                     .simultaneousGesture(TapGesture().onEnded{
                         self.navigationFunction(num: num)
@@ -42,11 +45,13 @@ struct ContentView: View {
                     Button(action:{
                         _ = deleteView(deletedViewNum: num, maxViewNum: maxViewNum)
                         maxViewNum = maxViewNum - 1
+                        saveNum(maxViewNum, KeyForUserDefaults: keyMaxViewNum)
                     })
                     {
                         Image(systemName: "trash.circle.fill")
                     }
                   
+                }
                 }
 
                 Text(" ")//?
@@ -113,7 +118,7 @@ struct ContentView: View {
             
                 .stroke(lineWidth: 5)
                 .foregroundColor(.black)
-                .scaleEffect(CGSize(width: 1/(Double(maxViewNum) ) ,height: 1/Double(maxViewNum) ) )
+                .scaleEffect(CGSize(width: 0.5 ,height: 0.5 ))
                 .padding()
   
         }
