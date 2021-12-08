@@ -14,8 +14,9 @@ struct ContentView: View {
     
     
     var body: some View {
-        
-        
+        ZStack{
+        Color(.yellow)
+            .ignoresSafeArea()
         NavigationView {
             VStack{
                 
@@ -68,6 +69,7 @@ struct ContentView: View {
             .navigationBarBackButtonHidden(true)
             .navigationBarHidden(true)
         
+    }
     }
     
     func navigationFunction(num: Int){
