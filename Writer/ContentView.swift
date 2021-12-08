@@ -26,6 +26,8 @@ struct ContentView: View {
                 }) {
                     
                     Image(systemName: "plus")
+                        .resizable()
+                        .frame(width: 50, height: 50)
                 }
                 ScrollView {
 
@@ -37,11 +39,13 @@ struct ContentView: View {
                     {
                         drawView(num:num)
                             .frame(width: screenWidth*0.8, height: screenWidth*0.8)
+                            .background(Rectangle()
+                                            .foregroundColor(Color.yellow))
                     }
                     .simultaneousGesture(TapGesture().onEnded{
                         self.navigationFunction(num: num)
                     })
-                    
+                    ZStack{
                     Button(action:{
                         _ = deleteView(deletedViewNum: num, maxViewNum: maxViewNum)
                         maxViewNum = maxViewNum - 1
@@ -52,7 +56,7 @@ struct ContentView: View {
                             .resizable()
                             .frame(width: 50, height: 50)
                     }
-                  
+                    }
                 }
                 }
 
@@ -596,3 +600,7 @@ func actionSheet() {
         let activityVC = UIActivityViewController(activityItems: [imgShare], applicationActivities: nil)
         UIApplication.shared.windows.first?.rootViewController?.present(activityVC, animated: true, completion: nil)
     }
+
+
+
+//не больше одного пустого экрана
