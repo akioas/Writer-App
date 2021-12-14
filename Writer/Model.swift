@@ -110,7 +110,7 @@ let keyMaxViewNum = "MaxViewNumKey"
 
 func saveNum(_ num: Int, KeyForUserDefaults: String) {
     UserDefaults.standard.set(num, forKey: KeyForUserDefaults)
-    print("save")
+   
 }
 
 
@@ -121,9 +121,7 @@ func loadNum(KeyForUserDefaults: String) -> Int {
     let encodedData = UserDefaults.standard.integer(forKey: KeyForUserDefaults)
     
 //    let encodedReturn = try! JSONDecoder().decode(Int.self, from: encodedData)
-    print("load")
-    print(KeyForUserDefaults)
-    print(encodedData)
+   
     return encodedData
 }
 

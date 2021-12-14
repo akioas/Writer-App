@@ -11,8 +11,8 @@ struct ContentView: View {
     @State var maxViewNum:Int = loadNum(KeyForUserDefaults: keyMaxViewNum)
     @State var points = loadPoints()
     @State var pointsPreview = loadPointsForPreview()
-    
-    
+//    @State var pathVarPreview = pathVarPreview
+    @State var refresh = false
     var body: some View {
         ZStack{
         Color(.yellow)
@@ -23,7 +23,11 @@ struct ContentView: View {
                 Button(action: {
                     self.maxViewNum = maxViewNum + 1
                     saveNum(maxViewNum, KeyForUserDefaults: keyMaxViewNum)
+                    pathVarPreview[currentViewNum] = Path()
+                    pathVarPreview[currentViewNum] = pathVar
                     pointsPreview.append([[]])
+                    pathVarPreview.append(Path())//
+ 
                 }) {
                     
                     Image(systemName: "plus")
@@ -68,7 +72,30 @@ struct ContentView: View {
         }.navigationBarTitle("Choose Drawing", displayMode: .inline)
             .navigationBarBackButtonHidden(true)
             .navigationBarHidden(true)
-        
+            .onAppear(perform: {
+                pathVarPreview = Array(repeating:Path(),count:loadNum(KeyForUserDefaults: keyMaxViewNum))
+                for  num in 0..<maxViewNum{
+                pointsPreview.removeAll{$0.isEmpty}
+                if pointsPreview.count > num {
+                  
+                    for currentLayerPreview in 0...(pointsPreview[num].count - 1) {
+//                        guard let
+                        
+                                let firstPointPreview = pointsPreview[num][currentLayerPreview].first
+//                        else { return pathVarPreview[num]}
+                            
+                       
+                        
+                        pathVarPreview[num].move(to: firstPointPreview!)
+                        for pointIndex in 1..<pointsPreview[num][currentLayerPreview].count{
+                            
+                            pathVarPreview[num].addLine(to: pointsPreview[num][currentLayerPreview][pointIndex])
+     
+                        }
+                    }
+                }
+                }
+            })
     }
     }
     
@@ -128,6 +155,8 @@ struct ContentView: View {
                 .foregroundColor(.black)
                 .scaleEffect(CGSize(width: 0.5 ,height: 0.5 ))
                 .padding()
+                .background(Rectangle()
+                                .foregroundColor(Color.yellow))
   
         }
     }
@@ -142,27 +171,29 @@ struct ContentView: View {
         func path(in rect: CGRect) -> Path {
                
             var pointsPreview = pointsPreviewArray
-
+            
+//            pathVarPreview[num] = Path()
+            /*
             pointsPreview.removeAll{$0.isEmpty}
             if pointsPreview.count > num {
               
                 for currentLayerPreview in 0...(pointsPreview[num].count - 1) {
-                    guard let firstPointPreview = pointsPreview[num][currentLayerPreview].first else { return pathVarPreview
+                    guard let firstPointPreview = pointsPreview[num][currentLayerPreview].first else { return pathVarPreview[num]
                         
                     }
                     
-                    pathVarPreview.move(to: firstPointPreview)
+                    pathVarPreview[num].move(to: firstPointPreview)
                     for pointIndex in 1..<pointsPreview[num][currentLayerPreview].count{
                         
-                        pathVarPreview.addLine(to: pointsPreview[num][currentLayerPreview][pointIndex])
+                        pathVarPreview[num].addLine(to: pointsPreview[num][currentLayerPreview][pointIndex])
  
                     }
                 }
             }
-            
-            let varReturn = pathVarPreview
-            pathVarPreview = Path()
-            return varReturn
+//
+//            let varReturn = pathVarPreview
+//            pathVarPreview = Path()*/
+            return pathVarPreview[num]
             
         }
         
@@ -212,7 +243,9 @@ struct FirstView: View {
                             
                         }
                         .simultaneousGesture(TapGesture().onEnded{
-                            
+                           
+                            pathVarPreview[currentViewNum] = pathVar
+                            pathVarPreview.append(Path())
                             presentationMode.wrappedValue.dismiss()
                             
                         })
