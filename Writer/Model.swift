@@ -162,6 +162,7 @@ func deleteView(deletedViewNum: Int,  maxViewNum: Int)->([[CGPoint]]) {
 
 
 
+
 /*
 
 let keyURL = "URLKEY"

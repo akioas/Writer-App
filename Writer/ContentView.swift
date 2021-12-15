@@ -22,12 +22,7 @@ struct ContentView: View {
             VStack{
                 HStack{
                 Button(action: {
-                    self.maxViewNum = maxViewNum + 1
-                    saveNum(maxViewNum, KeyForUserDefaults: keyMaxViewNum)
-                    pathVarPreview[currentViewNum] = Path()
-                    pathVarPreview[currentViewNum] = pathVar
-                    pointsPreview.append([[]])
-                    pathVarPreview.append(Path())//
+                    plusButton()
  
                 }) {
                     
@@ -39,13 +34,7 @@ struct ContentView: View {
                         .frame(width: 50)
                     Button(action:{
                         
-                        self.maxViewNum += 1
-                        delay()
-                        pathVarPreview[currentViewNum] = Path()
-                        pathVarPreview[currentViewNum] = pathVar
-                        pointsPreview.append([[]])
-                        pathVarPreview.append(Path())
-                        self.maxViewNum -= 1
+                        refreshButton()
                         
                     }){
                         Image(systemName: "gobackward")
@@ -127,6 +116,26 @@ struct ContentView: View {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                 timeElapsed = true
             }
+    }
+    
+    func refreshButton(){
+        self.maxViewNum += 1
+        delay()
+        pathVarPreview[currentViewNum] = Path()
+        pathVarPreview[currentViewNum] = pathVar
+        pointsPreview.append([[]])
+        pathVarPreview.append(Path())
+        self.maxViewNum -= 1
+    }
+    
+    
+    func plusButton(){
+        self.maxViewNum = maxViewNum + 1
+        saveNum(maxViewNum, KeyForUserDefaults: keyMaxViewNum)
+        pathVarPreview[currentViewNum] = Path()
+        pathVarPreview[currentViewNum] = pathVar
+        pointsPreview.append([[]])
+        pathVarPreview.append(Path())
     }
     
     func navigationFunction(num: Int){
