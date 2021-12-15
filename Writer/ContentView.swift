@@ -11,9 +11,8 @@ struct ContentView: View {
     @State var maxViewNum:Int = loadNum(KeyForUserDefaults: keyMaxViewNum)
     @State var points = loadPoints()
     @State var pointsPreview = loadPointsForPreview()
-//    @State var pathVarPreview = pathVarPreview
     @State private var timeElapsed = false
-    @State var refresh = false
+
     var body: some View {
         ZStack{
         Color(.yellow)
@@ -21,6 +20,7 @@ struct ContentView: View {
         NavigationView {
             VStack{
                 HStack{
+                    //new image
                 Button(action: {
                     plusButton()
  
@@ -32,6 +32,7 @@ struct ContentView: View {
                 }
                     Spacer()
                         .frame(width: 50)
+                    //refresh previews
                     Button(action:{
                         
                         refreshButton()
@@ -45,7 +46,7 @@ struct ContentView: View {
                 }
                 ScrollView {
 
- 
+ //previews
                 ForEach(0..<maxViewNum, id: \.self)
                 {
                     num in
@@ -84,29 +85,7 @@ struct ContentView: View {
             .onAppear(perform: {
 //
                 
-                pathVarPreview = Array(repeating:Path(),count:loadNum(KeyForUserDefaults: keyMaxViewNum))
-                for  num in 0..<maxViewNum{
-                pointsPreview.removeAll{$0.isEmpty}
-                if pointsPreview.count > num {
-                  
-                    for currentLayerPreview in 0...(pointsPreview[num].count - 1) {
-//                        guard let
-                        
-                                let firstPointPreview = pointsPreview[num][currentLayerPreview].first
-//                        else { return pathVarPreview[num]}
-                            
-                       
-                        if firstPointPreview != nil{
-                            pathVarPreview[num].move(to: firstPointPreview!)
-                        for pointIndex in 1..<pointsPreview[num][currentLayerPreview].count{
-                            
-                            pathVarPreview[num].addLine(to: pointsPreview[num][currentLayerPreview][pointIndex])
-     
-                        }
-                    }
-                    }
-                }
-                }
+                drawOnAppear()
                 
             })
     }
@@ -119,13 +98,13 @@ struct ContentView: View {
     }
     
     func refreshButton(){
-        self.maxViewNum += 1
+
         delay()
         pathVarPreview[currentViewNum] = Path()
         pathVarPreview[currentViewNum] = pathVar
         pointsPreview.append([[]])
         pathVarPreview.append(Path())
-        self.maxViewNum -= 1
+
     }
     
     
@@ -138,6 +117,7 @@ struct ContentView: View {
         pathVarPreview.append(Path())
     }
     
+    //to draw view
     func navigationFunction(num: Int){
 
         selected = num
@@ -183,8 +163,32 @@ struct ContentView: View {
         
     }
     
+//draw previews
+    func drawOnAppear(){
+        pathVarPreview = Array(repeating:Path(),count:loadNum(KeyForUserDefaults: keyMaxViewNum))
+        for  num in 0..<maxViewNum{
+        pointsPreview.removeAll{$0.isEmpty}
+        if pointsPreview.count > num {
+          
+            for currentLayerPreview in 0...(pointsPreview[num].count - 1) {
+//                        guard let
+                
+                        let firstPointPreview = pointsPreview[num][currentLayerPreview].first
+//                        else { return pathVarPreview[num]}
+                    
+               
+                if firstPointPreview != nil{
+                    pathVarPreview[num].move(to: firstPointPreview!)
+                for pointIndex in 1..<pointsPreview[num][currentLayerPreview].count{
+                    
+                    pathVarPreview[num].addLine(to: pointsPreview[num][currentLayerPreview][pointIndex])
 
-   
+                }
+            }
+            }
+        }
+        }
+    }
     
     func drawView(num:Int) -> some View {
         ZStack {
@@ -209,29 +213,7 @@ struct ContentView: View {
         
         func path(in rect: CGRect) -> Path {
                
-//            var pointsPreview = pointsPreviewArray
-            
-//            pathVarPreview[num] = Path()
-            /*
-            pointsPreview.removeAll{$0.isEmpty}
-            if pointsPreview.count > num {
-              
-                for currentLayerPreview in 0...(pointsPreview[num].count - 1) {
-                    guard let firstPointPreview = pointsPreview[num][currentLayerPreview].first else { return pathVarPreview[num]
-                        
-                    }
-                    
-                    pathVarPreview[num].move(to: firstPointPreview)
-                    for pointIndex in 1..<pointsPreview[num][currentLayerPreview].count{
-                        
-                        pathVarPreview[num].addLine(to: pointsPreview[num][currentLayerPreview][pointIndex])
- 
-                    }
-                }
-            }
-//
-//            let varReturn = pathVarPreview
-//            pathVarPreview = Path()*/
+
             return pathVarPreview[num]
             
         }
@@ -274,6 +256,7 @@ struct FirstView: View {
                 if proxy.size.width < proxy.size.height {
                     VStack{//1
                         Spacer()
+                        //back to first view
                         NavigationLink(destination: ContentView()) {
                             
                             Image(systemName: "arrow.backward")
@@ -282,8 +265,6 @@ struct FirstView: View {
                             
                         }
                         .simultaneousGesture(TapGesture().onEnded{
-                           
-//
                             presentationMode.wrappedValue.dismiss()
                             
                         })
@@ -333,7 +314,7 @@ struct FirstView: View {
         .navigationBarBackButtonHidden(true)
         .navigationBarHidden(true)
         
-        //h
+
         .onAppear {
             drawOnAppear()
         }
@@ -474,16 +455,7 @@ struct FirstView: View {
     
     
     
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+    //draw saved image when view appears
     func drawOnAppear(){
         
         self.currentViewNum = selected
@@ -561,7 +533,7 @@ struct FirstView: View {
     
     
     
-    
+    //buttons
     func continuousLine(){
         if drawMode == 1{
             colorContinuous = .red
@@ -713,12 +685,7 @@ struct ContentView_Previews: PreviewProvider {
 
 
 
-func actionSheet() {
-    let imgShare = FirstView().drawView.saveImage(size: imageSize)
-        let activityVC = UIActivityViewController(activityItems: [imgShare], applicationActivities: nil)
-        UIApplication.shared.windows.first?.rootViewController?.present(activityVC, animated: true, completion: nil)
-    }
 
 
 
-//не больше одного пустого экрана
+

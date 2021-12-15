@@ -2,9 +2,11 @@ import SwiftUI
 import UIKit
 
 
-var colorContinuous:Color? = .black
+var colorContinuous:Color? = .black //for continuous line button
 
 
+
+//save image to share
 extension UIView {
     func saveImage() -> UIImage {
         UIGraphicsBeginImageContextWithOptions(self.layer.frame.size, false, 0.0)
@@ -119,9 +121,7 @@ func saveNum(_ num: Int, KeyForUserDefaults: String) {
 func loadNum(KeyForUserDefaults: String) -> Int {
     
     let encodedData = UserDefaults.standard.integer(forKey: KeyForUserDefaults)
-    
-//    let encodedReturn = try! JSONDecoder().decode(Int.self, from: encodedData)
-   
+
     return encodedData
 }
 
