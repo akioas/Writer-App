@@ -12,6 +12,7 @@ struct ContentView: View {
     @State var points = loadPoints()
     @State var pointsPreview = loadPointsForPreview()
 //    @State var pathVarPreview = pathVarPreview
+    @State private var timeElapsed = false
     @State var refresh = false
     var body: some View {
         ZStack{
@@ -19,7 +20,7 @@ struct ContentView: View {
             .ignoresSafeArea()
         NavigationView {
             VStack{
-                
+                HStack{
                 Button(action: {
                     self.maxViewNum = maxViewNum + 1
                     saveNum(maxViewNum, KeyForUserDefaults: keyMaxViewNum)
@@ -33,6 +34,18 @@ struct ContentView: View {
                     Image(systemName: "plus")
                         .resizable()
                         .frame(width: 50, height: 50)
+                }
+                    Button(action:{
+                        self.maxViewNum += 1
+                        delay()
+                        pathVarPreview[currentViewNum] = Path()
+                        pathVarPreview[currentViewNum] = pathVar
+                        pointsPreview.append([[]])
+                        pathVarPreview.append(Path())
+                        self.maxViewNum -= 1
+                    }){
+                        Text("REFRESH")
+                    }
                 }
                 ScrollView {
 
@@ -73,6 +86,7 @@ struct ContentView: View {
             .navigationBarBackButtonHidden(true)
             .navigationBarHidden(true)
             .onAppear(perform: {
+//
                 pathVarPreview = Array(repeating:Path(),count:loadNum(KeyForUserDefaults: keyMaxViewNum))
                 for  num in 0..<maxViewNum{
                 pointsPreview.removeAll{$0.isEmpty}
@@ -85,18 +99,26 @@ struct ContentView: View {
 //                        else { return pathVarPreview[num]}
                             
                        
-                        
-                        pathVarPreview[num].move(to: firstPointPreview!)
+                        if firstPointPreview != nil{
+                            pathVarPreview[num].move(to: firstPointPreview!)
                         for pointIndex in 1..<pointsPreview[num][currentLayerPreview].count{
                             
                             pathVarPreview[num].addLine(to: pointsPreview[num][currentLayerPreview][pointIndex])
      
                         }
                     }
+                    }
                 }
                 }
+                
             })
     }
+    }
+    
+    private func delay() {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                timeElapsed = true
+            }
     }
     
     func navigationFunction(num: Int){
