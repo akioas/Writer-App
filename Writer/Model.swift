@@ -2,7 +2,7 @@ import SwiftUI
 import UIKit
 
 
-
+var colorContinuous:Color? = .black
 
 
 extension UIView {

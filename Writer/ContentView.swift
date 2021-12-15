@@ -123,7 +123,7 @@ struct ContentView: View {
     }
     }
     
-    private func delay() {
+     func delay() {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                 timeElapsed = true
             }
@@ -200,7 +200,7 @@ struct ContentView: View {
         
         func path(in rect: CGRect) -> Path {
                
-            var pointsPreview = pointsPreviewArray
+//            var pointsPreview = pointsPreviewArray
             
 //            pathVarPreview[num] = Path()
             /*
@@ -382,6 +382,7 @@ struct FirstView: View {
                 Image(systemName: "pencil.and.outline")
                     .resizable()
                     .frame(width: 50, height: 50)
+                    .foregroundColor(colorContinuous)
             }
             
             Button(action: {backButton()}){
@@ -422,6 +423,8 @@ struct FirstView: View {
                 Image(systemName: "pencil.and.outline")
                     .resizable()
                     .frame(width: 50, height: 50)
+                    .foregroundColor(colorContinuous)
+
             }
             
             Button(action: {backButton()}){
@@ -438,6 +441,7 @@ struct FirstView: View {
                             Image(systemName: "square.and.arrow.up.circle")
                                 .resizable()
                                 .frame(width: 50, height: 50)
+                            
                         }
         
             
@@ -551,9 +555,13 @@ struct FirstView: View {
     
     func continuousLine(){
         if drawMode == 1{
+            colorContinuous = .red
+ 
             drawMode = 0
         } else {
             drawMode = 1
+            colorContinuous = .black
+
             currentLayer = currentLayer + 1
             
             points.append([])
