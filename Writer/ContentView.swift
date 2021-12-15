@@ -35,7 +35,10 @@ struct ContentView: View {
                         .resizable()
                         .frame(width: 50, height: 50)
                 }
+                    Spacer()
+                        .frame(width: 50)
                     Button(action:{
+                        
                         self.maxViewNum += 1
                         delay()
                         pathVarPreview[currentViewNum] = Path()
@@ -43,8 +46,12 @@ struct ContentView: View {
                         pointsPreview.append([[]])
                         pathVarPreview.append(Path())
                         self.maxViewNum -= 1
+                        
                     }){
-                        Text("REFRESH")
+                        Image(systemName: "gobackward")
+                            .resizable()
+                            .frame(width: 50, height: 50)
+                        
                     }
                 }
                 ScrollView {
@@ -87,6 +94,7 @@ struct ContentView: View {
             .navigationBarHidden(true)
             .onAppear(perform: {
 //
+                
                 pathVarPreview = Array(repeating:Path(),count:loadNum(KeyForUserDefaults: keyMaxViewNum))
                 for  num in 0..<maxViewNum{
                 pointsPreview.removeAll{$0.isEmpty}
@@ -116,7 +124,7 @@ struct ContentView: View {
     }
     
     private func delay() {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                 timeElapsed = true
             }
     }
@@ -259,15 +267,14 @@ struct FirstView: View {
                         Spacer()
                         NavigationLink(destination: ContentView()) {
                             
-                            Image(systemName: "arrowshape.turn.up.backward.2.fill")
+                            Image(systemName: "arrow.backward")
                                 .resizable()
                                 .frame(width: 50, height: 50)
                             
                         }
                         .simultaneousGesture(TapGesture().onEnded{
                            
-                            pathVarPreview[currentViewNum] = pathVar
-                            pathVarPreview.append(Path())
+//
                             presentationMode.wrappedValue.dismiss()
                             
                         })
@@ -287,7 +294,7 @@ struct FirstView: View {
                     HStack{//1
                         Spacer()
                         NavigationLink(destination: ContentView()) {
-                            Image(systemName: "arrowshape.turn.up.backward.2.fill")
+                            Image(systemName: "arrow.backward")
                                 .resizable()
                                 .frame(width: 50, height: 50)
                         }
