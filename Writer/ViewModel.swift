@@ -41,7 +41,7 @@ func deleteButton(_ num: Int, maxViewNum: inout Int){
     for viewNum in num..<maxViewNum{
         pathVarPreview[viewNum] = Path()
     
-        saveNum(num,KeyForUserDefaults: keyCurrentViewNum)
+        saveNum(viewNum,KeyForUserDefaults: keyCurrentViewNum)
         var points = loadPoints()
         currentLayer = points.count - 1
         if points.isEmpty == false{
@@ -83,6 +83,8 @@ func deleteButton(_ num: Int, maxViewNum: inout Int){
         }
 //    ContentView().refreshButton()
         pathVarPreview[viewNum] = pathVar
+        print("pathVar")
+        print(pathVar)
     }
 //    pointsPreview.append([[]])
     pathVarPreview.append(Path())
