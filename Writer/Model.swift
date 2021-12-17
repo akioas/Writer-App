@@ -39,7 +39,7 @@ extension View {
 
 
 let keyPoints = "PointsKey"
-var KeyForUserDefaults = keyPoints + String(loadNum(KeyForUserDefaults: keyCurrentViewNum))
+//var KeyForUserDefaults = keyPoints + String(loadNum(KeyForUserDefaults: keyCurrentViewNum))
 
 
 func savePoints(_ points: [[CGPoint]]) {
@@ -127,15 +127,16 @@ func loadNum(KeyForUserDefaults: String) -> Int {
 
 
 
+
 func deleteView(deletedViewNum: Int,  maxViewNum: Int)->([[CGPoint]]) {
-    saveNum(maxViewNum - 1, KeyForUserDefaults: keyMaxViewNum)
-    if deletedViewNum == maxViewNum{
+    
+    if deletedViewNum == maxViewNum - 1{
         let keyToDelete = keyPoints + String(deletedViewNum)
         UserDefaults.standard.removeObject(forKey: keyToDelete)
             
     }
     else {
-        for viewNum in deletedViewNum...(maxViewNum - 1){
+        for viewNum in deletedViewNum..<maxViewNum{
             let keyToDelete = keyPoints + String(viewNum)
             //
             let keyToReassign = keyPoints + String(viewNum+1)
@@ -149,13 +150,12 @@ func deleteView(deletedViewNum: Int,  maxViewNum: Int)->([[CGPoint]]) {
             UserDefaults.standard.set(data as Any?, forKey: keyToDelete)
             //
         }
-        let keyToDelete = keyPoints + String(maxViewNum)
+        let keyToDelete = keyPoints + String(maxViewNum - 1)
         UserDefaults.standard.removeObject(forKey: keyToDelete)
         
     }
     return [[]]
 }
-
 
 
 

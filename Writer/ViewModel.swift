@@ -10,7 +10,8 @@ var drawMode = 1
 var imageSize = CGSize(width: screenWidth+100, height: screenWidth+100)
 
 
-var pathVarPreview = Array(repeating:Path(),count:loadNum(KeyForUserDefaults: keyMaxViewNum)) //previews draw shape 
+var pathVarPreview = Array(repeating:Path(),count:loadNum(KeyForUserDefaults: keyMaxViewNum)) //previews draw shape
+
 var currentNum = 0
 var currentLayerPreview = 0
 var rectWidth: Double = screenWidth
@@ -29,5 +30,20 @@ func actionSheet() {
         let activityVC = UIActivityViewController(activityItems: [imgShare], applicationActivities: nil)
         UIApplication.shared.windows.first?.rootViewController?.present(activityVC, animated: true, completion: nil)
     }
+
+
+
+func deleteButton(_ num: Int, maxViewNum: inout Int){
+   _ = deleteView(deletedViewNum: num, maxViewNum: maxViewNum)
+    maxViewNum -= 1
+   saveNum(maxViewNum, KeyForUserDefaults: keyMaxViewNum)
+    
+    for viewNum in num..<maxViewNum{
+        pathVarPreview[viewNum] = Path()
+    }
+//        pathVarPreview[viewNum] = pathVar
+//    pointsPreview.append([[]])
+    pathVarPreview.append(Path())
+}
 
 

@@ -58,13 +58,11 @@ struct ContentView: View {
                                             .foregroundColor(Color.yellow))
                     }
                     .simultaneousGesture(TapGesture().onEnded{
-                        self.navigationFunction(num: num)
+                        self.navigationFunction(num)
                     })
                     ZStack{
                     Button(action:{
-                        _ = deleteView(deletedViewNum: num, maxViewNum: maxViewNum)
-                        maxViewNum = maxViewNum - 1
-                        saveNum(maxViewNum, KeyForUserDefaults: keyMaxViewNum)
+                        deleteButton(num, maxViewNum:&maxViewNum)
                     })
                     {
                         Image(systemName: "trash.circle.fill")
@@ -91,104 +89,117 @@ struct ContentView: View {
     }
     }
     
-     func delay() {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                timeElapsed = true
-            }
+
+    func delay() {
+           DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+               timeElapsed = true
+           }
     }
-    
+
     func refreshButton(){
 
-        delay()
-        pathVarPreview[currentViewNum] = Path()
-        pathVarPreview[currentViewNum] = pathVar
-        pointsPreview.append([[]])
-        pathVarPreview.append(Path())
+       delay()
+        pointsPreview = loadPointsForPreview()
+       pathVarPreview[currentViewNum] = Path()
+       pathVarPreview[currentViewNum] = pathVar
+       pointsPreview.append([[]])
+       pathVarPreview.append(Path())
 
     }
+
     
     
     func plusButton(){
-        self.maxViewNum = maxViewNum + 1
-        saveNum(maxViewNum, KeyForUserDefaults: keyMaxViewNum)
-        pathVarPreview[currentViewNum] = Path()
-        pathVarPreview[currentViewNum] = pathVar
-        pointsPreview.append([[]])
-        pathVarPreview.append(Path())
+       self.maxViewNum = maxViewNum + 1
+       saveNum(maxViewNum, KeyForUserDefaults: keyMaxViewNum)
+        if pathVarPreview.isEmpty {
+            pathVarPreview = [Path()]
+        }
+       pathVarPreview[currentViewNum] = Path()
+       pathVarPreview[currentViewNum] = pathVar
+       pointsPreview.append([[]])
+       pathVarPreview.append(Path())
     }
-    
+
     //to draw view
-    func navigationFunction(num: Int){
+    func navigationFunction(_ num: Int){
 
-        selected = num
-        self.currentViewNum = num
-        saveNum(selected, KeyForUserDefaults: keyCurrentViewNum)
-        points = loadPoints()
-        currentLayer = points.count - 1
-        if points.isEmpty == false{
-            points.removeAll{$0.isEmpty}
-            pathVar = Path()
-            
-            
-            for currentNum in 0..<currentLayer{
-                let firstPoint = points[currentNum].first
-                
-                if firstPoint != nil{
-                    pathVar.move(to: firstPoint!)
-                    for pointIndex in 1..<points[currentNum].count{
-                        
-                        pathVar.addLine(to: points[currentNum][pointIndex])
-                        
-                    }
-                }
-                savePoints(points)
+       selected = num
+       self.currentViewNum = num
+       saveNum(selected, KeyForUserDefaults: keyCurrentViewNum)
+       points = loadPoints()
+       currentLayer = points.count - 1
+       if points.isEmpty == false{
+           points.removeAll{$0.isEmpty}
+           pathVar = Path()
+           
+           
+           for currentNum in 0..<currentLayer{
+               let firstPoint = points[currentNum].first
+               
+               if firstPoint != nil{
+                   pathVar.move(to: firstPoint!)
+                   for pointIndex in 1..<points[currentNum].count{
+                       
+                       pathVar.addLine(to: points[currentNum][pointIndex])
+                       
+                   }
+               }
+               savePoints(points)
 
-            }
+           }
 
-            points.append([])
-            currentLayer = points.count - 1
-            if currentLayer < 0{
-                currentLayer = 0
-                points = [[]]
-                pathVar = Path()
-                savePoints(points)
-            }
-            
-        } else{
-            points = [[]]
-            pathVar = Path()
-            savePoints(points)
-            currentLayer = 0
-        }
-        
+           points.append([])
+           currentLayer = points.count - 1
+           if currentLayer < 0{
+               currentLayer = 0
+               points = [[]]
+               pathVar = Path()
+               savePoints(points)
+           }
+           
+       } else{
+           points = [[]]
+           pathVar = Path()
+           savePoints(points)
+           currentLayer = 0
+       }
+       
+    }
+
+    //draw previews
+    func drawOnAppear(){
+       pathVarPreview = Array(repeating:Path(),count:loadNum(KeyForUserDefaults: keyMaxViewNum))
+       for  num in 0..<maxViewNum{
+       pointsPreview.removeAll{$0.isEmpty}
+       if pointsPreview.count > num {
+         
+           for currentLayerPreview in 0...(pointsPreview[num].count - 1) {
+    //                        guard let
+               
+                       let firstPointPreview = pointsPreview[num][currentLayerPreview].first
+    //                        else { return pathVarPreview[num]}
+                   
+              
+               if firstPointPreview != nil{
+                   pathVarPreview[num].move(to: firstPointPreview!)
+               for pointIndex in 1..<pointsPreview[num][currentLayerPreview].count{
+                   
+                   pathVarPreview[num].addLine(to: pointsPreview[num][currentLayerPreview][pointIndex])
+
+               }
+           }
+           }
+       }
+       }
     }
     
-//draw previews
-    func drawOnAppear(){
-        pathVarPreview = Array(repeating:Path(),count:loadNum(KeyForUserDefaults: keyMaxViewNum))
-        for  num in 0..<maxViewNum{
-        pointsPreview.removeAll{$0.isEmpty}
-        if pointsPreview.count > num {
-          
-            for currentLayerPreview in 0...(pointsPreview[num].count - 1) {
-//                        guard let
-                
-                        let firstPointPreview = pointsPreview[num][currentLayerPreview].first
-//                        else { return pathVarPreview[num]}
-                    
-               
-                if firstPointPreview != nil{
-                    pathVarPreview[num].move(to: firstPointPreview!)
-                for pointIndex in 1..<pointsPreview[num][currentLayerPreview].count{
-                    
-                    pathVarPreview[num].addLine(to: pointsPreview[num][currentLayerPreview][pointIndex])
-
-                }
-            }
-            }
-        }
-        }
-    }
+    
+    
+    
+    
+    
+    
     
     func drawView(num:Int) -> some View {
         ZStack {
