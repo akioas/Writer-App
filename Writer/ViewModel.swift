@@ -40,8 +40,50 @@ func deleteButton(_ num: Int, maxViewNum: inout Int){
     
     for viewNum in num..<maxViewNum{
         pathVarPreview[viewNum] = Path()
+    
+        saveNum(num,KeyForUserDefaults: keyCurrentViewNum)
+        var points = loadPoints()
+        currentLayer = points.count - 1
+        if points.isEmpty == false{
+            points.removeAll{$0.isEmpty}
+            
+            pathVar = Path()
+            
+            
+            for currentNum in 0..<currentLayer{
+                let firstPoint = points[currentNum].first
+                
+                if firstPoint != nil{
+                    pathVar.move(to: firstPoint!)
+                    for pointIndex in 1..<points[currentNum].count{
+                        
+                        pathVar.addLine(to: points[currentNum][pointIndex])
+                        
+                    }
+                }
+                
+                savePoints(points)
+                
+            }
+            
+            points.append([])
+            currentLayer = points.count - 1
+            if currentLayer < 0{
+                currentLayer = 0
+                points = [[]]
+                pathVar = Path()
+                savePoints(points)
+            }
+            
+        } else{
+            points = [[]]
+            pathVar = Path()
+            savePoints(points)
+            currentLayer = 0
+        }
+//    ContentView().refreshButton()
+        pathVarPreview[viewNum] = pathVar
     }
-//        pathVarPreview[viewNum] = pathVar
 //    pointsPreview.append([[]])
     pathVarPreview.append(Path())
 }
