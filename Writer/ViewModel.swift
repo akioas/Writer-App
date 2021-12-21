@@ -81,13 +81,75 @@ func deleteButton(_ num: Int, maxViewNum: inout Int){
             savePoints(points)
             currentLayer = 0
         }
-//    ContentView().refreshButton()
+
         pathVarPreview[viewNum] = pathVar
-        print("pathVar")
-        print(pathVar)
+       
     }
-//    pointsPreview.append([[]])
+
     pathVarPreview.append(Path())
 }
 
 
+func refreshFunction(currentViewNum: Int){
+    
+    pathVarPreview[currentViewNum] = Path()
+    pathVarPreview[currentViewNum] = pathVar
+    pathVarPreview.append(Path())
+    
+}
+
+
+func plusFunction(currentViewNum: Int){
+    let maxViewNum = loadNum(KeyForUserDefaults: keyMaxViewNum)
+    saveNum(maxViewNum, KeyForUserDefaults: keyMaxViewNum)
+    if pathVarPreview.isEmpty {
+        pathVarPreview = [Path()]
+    }
+    pathVarPreview[currentViewNum] = Path()
+    pathVarPreview[currentViewNum] = pathVar
+    pathVarPreview.append(Path())
+}
+
+
+
+func navigationFunction(_ num: Int){
+    selected = num
+    saveNum(selected, KeyForUserDefaults: keyCurrentViewNum)
+    var points = loadPoints()
+    currentLayer = points.count - 1
+    if points.isEmpty == false{
+        points.removeAll{$0.isEmpty}
+        pathVar = Path()
+        
+        
+        for currentNum in 0..<currentLayer{
+            let firstPoint = points[currentNum].first
+            
+            if firstPoint != nil{
+                pathVar.move(to: firstPoint!)
+                for pointIndex in 1..<points[currentNum].count{
+                    
+                    pathVar.addLine(to: points[currentNum][pointIndex])
+                    
+                }
+            }
+            savePoints(points)
+            
+        }
+        
+        points.append([])
+        currentLayer = points.count - 1
+        if currentLayer < 0{
+            currentLayer = 0
+            points = [[]]
+            pathVar = Path()
+            savePoints(points)
+        }
+        
+    } else{
+        points = [[]]
+        pathVar = Path()
+        savePoints(points)
+        currentLayer = 0
+    }
+}

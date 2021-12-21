@@ -12,186 +12,139 @@ struct ContentView: View {
     @State var points = loadPoints()
     @State var pointsPreview = loadPointsForPreview()
     @State private var timeElapsed = false
-
+    
     var body: some View {
         ZStack{
-        Color(.yellow)
-            .ignoresSafeArea()
-        NavigationView {
-            VStack{
-                HStack{
-                    //new image
-                Button(action: {
-                    plusButton()
- 
-                }) {
+            Color(.yellow)
+                .ignoresSafeArea()
+            NavigationView {
+                VStack{
+                    HStack{
+                        //new image
+                        Button(action: {
+                            plusButton()
+                            
+                        }) {
+                            
+                            Image(systemName: "plus")
+                                .resizable()
+                                .frame(width: 50, height: 50)
+                        }
+                        Spacer()
+                            .frame(width: 50)
+                        //refresh previews
+                        Button(action:{
+                            
+                            refreshButton()
+                            
+                        }){
+                            Image(systemName: "gobackward")
+                                .resizable()
+                                .frame(width: 50, height: 50)
+                            
+                        }
+                    }
+                    ScrollView {
+                        
+                        //previews
+                        ForEach(0..<maxViewNum, id: \.self)
+                        {
+                            num in
+                            NavigationLink(destination: FirstView())
+                            {
+                                drawView(num:num)
+                                    .frame(width: screenWidth*0.8, height: screenWidth*0.8)
+                                    .background(Rectangle()
+                                                    .foregroundColor(Color.yellow))
+                            }
+                            .simultaneousGesture(TapGesture().onEnded{
+                                self.navigationButton(num)
+                            })
+                            ZStack{
+                                Button(action:{
+                                    deleteButton(num, maxViewNum:&maxViewNum)
+                                })
+                                {
+                                    Image(systemName: "trash.circle.fill")
+                                        .resizable()
+                                        .frame(width: 50, height: 50)
+                                }
+                            }
+                        }
+                    }
                     
-                    Image(systemName: "plus")
-                        .resizable()
-                        .frame(width: 50, height: 50)
+                    
+                    
                 }
-                    Spacer()
-                        .frame(width: 50)
-                    //refresh previews
-                    Button(action:{
-                        
-                        refreshButton()
-                        
-                    }){
-                        Image(systemName: "gobackward")
-                            .resizable()
-                            .frame(width: 50, height: 50)
-                        
-                    }
-                }
-                ScrollView {
-
- //previews
-                ForEach(0..<maxViewNum, id: \.self)
-                {
-                    num in
-                    NavigationLink(destination: FirstView())
-                    {
-                        drawView(num:num)
-                            .frame(width: screenWidth*0.8, height: screenWidth*0.8)
-                            .background(Rectangle()
-                                            .foregroundColor(Color.yellow))
-                    }
-                    .simultaneousGesture(TapGesture().onEnded{
-                        self.navigationFunction(num)
-                    })
-                    ZStack{
-                    Button(action:{
-                        deleteButton(num, maxViewNum:&maxViewNum)
-                    })
-                    {
-                        Image(systemName: "trash.circle.fill")
-                            .resizable()
-                            .frame(width: 50, height: 50)
-                    }
-                    }
-                }
-                }
-
-                Text(" ")//?
- 
-            }
-
-        }.navigationBarTitle("Choose Drawing", displayMode: .inline)
-            .navigationBarBackButtonHidden(true)
-            .navigationBarHidden(true)
-            .onAppear(perform: {
-//
                 
-                drawOnAppear()
-                
-            })
-    }
+            }.navigationBarTitle("Choose Drawing", displayMode: .inline)
+                .navigationBarBackButtonHidden(true)
+                .navigationBarHidden(true)
+                .onAppear(perform: {
+                    //
+                    
+                    drawOnAppear()
+                    
+                })
+        }
     }
     
-
+    
     func delay() {
-           DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-               timeElapsed = true
-           }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+            timeElapsed = true
+        }
     }
-
+    
     func refreshButton(){
-
-       delay()
+        
+        delay()
         pointsPreview = loadPointsForPreview()
-       pathVarPreview[currentViewNum] = Path()
-       pathVarPreview[currentViewNum] = pathVar
-       pointsPreview.append([[]])
-       pathVarPreview.append(Path())
-
+        refreshFunction(currentViewNum: currentViewNum)
+        pointsPreview.append([[]])
+        
+        
     }
-
+    
     
     
     func plusButton(){
-       self.maxViewNum = maxViewNum + 1
-       saveNum(maxViewNum, KeyForUserDefaults: keyMaxViewNum)
-        if pathVarPreview.isEmpty {
-            pathVarPreview = [Path()]
-        }
-       pathVarPreview[currentViewNum] = Path()
-       pathVarPreview[currentViewNum] = pathVar
-       pointsPreview.append([[]])
-       pathVarPreview.append(Path())
+        plusFunction(currentViewNum: currentViewNum)
+        pointsPreview.append([[]])
     }
-
+    
     //to draw view
-    func navigationFunction(_ num: Int){
-
-       selected = num
-       self.currentViewNum = num
-       saveNum(selected, KeyForUserDefaults: keyCurrentViewNum)
-       points = loadPoints()
-       currentLayer = points.count - 1
-       if points.isEmpty == false{
-           points.removeAll{$0.isEmpty}
-           pathVar = Path()
-           
-           
-           for currentNum in 0..<currentLayer{
-               let firstPoint = points[currentNum].first
-               
-               if firstPoint != nil{
-                   pathVar.move(to: firstPoint!)
-                   for pointIndex in 1..<points[currentNum].count{
-                       
-                       pathVar.addLine(to: points[currentNum][pointIndex])
-                       
-                   }
-               }
-               savePoints(points)
-
-           }
-
-           points.append([])
-           currentLayer = points.count - 1
-           if currentLayer < 0{
-               currentLayer = 0
-               points = [[]]
-               pathVar = Path()
-               savePoints(points)
-           }
-           
-       } else{
-           points = [[]]
-           pathVar = Path()
-           savePoints(points)
-           currentLayer = 0
-       }
-       
+    func navigationButton(_ num: Int){
+        
+        navigationFunction(num)
+        
     }
-
+    
     //draw previews
     func drawOnAppear(){
-       pathVarPreview = Array(repeating:Path(),count:loadNum(KeyForUserDefaults: keyMaxViewNum))
-       for  num in 0..<maxViewNum{
-       pointsPreview.removeAll{$0.isEmpty}
-       if pointsPreview.count > num {
-         
-           for currentLayerPreview in 0...(pointsPreview[num].count - 1) {
-    //                        guard let
-               
-                       let firstPointPreview = pointsPreview[num][currentLayerPreview].first
-    //                        else { return pathVarPreview[num]}
-                   
-              
-               if firstPointPreview != nil{
-                   pathVarPreview[num].move(to: firstPointPreview!)
-               for pointIndex in 1..<pointsPreview[num][currentLayerPreview].count{
-                   
-                   pathVarPreview[num].addLine(to: pointsPreview[num][currentLayerPreview][pointIndex])
-
-               }
-           }
-           }
-       }
-       }
+        pathVarPreview = Array(repeating:Path(),count:loadNum(KeyForUserDefaults: keyMaxViewNum))
+        for  num in 0..<maxViewNum{
+            pointsPreview.removeAll{$0.isEmpty}
+            if pointsPreview.count > num {
+                
+                for currentLayerPreview in 0...(pointsPreview[num].count - 1) {
+                    //                        guard let
+                    
+                    let firstPointPreview = pointsPreview[num][currentLayerPreview].first
+                    //                        else { return pathVarPreview[num]}
+                    
+                    
+                    if firstPointPreview != nil{
+                        pathVarPreview[num].move(to: firstPointPreview!)
+                        for pointIndex in 1..<pointsPreview[num][currentLayerPreview].count{
+                            
+                            pathVarPreview[num].addLine(to: pointsPreview[num][currentLayerPreview][pointIndex])
+                            
+                        }
+                    }
+                }
+            }
+        }
     }
     
     
@@ -211,20 +164,20 @@ struct ContentView: View {
                 .padding()
                 .background(Rectangle()
                                 .foregroundColor(Color.yellow))
-  
+            
         }
     }
     
-
+    
     
     struct DrawShape: Shape {
-
+        
         var pointsPreviewArray: Array<[[CGPoint]]>
         var num: Int
         
         func path(in rect: CGRect) -> Path {
-               
-
+            
+            
             return pathVarPreview[num]
             
         }
@@ -251,9 +204,9 @@ struct FirstView: View {
     @State var currentViewNum:Int = loadNum(KeyForUserDefaults: keyCurrentViewNum)
     @State var points: Array<[CGPoint]> = loadPoints()
     @Environment(\.presentationMode) var presentationMode
-  
-
-
+    
+    
+    
     
     
     
@@ -284,14 +237,14 @@ struct FirstView: View {
                         Spacer()
                         hButtons
                         
-                    
-                    
-                
+                        
+                        
+                        
                         
                     }.background(Color(.yellow))
                 }
-                         else {
-                 
+                else {
+                    
                     HStack{//1
                         Spacer()
                         NavigationLink(destination: ContentView()) {
@@ -305,32 +258,32 @@ struct FirstView: View {
                             
                         })
                         Spacer()
-
+                        
                         drawView
                         Spacer()
-
+                        
                         vButtons
                         
                         
                     }.background(Color(.yellow))
-                        
+                    
                     
                 }
                 
             }
-  
-
+            
+            
             
         }
         .navigationBarBackButtonHidden(true)
         .navigationBarHidden(true)
         
-
+        
         .onAppear {
             drawOnAppear()
         }
         
- 
+        
     }
     
     
@@ -372,14 +325,14 @@ struct FirstView: View {
     var hButtons: some View {
         HStack{
             Button(action: {clearButton()}){
-               
+                
                 Image(systemName: "trash.circle")
                     .resizable()
                     .frame(width: 50, height: 50)
             }
-           
+            
             Button(action: {continuousLine()}){
-               
+                
                 Image(systemName: "pencil.and.outline")
                     .resizable()
                     .frame(width: 50, height: 50)
@@ -387,7 +340,7 @@ struct FirstView: View {
             }
             
             Button(action: {backButton()}){
-               
+                
                 Image(systemName: "delete.backward")
                     .resizable()
                     .frame(width: 50, height: 50)
@@ -396,12 +349,12 @@ struct FirstView: View {
             
             Button(action: {
                 Writer.actionSheet()
-                        }) {
-                            Image(systemName: "square.and.arrow.up.circle")
-                                .resizable()
-                                .frame(width: 50, height: 50)
-                        }
-        
+            }) {
+                Image(systemName: "square.and.arrow.up.circle")
+                    .resizable()
+                    .frame(width: 50, height: 50)
+            }
+            
             
         }
         .background(Color(red: 0, green: 0.8, blue: 0.8))
@@ -413,23 +366,23 @@ struct FirstView: View {
     var vButtons: some View {
         VStack{
             Button(action: {clearButton()}){
-               
+                
                 Image(systemName: "trash.circle")
                     .resizable()
                     .frame(width: 50, height: 50)
             }
-           
+            
             Button(action: {continuousLine()}){
-               
+                
                 Image(systemName: "pencil.and.outline")
                     .resizable()
                     .frame(width: 50, height: 50)
                     .foregroundColor(colorContinuous)
-
+                
             }
             
             Button(action: {backButton()}){
-               
+                
                 Image(systemName: "delete.backward")
                     .resizable()
                     .frame(width: 50, height: 50)
@@ -438,13 +391,13 @@ struct FirstView: View {
             
             Button(action: {
                 Writer.actionSheet()
-                        }) {
-                            Image(systemName: "square.and.arrow.up.circle")
-                                .resizable()
-                                .frame(width: 50, height: 50)
-                            
-                        }
-        
+            }) {
+                Image(systemName: "square.and.arrow.up.circle")
+                    .resizable()
+                    .frame(width: 50, height: 50)
+                
+            }
+            
             
         }
         .background(Color(red: 0, green: 0.8, blue: 0.8))
@@ -456,7 +409,7 @@ struct FirstView: View {
     func saveImage(){
         
         let image = drawView.saveImage(size: imageSize)
-
+        
         UIImageWriteToSavedPhotosAlbum(image, nil, nil, nil)
         
         
@@ -548,12 +501,12 @@ struct FirstView: View {
     func continuousLine(){
         if drawMode == 1{
             colorContinuous = .red
- 
+            
             drawMode = 0
         } else {
             drawMode = 1
             colorContinuous = .black
-
+            
             currentLayer = currentLayer + 1
             
             points.append([])
@@ -628,9 +581,9 @@ struct FirstView: View {
     struct DrawShape: Shape {
         
         var points: Array<[CGPoint]>
-  
+        
         func path(in rect: CGRect) -> Path {
-
+            
             currentLayer = points.count - 1
             guard let firstPoint = points[currentLayer].first else { return pathVar
                 
@@ -641,7 +594,7 @@ struct FirstView: View {
                 
                 pathVar.addLine(to: points[currentLayer][pointIndex])
                 savePoints(points)
-   
+                
                 
             }
             
