@@ -301,7 +301,7 @@ struct FirstView: View {
                     .frame(width: 50, height: 50)
             }
             
-            Button(action: {continuousLine()}){
+            Button(action: {continuousLineButton()}){
                 
                 Image(systemName: "pencil.and.outline")
                     .resizable()
@@ -342,7 +342,7 @@ struct FirstView: View {
                     .frame(width: 50, height: 50)
             }
             
-            Button(action: {continuousLine()}){
+            Button(action: {continuousLineButton()}){
                 
                 Image(systemName: "pencil.and.outline")
                     .resizable()
@@ -391,22 +391,8 @@ struct FirstView: View {
     
     func addNewPoint(_ value: DragGesture.Value) {
         
-        var pointToAppend = value.location
-        if (value.location.x < screenWidth)&&(value.location.y < screenWidth) {
-        } else if (value.location.x > screenWidth)&&(value.location.y < screenWidth) {
-            pointToAppend.x = screenWidth
-        } else if (value.location.x < screenWidth)&&(value.location.y > screenWidth) {
-            pointToAppend.y = screenWidth
-        } else if (value.location.x > screenWidth)&&(value.location.y > screenWidth) {
-            pointToAppend.x = screenWidth
-            pointToAppend.y = screenWidth
-        }
+        addNewPointFunction(&points, value: value)
         
-        if (value.location.y < 0){
-            pointToAppend.y = 0
-        }
-        
-        points[currentLayer].append(pointToAppend)
     }
     
     
@@ -414,85 +400,27 @@ struct FirstView: View {
     
     
     //buttons
-    func continuousLine(){
-        if drawMode == 1{
-            colorContinuous = .red
-            
-            drawMode = 0
-        } else {
-            drawMode = 1
-            colorContinuous = .black
-            
-            currentLayer = currentLayer + 1
-            
-            points.append([])
-        }
+    func continuousLineButton(){
+        
+        continuousLineFunction(&points)
+        
     }
     
     func clearButton(){
         
-        points = [[]]
-        pathVar = Path()
-        savePoints(points)
-        currentLayer = 0
+        clearFunction(&points)
+        
     }
     
     
     func backButton(){
-        points.removeAll{$0.isEmpty}
-        if points.isEmpty == false{
-            if ((points.last?.isEmpty) == true)
-            {
-                points.removeLast()
-            }
-            if points.isEmpty == false{
-                points.removeLast()
-                
-            }
-            
-            currentLayer = points.count - 1
-            pathVar = Path()
-            if currentLayer  < 0 {
-                points = [[]]
-                pathVar = Path()
-                savePoints(points)
-                currentLayer = 0
-            } else {
-                currentLayer = points.count - 1
-                for currentNum in 0...currentLayer{
-                    let firstPoint = points[currentNum].first
-                    
-                    
-                    pathVar.move(to: firstPoint!)
-                    for pointIndex in 1..<points[currentNum].count{
-                        
-                        pathVar.addLine(to: points[currentNum][pointIndex])
-                        
-                    }
-                    
-                    savePoints(points)
-                    
-                }
-                
-            }
-            
-            
-            
-            points.append([])
-            currentLayer = points.count - 1
-            
-            
-        } else{
-            points = [[]]
-            pathVar = Path()
-            savePoints(points)
-            currentLayer = 0
+        backFunction(&points)
         }//backButton
         
         
         
         
-    }
+    
     
     struct DrawShape: Shape {
         
@@ -500,21 +428,9 @@ struct FirstView: View {
         
         func path(in rect: CGRect) -> Path {
             
-            currentLayer = points.count - 1
-            guard let firstPoint = points[currentLayer].first else { return pathVar
-                
-            }
             
-            pathVar.move(to: firstPoint)
-            for pointIndex in 1..<points[currentLayer].count{
-                
-                pathVar.addLine(to: points[currentLayer][pointIndex])
-                savePoints(points)
-                
-                
-            }
             
-            return pathVar
+            return pathFunction(points)
             
         }
         

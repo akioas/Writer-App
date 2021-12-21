@@ -160,3 +160,20 @@ func deleteView(deletedViewNum: Int,  maxViewNum: Int)->([[CGPoint]]) {
 
 
 
+func addPoint(_ value: DragGesture.Value) -> CGPoint{
+    var pointToAppend = value.location
+    if (value.location.x < screenWidth)&&(value.location.y < screenWidth) {
+    } else if (value.location.x > screenWidth)&&(value.location.y < screenWidth) {
+        pointToAppend.x = screenWidth
+    } else if (value.location.x < screenWidth)&&(value.location.y > screenWidth) {
+        pointToAppend.y = screenWidth
+    } else if (value.location.x > screenWidth)&&(value.location.y > screenWidth) {
+        pointToAppend.x = screenWidth
+        pointToAppend.y = screenWidth
+    }
+    
+    if (value.location.y < 0){
+        pointToAppend.y = 0
+    }
+    return pointToAppend
+}
