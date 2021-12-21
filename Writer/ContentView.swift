@@ -100,8 +100,8 @@ struct ContentView: View {
         
         delay()
         pointsPreview = loadPointsForPreview()
-        refreshFunction(currentViewNum: currentViewNum)
-        pointsPreview.append([[]])
+        refreshFunction()
+//        pointsPreview.append([[]])
         
         
     }
@@ -122,7 +122,7 @@ struct ContentView: View {
     
     //draw previews
     func drawOnAppear(){
-        onAppearFunction(&pointsPreview)
+        onAppearPreviewFunction(&pointsPreview)
     }
     
     
@@ -376,66 +376,12 @@ struct FirstView: View {
     
     
     
-    func saveImage(){
-        
-        let image = drawView.saveImage(size: imageSize)
-        
-        UIImageWriteToSavedPhotosAlbum(image, nil, nil, nil)
-        
-        
-        
-    }
-    
-    
     
     
     //draw saved image when view appears
     func drawOnAppear(){
         
-        self.currentViewNum = selected
-        
-        saveNum(selected, KeyForUserDefaults: keyCurrentViewNum)
-        
-        
-        points = loadPoints()
-        currentLayer = points.count - 1
-        if points.isEmpty == false{
-            points.removeAll{$0.isEmpty}
-            
-            pathVar = Path()
-            
-            
-            for currentNum in 0..<currentLayer{
-                let firstPoint = points[currentNum].first
-                
-                if firstPoint != nil{
-                    pathVar.move(to: firstPoint!)
-                    for pointIndex in 1..<points[currentNum].count{
-                        
-                        pathVar.addLine(to: points[currentNum][pointIndex])
-                        
-                    }
-                }
-                
-                savePoints(points)
-                
-            }
-            
-            points.append([])
-            currentLayer = points.count - 1
-            if currentLayer < 0{
-                currentLayer = 0
-                points = [[]]
-                pathVar = Path()
-                savePoints(points)
-            }
-            
-        } else{
-            points = [[]]
-            pathVar = Path()
-            savePoints(points)
-            currentLayer = 0
-        }
+        onAppearDrawFunction(&points)
         
     }
     

@@ -90,11 +90,11 @@ func deleteButton(_ num: Int, maxViewNum: inout Int){
 }
 
 
-func refreshFunction(currentViewNum: Int){
-    
+func refreshFunction(){
+    let currentViewNum = loadNum(KeyForUserDefaults: keyCurrentViewNum)
     pathVarPreview[currentViewNum] = Path()
     pathVarPreview[currentViewNum] = pathVar
-    pathVarPreview.append(Path())
+//    pathVarPreview.append(Path())
     
 }
 
@@ -155,7 +155,7 @@ func navigationFunction(_ num: Int){
 }
 
 
-func onAppearFunction(_ pointsPreview: inout [[[CGPoint]]]){
+func onAppearPreviewFunction(_ pointsPreview: inout [[[CGPoint]]]){
     pathVarPreview = Array(repeating:Path(),count:loadNum(KeyForUserDefaults: keyMaxViewNum))
     let maxViewNum = loadNum(KeyForUserDefaults: keyMaxViewNum)
     for  num in 0..<maxViewNum{
@@ -192,5 +192,53 @@ func endDrawFunction(_ points: inout [[CGPoint]]){
         
         print(points)
         
+    }
+}
+
+
+func onAppearDrawFunction(_ points: inout [[CGPoint]]){
+    
+    
+    saveNum(selected, KeyForUserDefaults: keyCurrentViewNum)
+    
+    
+    points = loadPoints()
+    currentLayer = points.count - 1
+    if points.isEmpty == false{
+        points.removeAll{$0.isEmpty}
+        
+        pathVar = Path()
+        
+        
+        for currentNum in 0..<currentLayer{
+            let firstPoint = points[currentNum].first
+            
+            if firstPoint != nil{
+                pathVar.move(to: firstPoint!)
+                for pointIndex in 1..<points[currentNum].count{
+                    
+                    pathVar.addLine(to: points[currentNum][pointIndex])
+                    
+                }
+            }
+            
+            savePoints(points)
+            
+        }
+        
+        points.append([])
+        currentLayer = points.count - 1
+        if currentLayer < 0{
+            currentLayer = 0
+            points = [[]]
+            pathVar = Path()
+            savePoints(points)
+        }
+        
+    } else{
+        points = [[]]
+        pathVar = Path()
+        savePoints(points)
+        currentLayer = 0
     }
 }
