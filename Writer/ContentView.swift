@@ -122,29 +122,7 @@ struct ContentView: View {
     
     //draw previews
     func drawOnAppear(){
-        pathVarPreview = Array(repeating:Path(),count:loadNum(KeyForUserDefaults: keyMaxViewNum))
-        for  num in 0..<maxViewNum{
-            pointsPreview.removeAll{$0.isEmpty}
-            if pointsPreview.count > num {
-                
-                for currentLayerPreview in 0...(pointsPreview[num].count - 1) {
-                    //                        guard let
-                    
-                    let firstPointPreview = pointsPreview[num][currentLayerPreview].first
-                    //                        else { return pathVarPreview[num]}
-                    
-                    
-                    if firstPointPreview != nil{
-                        pathVarPreview[num].move(to: firstPointPreview!)
-                        for pointIndex in 1..<pointsPreview[num][currentLayerPreview].count{
-                            
-                            pathVarPreview[num].addLine(to: pointsPreview[num][currentLayerPreview][pointIndex])
-                            
-                        }
-                    }
-                }
-            }
-        }
+        onAppearFunction(&pointsPreview)
     }
     
     
@@ -302,15 +280,7 @@ struct FirstView: View {
                     
                 })
                             .onEnded( { _ in
-                    savePoints(points)
-                    if drawMode == 1{
-                        currentLayer = currentLayer + 1
-                        
-                        points.append([])
-                        
-                        print(points)
-                        
-                    }
+                    endDrawFunction(&points)
                 }))
             DrawShape(points: points)
             
