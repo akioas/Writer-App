@@ -62,7 +62,7 @@ func deleteButton(_ num: Int, maxViewNum: inout Int){
                     }
                 }
                 
-                savePoints(points)
+//                savePoints(points)
                 
             }
             
@@ -72,13 +72,13 @@ func deleteButton(_ num: Int, maxViewNum: inout Int){
                 currentLayer = 0
                 points = [[]]
                 pathVar = Path()
-                savePoints(points)
+//                savePoints(points)
             }
             
         } else{
             points = [[]]
             pathVar = Path()
-            savePoints(points)
+//            savePoints(points)
             currentLayer = 0
         }
 
@@ -87,6 +87,10 @@ func deleteButton(_ num: Int, maxViewNum: inout Int){
     }
 
     pathVarPreview.append(Path())
+    saveNum(maxViewNum,KeyForUserDefaults: keyCurrentViewNum)
+    pathVarPreview[maxViewNum] = Path()
+    let points:[[CGPoint]] = [[]]
+    savePoints(points)
 }
 
 
