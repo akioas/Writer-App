@@ -110,7 +110,7 @@ struct ContentView: View {
     
     func plusButton(){
         plusFunction(currentViewNum: currentViewNum)
-        maxViewNum += 1
+        maxViewNum = loadNum(KeyForUserDefaults: keyMaxViewNum)
         pointsPreview.append([[]])
     }
     

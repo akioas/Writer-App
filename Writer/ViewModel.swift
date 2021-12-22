@@ -105,8 +105,8 @@ func plusFunction(currentViewNum: Int){
     if pathVarPreview.isEmpty {
         pathVarPreview = [Path()]
     }
-    pathVarPreview[currentViewNum] = Path()
-    pathVarPreview[currentViewNum] = pathVar
+//    pathVarPreview[currentViewNum] = Path()
+//    pathVarPreview[currentViewNum] = pathVar
     pathVarPreview.append(Path())
 }
 

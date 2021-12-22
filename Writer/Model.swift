@@ -150,7 +150,7 @@ func deleteView(deletedViewNum: Int,  maxViewNum: Int)->([[CGPoint]]) {
             UserDefaults.standard.set(data as Any?, forKey: keyToDelete)
             //
         }
-        let keyToDelete = keyPoints + String(maxViewNum - 1)
+        let keyToDelete = keyPoints + String(maxViewNum)
         UserDefaults.standard.removeObject(forKey: keyToDelete)
         
     }
