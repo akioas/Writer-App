@@ -101,7 +101,7 @@ func refreshFunction(){
 
 func plusFunction(currentViewNum: Int){
     let maxViewNum = loadNum(KeyForUserDefaults: keyMaxViewNum)
-    saveNum(maxViewNum, KeyForUserDefaults: keyMaxViewNum)
+    saveNum(maxViewNum + 1, KeyForUserDefaults: keyMaxViewNum)
     if pathVarPreview.isEmpty {
         pathVarPreview = [Path()]
     }

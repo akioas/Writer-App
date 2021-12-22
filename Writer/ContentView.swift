@@ -110,6 +110,7 @@ struct ContentView: View {
     
     func plusButton(){
         plusFunction(currentViewNum: currentViewNum)
+        maxViewNum += 1
         pointsPreview.append([[]])
     }
     
