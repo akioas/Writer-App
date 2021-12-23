@@ -250,7 +250,10 @@ func onAppearDrawFunction(_ points: inout [[CGPoint]]){
 
 
 func addNewPointFunction(_ points: inout [[CGPoint]], value: DragGesture.Value){
-    
+    //if index out of range
+    while (points.count - 1) < currentLayer{
+        points.append([])
+    }
     points[currentLayer].append(addPoint(value))
     
 }
