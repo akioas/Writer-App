@@ -4,6 +4,12 @@ import UIKit
 
 
 
+
+let buttonColor = Color(red: 0.30, green: 0.65, blue: 0.70)
+let drawColor = Color(red: 0.87, green: 0.68, blue: 0.12)
+let backColor = Color(red: 0.92, green: 0.82, blue: 0.51)
+
+
 struct ContentView: View {
     
     
@@ -15,8 +21,7 @@ struct ContentView: View {
     
     var body: some View {
         ZStack{
-            Color(.yellow)
-                .ignoresSafeArea()
+ 
             NavigationView {
                 VStack{
                     HStack{
@@ -55,7 +60,7 @@ struct ContentView: View {
                                 drawView(num:num)
                                     .frame(width: screenWidth*0.8, height: screenWidth*0.8)
                                     .background(Rectangle()
-                                                    .foregroundColor(Color.yellow))
+                                                    .foregroundColor(drawColor))
                             }
                             .simultaneousGesture(TapGesture().onEnded{
                                 self.navigationButton(num)
@@ -77,7 +82,13 @@ struct ContentView: View {
                     
                 }
                 
-            }.navigationBarTitle("Choose Drawing", displayMode: .inline)
+                
+                
+                
+
+            }
+            
+            
                 .navigationBarBackButtonHidden(true)
                 .navigationBarHidden(true)
                 .onAppear(perform: {
@@ -86,9 +97,14 @@ struct ContentView: View {
                     drawOnAppear()
                     
                 })
+               
+                
+                
         }
+        
+
     }
-    
+       
     
     func delay() {
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
@@ -142,7 +158,7 @@ struct ContentView: View {
                 .scaleEffect(CGSize(width: 0.5 ,height: 0.5 ))
                 .padding()
                 .background(Rectangle()
-                                .foregroundColor(Color.yellow))
+                                .foregroundColor(drawColor))
             
         }
     }
@@ -192,8 +208,8 @@ struct FirstView: View {
     var body: some View {
         
         return ZStack {
-            Color(.yellow)
-                .ignoresSafeArea()
+//            Color(.yellow)
+//                .ignoresSafeArea()
             
             GeometryReader { proxy in
                 if proxy.size.width < proxy.size.height {
@@ -202,9 +218,10 @@ struct FirstView: View {
                         //back to first view
                         NavigationLink(destination: ContentView()) {
                             
-                            Image(systemName: "arrow.backward")
+                            Image(systemName: "arrow.left.circle")
                                 .resizable()
                                 .frame(width: 50, height: 50)
+                                .padding()
                             
                         }
                         .simultaneousGesture(TapGesture().onEnded{
@@ -215,12 +232,12 @@ struct FirstView: View {
                         drawView
                         Spacer()
                         hButtons
+                        Spacer()
                         
                         
                         
                         
-                        
-                    }.background(Color(.yellow))
+                    }.background(backColor)
                 }
                 else {
                     
@@ -242,9 +259,9 @@ struct FirstView: View {
                         Spacer()
                         
                         vButtons
+                        Spacer()
                         
-                        
-                    }.background(Color(.yellow))
+                    }.background(backColor)
                     
                     
                 }
@@ -271,7 +288,7 @@ struct FirstView: View {
             
             Rectangle()
             
-                .foregroundColor(.yellow)
+                .foregroundColor(drawColor)
                 .aspectRatio(1.0, contentMode: .fit)
             
                 .gesture(DragGesture().onChanged( {
@@ -301,7 +318,9 @@ struct FirstView: View {
                     .resizable()
                     .frame(width: 50, height: 50)
             }
-            
+            .background(buttonColor)
+//            .padding(.bottom, 5)
+            .cornerRadius(8)
             Button(action: {continuousLineButton()}){
                 
                 Image(systemName: "pencil.and.outline")
@@ -309,13 +328,15 @@ struct FirstView: View {
                     .frame(width: 50, height: 50)
                     .foregroundColor(colorContinuous)
             }
-            
+            .background(buttonColor)
+            .cornerRadius(8)
             Button(action: {backButton()}){
                 
                 Image(systemName: "delete.backward")
                     .resizable()
                     .frame(width: 50, height: 50)
-            }
+            }.background(buttonColor)
+                .cornerRadius(8)
             
             
             Button(action: {
@@ -325,10 +346,11 @@ struct FirstView: View {
                     .resizable()
                     .frame(width: 50, height: 50)
             }
-            
+            .background(buttonColor)
+            .cornerRadius(8)
             
         }
-        .background(Color(red: 0, green: 0.8, blue: 0.8))
+        
         .foregroundColor(Color.black)
         
     }
@@ -342,7 +364,8 @@ struct FirstView: View {
                     .resizable()
                     .frame(width: 50, height: 50)
             }
-            
+            .background(buttonColor)
+            .cornerRadius(8)
             Button(action: {continuousLineButton()}){
                 
                 Image(systemName: "pencil.and.outline")
@@ -351,14 +374,16 @@ struct FirstView: View {
                     .foregroundColor(colorContinuous)
                 
             }
-            
+            .background(buttonColor)
+            .cornerRadius(8)
             Button(action: {backButton()}){
                 
                 Image(systemName: "delete.backward")
                     .resizable()
                     .frame(width: 50, height: 50)
             }
-            
+            .background(buttonColor)
+            .cornerRadius(8)
             
             Button(action: {
                 Writer.actionSheet()
@@ -368,10 +393,11 @@ struct FirstView: View {
                     .frame(width: 50, height: 50)
                 
             }
-            
+            .background(buttonColor)
+            .cornerRadius(8)
             
         }
-        .background(Color(red: 0, green: 0.8, blue: 0.8))
+        
         .foregroundColor(Color.black)
     }
     
