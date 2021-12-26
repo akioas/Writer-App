@@ -126,19 +126,20 @@ func loadNum(KeyForUserDefaults: String) -> Int {
 }
 
 
-
+var keyToDelete = ""
+var keyToReassign = ""
 
 func deleteView(deletedViewNum: Int,  maxViewNum: Int)->([[CGPoint]]) {
     
     if deletedViewNum == maxViewNum - 1{
-        let keyToDelete = keyPoints + String(deletedViewNum)
+        keyToDelete = keyPoints + String(deletedViewNum)
         UserDefaults.standard.removeObject(forKey: keyToDelete)
             
     }
     else {
-        var keyToReassign = keyPoints
+        keyToReassign = keyPoints
         for viewNum in deletedViewNum..<maxViewNum{
-            let keyToDelete = keyPoints + String(viewNum)
+            keyToDelete = keyPoints + String(viewNum)
             //
             keyToReassign = keyPoints + String(viewNum+1)
             guard let encodedData = UserDefaults.standard.array(forKey: keyToReassign) as? [Data] else {
@@ -153,12 +154,9 @@ func deleteView(deletedViewNum: Int,  maxViewNum: Int)->([[CGPoint]]) {
             print(maxViewNum)
             //
         }
-        print("!")
-//        let keyToDelete = keyPoints + String(maxViewNum + 1)
-        print("!")
+
         UserDefaults.standard.removeObject(forKey: keyToReassign)
-//        UserDefaults.standard.removeObject(forKey: (keyToReassign+"1"))
-        
+
         print(keyToReassign)
         
     }
