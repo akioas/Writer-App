@@ -183,3 +183,8 @@ func addPoint(_ value: DragGesture.Value) -> CGPoint{
     }
     return pointToAppend
 }
+
+
+//let result = PersistenceController().PersistenceController(inMemory: true)
+//let viewContext = result.container.viewContext
+

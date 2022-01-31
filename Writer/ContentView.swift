@@ -12,6 +12,10 @@ let backColor = Color(red: 0.92, green: 0.82, blue: 0.51)
 
 struct ContentView: View {
     
+    @Environment(\.managedObjectContext) var viewContext
+
+    @FetchRequest(sortDescriptors: []) var items: FetchedResults<Point>
+    
     
     @State var currentViewNum:Int = loadNum(KeyForUserDefaults: keyCurrentViewNum)
     @State var maxViewNum:Int = loadNum(KeyForUserDefaults: keyMaxViewNum)
@@ -122,6 +126,37 @@ struct ContentView: View {
         
     }
     
+    
+    func addItem(_ pointsReceived: [CGPoint]) {
+        withAnimation {
+            let newItem = Point(context: viewContext)
+            newItem.points = pointsReceived
+
+            do {
+                try viewContext.save()
+            } catch {
+                // Replace this implementation with code to handle the error appropriately.
+                // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
+                let nsError = error as NSError
+                fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
+            }
+        }
+    }
+
+    func deleteItem(){
+        for itemToDelete in items{//!
+            viewContext.delete(itemToDelete)
+        }
+        do {
+            try viewContext.save()
+        } catch {
+            // Replace this implementation with code to handle the error appropriately.
+            // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
+            let nsError = error as NSError
+            fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
+        }
+    }
+
     
     
     func plusButton(){
@@ -471,37 +506,11 @@ struct FirstView: View {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
-        Group {
-            ContentView()
-            ContentView()
-        }
+        ContentView().environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
     }
-    
-    
-    
-    
 }
-
-
-
 
 
 
