@@ -17,6 +17,7 @@
 		4ACF890527A83F8000A691C4 /* Entity+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4ACF890327A83F8000A691C4 /* Entity+CoreDataClass.swift */; };
 		4ACF890627A83F8000A691C4 /* Entity+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4ACF890427A83F8000A691C4 /* Entity+CoreDataProperties.swift */; };
 		4ACF894527A842A600A691C4 /* Persistense.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4ACF894427A842A600A691C4 /* Persistense.swift */; };
+		4ACF89C727AC54F700A691C4 /* CGPointsTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4ACF89C627AC54F700A691C4 /* CGPointsTransformer.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -32,6 +33,7 @@
 		4ACF890327A83F8000A691C4 /* Entity+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Entity+CoreDataClass.swift"; sourceTree = "<group>"; };
 		4ACF890427A83F8000A691C4 /* Entity+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Entity+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		4ACF894427A842A600A691C4 /* Persistense.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Persistense.swift; sourceTree = "<group>"; };
+		4ACF89C627AC54F700A691C4 /* CGPointsTransformer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CGPointsTransformer.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -67,6 +69,7 @@
 			isa = PBXGroup;
 			children = (
 				4ACF894427A842A600A691C4 /* Persistense.swift */,
+				4ACF89C627AC54F700A691C4 /* CGPointsTransformer.swift */,
 				4A9A1A7B273063E800A5D113 /* WriterApp.swift */,
 				4A9A1A7D273063E800A5D113 /* ContentView.swift */,
 				4A5B35642746C1F40036988C /* ViewModel.swift */,
@@ -160,6 +163,7 @@
 				4ACF894527A842A600A691C4 /* Persistense.swift in Sources */,
 				4A9A1A7E273063E800A5D113 /* ContentView.swift in Sources */,
 				4ACF890527A83F8000A691C4 /* Entity+CoreDataClass.swift in Sources */,
+				4ACF89C727AC54F700A691C4 /* CGPointsTransformer.swift in Sources */,
 				4ACF890627A83F8000A691C4 /* Entity+CoreDataProperties.swift in Sources */,
 				4ACF890227A83F5300A691C4 /* Model.xcdatamodeld in Sources */,
 				4A5B35652746C1F40036988C /* ViewModel.swift in Sources */,

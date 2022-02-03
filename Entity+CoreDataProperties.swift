@@ -10,7 +10,7 @@ extension Point {
         return NSFetchRequest<Point>(entityName: "Point")
     }
 
-    @NSManaged public var points: [CGPoint]?
+    @NSManaged public var points: [[CGPoint]]
 
 }
 

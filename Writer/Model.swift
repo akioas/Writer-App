@@ -46,6 +46,7 @@ func savePoints(_ points: [[CGPoint]]) {
     let KeyForUserDefaults = keyPoints + String(loadNum(KeyForUserDefaults: keyCurrentViewNum))
     let data = points.map { try? JSONEncoder().encode($0) }
     UserDefaults.standard.set(data, forKey: KeyForUserDefaults)
+    
 
 }
 
@@ -188,3 +189,37 @@ func addPoint(_ value: DragGesture.Value) -> CGPoint{
 //let result = PersistenceController().PersistenceController(inMemory: true)
 //let viewContext = result.container.viewContext
 
+
+func addItem(_ pointsReceived: [[CGPoint]]) {
+    withAnimation {
+        
+        let newItem = Point(context: viewContext)
+        newItem.points = pointsReceived
+        /*
+         items![index].points
+         */
+
+        do {
+            try viewContext.save()
+        } catch {
+            // Replace this implementation with code to handle the error appropriately.
+            // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
+            let nsError = error as NSError
+            fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
+        }
+    }
+}
+
+func deleteItem(_ items: [Point]?){
+    for itemToDelete in items!{
+        viewContext.delete(itemToDelete)
+    }
+    do {
+        try viewContext.save()
+    } catch {
+        // Replace this implementation with code to handle the error appropriately.
+        // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
+        let nsError = error as NSError
+        fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
+    }
+}

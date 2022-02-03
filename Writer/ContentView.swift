@@ -14,7 +14,7 @@ struct ContentView: View {
     
     @Environment(\.managedObjectContext) var viewContext
 
-    @FetchRequest(sortDescriptors: []) var items: FetchedResults<Point>
+    @FetchRequest(sortDescriptors: []) var items: FetchedResults<Point>//Date
     
     
     @State var currentViewNum:Int = loadNum(KeyForUserDefaults: keyCurrentViewNum)
@@ -99,6 +99,7 @@ struct ContentView: View {
                     //
                     
                     drawOnAppear()
+                    print(items)//
                     
                 })
                
@@ -108,7 +109,77 @@ struct ContentView: View {
         
 
     }
-       
+       //!!!!
+    func addItem() {
+        
+           
+            
+            let newItem = Point(context: viewContext)
+        newItem.points = [[CGPoint(x:1.0, y:1.0)]]
+            /*
+             items![index].points
+             */
+
+            do {
+                try viewContext.save()
+            } catch {
+                // Replace this implementation with code to handle the error appropriately.
+                // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
+                let nsError = error as NSError
+                fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
+            
+        }
+    }
+    
+    func editItem(_ pointsReceived: [[CGPoint]]) {
+        
+            /*
+             let userToAdd = Feature(context: context)
+             userToAdd.yearPercent = yearPercent
+
+             userToAdd.mortgageAmount = (mortgageAmount)
+             userToAdd.monthlyPayment = (monthlyPayment)
+             userToAdd.monthsAmount = Int16(monthsAmount)
+             */
+            
+            let newItem = items.last!
+            newItem.points = pointsReceived
+//            print("!!!")
+            
+//            print(newItem.points)
+//            print(pointsReceived)
+            /*
+             items![index].points
+             */
+
+            do {
+                try viewContext.save()
+//                try viewContext.save()
+                print("SAVE")
+            } catch {
+                // Replace this implementation with code to handle the error appropriately.
+                // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
+                let nsError = error as NSError
+                fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
+            }
+        
+    }
+
+    func deleteItem(_ items: [Point]?){
+        for itemToDelete in items!{
+            viewContext.delete(itemToDelete)
+        }
+        do {
+            try viewContext.save()
+        } catch {
+            // Replace this implementation with code to handle the error appropriately.
+            // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
+            let nsError = error as NSError
+            fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
+        }
+    }
+
+    //!!!!!!
     
     func delay() {
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
@@ -127,35 +198,7 @@ struct ContentView: View {
     }
     
     
-    func addItem(_ pointsReceived: [CGPoint]) {
-        withAnimation {
-            let newItem = Point(context: viewContext)
-            newItem.points = pointsReceived
-
-            do {
-                try viewContext.save()
-            } catch {
-                // Replace this implementation with code to handle the error appropriately.
-                // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
-                let nsError = error as NSError
-                fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
-            }
-        }
-    }
-
-    func deleteItem(){
-        for itemToDelete in items{//!
-            viewContext.delete(itemToDelete)
-        }
-        do {
-            try viewContext.save()
-        } catch {
-            // Replace this implementation with code to handle the error appropriately.
-            // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
-            let nsError = error as NSError
-            fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
-        }
-    }
+    
 
     
     
@@ -234,7 +277,9 @@ struct FirstView: View {
     @State var currentViewNum:Int = loadNum(KeyForUserDefaults: keyCurrentViewNum)
     @State var points: Array<[CGPoint]> = loadPoints()
     @Environment(\.presentationMode) var presentationMode
-    
+    @Environment(\.managedObjectContext) var viewContext
+
+    @FetchRequest(sortDescriptors: []) var items: FetchedResults<Point>//Date
     
     
     
@@ -312,6 +357,7 @@ struct FirstView: View {
         
         .onAppear {
             drawOnAppear()
+            
         }
         
         

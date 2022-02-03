@@ -194,7 +194,7 @@ func endDrawFunction(_ points: inout [[CGPoint]]){
         
         points.append([])
         
-        print(points)
+//        print(points)
         
     }
 }
@@ -279,6 +279,7 @@ func clearFunction(_ points: inout [[CGPoint]]){
     points = [[]]
     pathVar = Path()
     savePoints(points)
+    addItem(points)
     currentLayer = 0
 }
 
@@ -301,6 +302,7 @@ func backFunction(_ points: inout [[CGPoint]]){
             points = [[]]
             pathVar = Path()
             savePoints(points)
+            addItem(points)
             currentLayer = 0
         } else {
             currentLayer = points.count - 1
@@ -316,6 +318,7 @@ func backFunction(_ points: inout [[CGPoint]]){
                 }
                 
                 savePoints(points)
+                addItem(points)
                 
             }
             
@@ -331,6 +334,7 @@ func backFunction(_ points: inout [[CGPoint]]){
         points = [[]]
         pathVar = Path()
         savePoints(points)
+        addItem(points)
         currentLayer = 0
 }
 }
@@ -347,6 +351,7 @@ func pathFunction(_ points: [[CGPoint]]) -> Path{
         
         pathVar.addLine(to: points[currentLayer][pointIndex])
         savePoints(points)
+        addItem(points)
         
         
     }
