@@ -189,7 +189,7 @@ func addPoint(_ value: DragGesture.Value) -> CGPoint{
 //let result = PersistenceController().PersistenceController(inMemory: true)
 //let viewContext = result.container.viewContext
 
-
+/*
 func addItem(_ pointsReceived: [[CGPoint]]) {
     withAnimation {
         
@@ -223,3 +223,4 @@ func deleteItem(_ items: [Point]?){
         fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
     }
 }
+*/

@@ -14,13 +14,13 @@ struct ContentView: View {
     
     @Environment(\.managedObjectContext) var viewContext
 
-    @FetchRequest(sortDescriptors: []) var items: FetchedResults<Point>//Date
+    @FetchRequest(sortDescriptors: []) var items: FetchedResults<Point>
     
     
     @State var currentViewNum:Int = loadNum(KeyForUserDefaults: keyCurrentViewNum)
     @State var maxViewNum:Int = loadNum(KeyForUserDefaults: keyMaxViewNum)
-    @State var points = loadPoints()
-    @State var pointsPreview = loadPointsForPreview()
+//    @State var points = loadPoints()
+//    @State var pointsPreview = loadPointsForPreview()
     @State private var timeElapsed = false
     
     var body: some View {
@@ -71,7 +71,9 @@ struct ContentView: View {
                             })
                             ZStack{
                                 Button(action:{
-                                    deleteButton(num, maxViewNum:&maxViewNum)
+                                    print("del")
+//                                    deleteButton(num, maxViewNum:&maxViewNum)
+//                                    deleteItem(num:num)//
                                 })
                                 {
                                     Image(systemName: "trash.circle.fill")
@@ -115,7 +117,7 @@ struct ContentView: View {
            
             
             let newItem = Point(context: viewContext)
-        newItem.points = [[CGPoint(x:1.0, y:1.0)]]
+        newItem.points = [[]]
             /*
              items![index].points
              */
@@ -131,39 +133,7 @@ struct ContentView: View {
         }
     }
     
-    func editItem(_ pointsReceived: [[CGPoint]]) {
-        
-            /*
-             let userToAdd = Feature(context: context)
-             userToAdd.yearPercent = yearPercent
-
-             userToAdd.mortgageAmount = (mortgageAmount)
-             userToAdd.monthlyPayment = (monthlyPayment)
-             userToAdd.monthsAmount = Int16(monthsAmount)
-             */
-            
-            let newItem = items.last!
-            newItem.points = pointsReceived
-//            print("!!!")
-            
-//            print(newItem.points)
-//            print(pointsReceived)
-            /*
-             items![index].points
-             */
-
-            do {
-                try viewContext.save()
-//                try viewContext.save()
-                print("SAVE")
-            } catch {
-                // Replace this implementation with code to handle the error appropriately.
-                // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
-                let nsError = error as NSError
-                fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
-            }
-        
-    }
+    
 
     func deleteItem(_ items: [Point]?){
         for itemToDelete in items!{
@@ -190,9 +160,9 @@ struct ContentView: View {
     func refreshButton(){
         
         delay()
-        pointsPreview = loadPointsForPreview()
+//        pointsPreview = loadPointsForPreview()
         refreshFunction()
-//        pointsPreview.append([[]])
+
         
         
     }
@@ -205,7 +175,7 @@ struct ContentView: View {
     func plusButton(){
         plusFunction(currentViewNum: currentViewNum)
         maxViewNum = loadNum(KeyForUserDefaults: keyMaxViewNum)
-        pointsPreview.append([[]])
+//        pointsPreview.append([[]])
     }
     
     //to draw view
@@ -217,7 +187,7 @@ struct ContentView: View {
     
     //draw previews
     func drawOnAppear(){
-        onAppearPreviewFunction(&pointsPreview)
+        onAppearPreviewFunction(items)
     }
     
     
@@ -229,7 +199,7 @@ struct ContentView: View {
     
     func drawView(num:Int) -> some View {
         ZStack {
-            DrawShape(pointsPreviewArray: pointsPreview, num: num)
+            DrawShape(pointsPreviewArray: items, num: num)
             
                 .stroke(lineWidth: 5)
                 .foregroundColor(.black)
@@ -245,7 +215,7 @@ struct ContentView: View {
     
     struct DrawShape: Shape {
         
-        var pointsPreviewArray: Array<[[CGPoint]]>
+        var pointsPreviewArray: FetchedResults<Point>
         var num: Int
         
         func path(in rect: CGRect) -> Path {
@@ -277,11 +247,11 @@ struct FirstView: View {
     @State var currentViewNum:Int = loadNum(KeyForUserDefaults: keyCurrentViewNum)
     @State var points: Array<[CGPoint]> = loadPoints()
     @Environment(\.presentationMode) var presentationMode
+    
+    
     @Environment(\.managedObjectContext) var viewContext
 
-    @FetchRequest(sortDescriptors: []) var items: FetchedResults<Point>//Date
-    
-    
+    @FetchRequest(sortDescriptors: []) var items: FetchedResults<Point>
     
     
     
@@ -528,7 +498,26 @@ struct FirstView: View {
         
         
         
-    
+    func editItem(_ pointsReceived: [[CGPoint]]) {
+        
+            
+            
+            let newItem = items.last!
+            newItem.points = pointsReceived
+//
+
+            do {
+                try viewContext.save()
+//
+               
+            } catch {
+                // Replace this implementation with code to handle the error appropriately.
+                // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
+                let nsError = error as NSError
+                fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
+            }
+        
+    }
     
     struct DrawShape: Shape {
         
@@ -554,11 +543,11 @@ struct FirstView: View {
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
-        ContentView().environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
-    }
-}
-
-
+        Group {
+            ContentView()
+            ContentView()
+        }
+    }}
 
 
 
