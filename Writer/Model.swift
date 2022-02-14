@@ -12,19 +12,19 @@ extension UIView {
         UIGraphicsBeginImageContextWithOptions(self.layer.frame.size, false, 0.0)
         self.drawHierarchy(in: self.layer.bounds, afterScreenUpdates: true)
         let img = UIGraphicsGetImageFromCurrentImageContext()
-
+        
         UIGraphicsEndImageContext()
         return img!
-
+        
         
     }
 }
 
 extension View {
     func saveImage(size: CGSize) -> UIImage {
-
+        
         let originPoint = CGPoint(x:0,y:0)
-
+        
         let controller = UIHostingController(rootView: self)
         controller.view.bounds = CGRect(origin: originPoint, size: size)
         let image = controller.view.saveImage()
@@ -33,13 +33,12 @@ extension View {
 }
 
 
-let keyCurrentViewNum = "CurrentViewNumKey"
 let keyMaxViewNum = "MaxViewNumKey"
 
 
 func saveNum(_ num: Int, KeyForUserDefaults: String) {
     UserDefaults.standard.set(num, forKey: KeyForUserDefaults)
-   
+    
 }
 
 
@@ -49,7 +48,7 @@ func loadNum(KeyForUserDefaults: String) -> Int {
     
     let encodedData = UserDefaults.standard.integer(forKey: KeyForUserDefaults)
     
-
+    
     return encodedData
 }
 
@@ -70,4 +69,26 @@ func addPoint(_ value: DragGesture.Value) -> CGPoint{
         pointToAppend.y = 0
     }
     return pointToAppend
+}
+
+
+func addModel(){
+    let newItem = Point(context: viewContext)
+    newItem.points = [[]]
+   
+    
+    
+    saveModel()
+    
+}
+
+func saveModel(){
+    do {
+        try viewContext.save()
+    } catch {
+  
+        let nsError = error as NSError
+        fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
+        
+    }
 }

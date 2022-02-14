@@ -3,7 +3,7 @@ import SwiftUI
 
 @main
 struct WriterApp: App {
-//    let persistenceController = PersistenceController.shared
+    //    let persistenceController = PersistenceController.shared
     var body: some Scene {
         WindowGroup {
             ContentView()

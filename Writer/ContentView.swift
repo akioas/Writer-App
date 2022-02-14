@@ -16,16 +16,16 @@ var currentViewNum:Int = 0
 struct ContentView: View {
     
     @Environment(\.managedObjectContext) var viewContext
-
+    
     @FetchRequest(sortDescriptors: []) var items: FetchedResults<Point>
     
-
+    
     @State var maxViewNum:Int = loadNum(KeyForUserDefaults: keyMaxViewNum)
-
+    
     
     var body: some View {
         ZStack{
- 
+            
             NavigationView {
                 VStack{
                     HStack{
@@ -39,22 +39,9 @@ struct ContentView: View {
                                 .resizable()
                                 .frame(width: 50, height: 50)
                         }
-//                        Spacer()
-//                            .frame(width: 50)
-                        //refresh previews
-                        /*
-                        Button(action:{
-                            
-                            refreshButton()
-                            
-                        }){
-                            Image(systemName: "gobackward")
-                                .resizable()
-                                .frame(width: 50, height: 50)
-                            
-                        }
-                         */
+                        
                     }
+                    Spacer()
                     ScrollView {
                         
                         //previews
@@ -68,7 +55,7 @@ struct ContentView: View {
                                     .frame(width: screenWidth*0.8, height: screenWidth*0.8)
                                     .background(Rectangle()
                                                     .foregroundColor(drawColor))
-                                 
+                                
                             }
                             .simultaneousGesture(TapGesture().onEnded{
                                 currentViewNum = num
@@ -86,81 +73,55 @@ struct ContentView: View {
                             }
                         }
                     }
-             
+                    
                 }
-
+                
             }
             
             
-                .navigationBarBackButtonHidden(true)
-                .navigationBarHidden(true)
-                .onAppear(perform: {
-                    //
-                    
-                    drawOnAppear()
-                    print(items)//
-                    
-                })
-               
+            .navigationBarBackButtonHidden(true)
+            .navigationBarHidden(true)
+            .onAppear(perform: {
+              
+                drawOnAppear()
+              
                 
-                
+            })
+            
+            
+            
         }
         
-
+        
     }
     
     func addItem() {
         
-           
-            
-            let newItem = Point(context: viewContext)
-        newItem.points = [[]]
-        print(newItem.points)
+        
+        addFunction()
         
         
-            /*
-             items![index].points
-             */
-
-            do {
-                try viewContext.save()
-            } catch {
-                // Replace this implementation with code to handle the error appropriately.
-                // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
-                let nsError = error as NSError
-                fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
-            
-        }
-        print(items)
         maxViewNum = items.count
         saveNum(maxViewNum, KeyForUserDefaults: keyMaxViewNum)
-        pathVarPreview.append(Path())
+        
     }
     
     
-
+    
     func deleteItem(_ num: Int){
         let itemToDelete = items[num]
+        viewContext.delete(itemToDelete)
         
-            viewContext.delete(itemToDelete)
-        
-        do {
-            try viewContext.save()
-        } catch {
-            // Replace this implementation with code to handle the error appropriately.
-            // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
-            let nsError = error as NSError
-            fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
-        }
+        deleteFunction(num)
         maxViewNum = items.count
         saveNum(maxViewNum, KeyForUserDefaults: keyMaxViewNum)
-        pathVarPreview.remove(at: num)
+        
+        
     }
     
     
     func navigationButton(_ num:Int){
         
-//        }
         currentViewNum = num
         navigationFunction(points: points)
     }
@@ -168,15 +129,12 @@ struct ContentView: View {
     
     func drawOnAppear(){
         var pointsAppear:[[[CGPoint]]] = []
-        print(items)
-        print("???")
-        print(items.count)
+        
         for number in 0..<items.count{
             pointsAppear.insert((items[number].points), at: number)
         }
         
-        print("appear")
-        print(pointsAppear)
+       
         onAppearPreviewFunction(pointsAppear)
         
         
@@ -217,10 +175,10 @@ struct ContentView: View {
     
     
 }
-    
-    
-  
-    
+
+
+
+
 
 import SwiftUI
 import UIKit
@@ -228,21 +186,20 @@ import UIKit
 var points:[[CGPoint]] = []
 
 struct FirstView: View {
-
+    
     @Environment(\.presentationMode) var presentationMode
     
     @State private var timeVar = false
     
     @Environment(\.managedObjectContext) var viewContext
-
+    
     @FetchRequest(sortDescriptors: []) var items: FetchedResults<Point>
-   
+    
     
     var body: some View {
         
         return ZStack {
-//            Color(.yellow)
-//                .ignoresSafeArea()
+         
             
             GeometryReader { proxy in
                 if proxy.size.width < proxy.size.height {
@@ -334,7 +291,7 @@ struct FirstView: View {
                             .onEnded( { _ in
                     
                     endDrawFunction(&points)
-//                    points.append([])
+                    //                    points.append([])
                 }))
             DrawShape(points: points, changed: timeVar)
             
@@ -355,7 +312,7 @@ struct FirstView: View {
                     .frame(width: 50, height: 50)
             }
             .background(buttonColor)
-//            .padding(.bottom, 5)
+           
             .cornerRadius(8)
             Button(action: {continuousLineButton()}){
                 
@@ -444,8 +401,7 @@ struct FirstView: View {
             currentLayer = currentLayer + 1
             
             points.append([])
-            
-    //        print(points)
+           
             
         }
         editItem(points)
@@ -454,15 +410,10 @@ struct FirstView: View {
     
     //draw saved image when view appears
     func drawOnAppear(){
-        /*
-        for number in 0..<items.count{
-            points.insert((items[number].points), at: number)
-        }
-         */
+        
         points = []
-//        for number in 0..<items.count{
-            points = items[currentViewNum].points
-        print(points)
+        points = items[currentViewNum].points
+        
         onAppearDrawFunction(&points)
         
     }
@@ -492,103 +443,38 @@ struct FirstView: View {
     func clearButton(){
         
         clearFunction(&points)
-//        clearFunction(&points[currentViewNum])
+ 
         
     }
     
     
     func backButton(){
         backFunction(&points)
-        }//backButton
-        
+        editItem(points)
+    }//backButton
+    
     func clearFunction(_ points: inout [[CGPoint]]){
         points = [[]]
         pathVar = Path()
         editItem(points)
         currentLayer = 0
     }
-
-
-    func backFunction(_ points: inout [[CGPoint]]){
-        points.removeAll{$0.isEmpty}
-        if points.isEmpty == false{
-            if ((points.last?.isEmpty) == true)
-            {
-                points.removeLast()
-            }
-            if points.isEmpty == false{
-                points.removeLast()
-                
-            }
-            
-            currentLayer = points.count - 1
-            pathVar = Path()
-            if currentLayer  < 0 {
-                points = [[]]
-                pathVar = Path()
-                editItem(points)
-                currentLayer = 0
-            } else {
-                currentLayer = points.count - 1
-                for currentNum in 0...currentLayer{
-                    let firstPoint = points[currentNum].first
-                    
-                    
-                    pathVar.move(to: firstPoint!)
-                    for pointIndex in 1..<points[currentNum].count{
-                        
-                        pathVar.addLine(to: points[currentNum][pointIndex])
-                        
-                    }
-                    
-                    editItem(points)
-                }
-                
-            }
-            
-            
-            
-            points.append([])
-            currentLayer = points.count - 1
-            
-            
-        } else{
-            points = [[]]
-            pathVar = Path()
-            editItem(points)
-            currentLayer = 0
-    }
-    }
-
     
-        
+    
     func editItem(_ pointsReceived: [[CGPoint]]) {
         
-//            currentViewNum = loadNum(KeyForUserDefaults: keyCurrentViewNum)
-            print(currentViewNum)
-        
-//        print(points)
-        print("!!")
-        print(pointsReceived)
-//        print(points.count)
-//        print(points[currentViewNum])
         
         let newItem = items[currentViewNum]
-            newItem.points = pointsReceived
-//
-
-            do {
-                try viewContext.save()
-//
-               
-            } catch {
-                // Replace this implementation with code to handle the error appropriately.
-                // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
-                let nsError = error as NSError
-                fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
-            }
+        newItem.points = pointsReceived
+        
+        
+        editView()
         
     }
+    
+    
+    
+    
     
     struct DrawShape: Shape {
         

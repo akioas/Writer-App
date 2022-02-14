@@ -20,13 +20,11 @@ var rectHeight: Double = screenHeight
 var selected: Int = 0
 
 func navigationFunction(points loadPoints: [[CGPoint]]){
-   
-//    selected = num
+
     pathVar = Path()
-//    var points = loadPoints
     currentLayer = points.count - 1
     if points.isEmpty == false{
-//        points.removeAll{$0.isEmpty}
+        
         pathVar = Path()
         currentLayer = points.count - 1
         if currentLayer < 0{
@@ -44,7 +42,7 @@ func navigationFunction(points loadPoints: [[CGPoint]]){
                     
                 }
             }
-//            savePoints(points)
+           
             
         }
         
@@ -54,21 +52,20 @@ func navigationFunction(points loadPoints: [[CGPoint]]){
             currentLayer = 0
             points = [[]]
             pathVar = Path()
-//            savePoints(points)
+           
         }
         
     } else{
         points = [[]]
         pathVar = Path()
-//        savePoints(points)
+
         currentLayer = 0
     }
 }
 
 func onAppearPreviewFunction(_ points: [[[CGPoint]]]){
     var pointsPreview = points
-    print(points)
-    print("?")
+    
     pathVarPreview = Array(repeating:Path(),count:loadNum(KeyForUserDefaults: keyMaxViewNum))
     let maxViewNum = loadNum(KeyForUserDefaults: keyMaxViewNum)
     for  num in 0..<maxViewNum{
@@ -76,10 +73,9 @@ func onAppearPreviewFunction(_ points: [[[CGPoint]]]){
         if pointsPreview.count > num {
             
             for currentLayerPreview in 0...(pointsPreview[num].count - 1) {
-                //                        guard let
-                
+               
                 let firstPointPreview = pointsPreview[num][currentLayerPreview].first
-                //                        else { return pathVarPreview[num]}
+               
                 
                 
                 if firstPointPreview != nil{
@@ -102,83 +98,29 @@ func onAppearPreviewFunction(_ points: [[[CGPoint]]]){
 //share button
 func actionSheetFunc() {
     let imgShare = FirstView().drawView.saveImage(size: imageSize)
-        let activityVC = UIActivityViewController(activityItems: [imgShare], applicationActivities: nil)
-        UIApplication.shared.windows.first?.rootViewController?.present(activityVC, animated: true, completion: nil)
-    }
+    let activityVC = UIActivityViewController(activityItems: [imgShare], applicationActivities: nil)
+    UIApplication.shared.windows.first?.rootViewController?.present(activityVC, animated: true, completion: nil)
+}
 
 
 
 func onAppearDrawFunction(_ points:inout [[CGPoint]]){
     
-    
-       saveNum(selected, KeyForUserDefaults: keyCurrentViewNum)
-       print("APPEAR")
+
     pathVar = Path()
-//       points = loadPoints()
     
     
-       if points.isEmpty == false{
-           points.removeAll{$0.isEmpty}
-           points.append([])
-           currentLayer = points.count - 1
+    if points.isEmpty == false{
+        points.removeAll{$0.isEmpty}
+        points.append([])
+        currentLayer = points.count - 1
         if currentLayer < 0 {
             currentLayer = 0
         }
-           
-           
-           
-           for currentNum in 0...currentLayer{
-               let firstPoint = points[currentNum].first
-               
-               if firstPoint != nil{
-                   pathVar.move(to: firstPoint!)
-                   for pointIndex in 1..<points[currentNum].count{
-                       
-                       pathVar.addLine(to: points[currentNum][pointIndex])
-                       
-                   }
-               }
-               
-//               savePoints(points)
-               
-           }
-           
-           points.append([])
-           currentLayer = points.count - 1
-           if currentLayer < 0{
-               currentLayer = 0
-               points = [[]]
-               pathVar = Path()
-//               savePoints(points)
-           }
-           
-       } else{
-           points = [[]]
-           pathVar = Path()
-//           savePoints(points)
-           currentLayer = 0
-       }
-    
-    
-    
-    
-    /*
-//    saveNum(selected, KeyForUserDefaults: keyCurrentViewNum)
-    
-//    FirstView().clearFunction(&points)
-//    points = loadPoints()
-    pathVar = Path()
-    currentLayer = points.count - 1
-    if currentLayer < 0{
-        currentLayer = 0
-    }
-    if points.isEmpty == false{
-        points.removeAll{$0.isEmpty}
-        
-        pathVar = Path()
         
         
-        for currentNum in 0..<currentLayer{
+        
+        for currentNum in 0...currentLayer{
             let firstPoint = points[currentNum].first
             
             if firstPoint != nil{
@@ -190,7 +132,6 @@ func onAppearDrawFunction(_ points:inout [[CGPoint]]){
                 }
             }
             
-//            FirstView().editItem(points)
             
         }
         
@@ -200,15 +141,16 @@ func onAppearDrawFunction(_ points:inout [[CGPoint]]){
             currentLayer = 0
             points = [[]]
             pathVar = Path()
-//            FirstView().editItem(points)
+        
         }
         
     } else{
         points = [[]]
         pathVar = Path()
-//        FirstView().editItem(points)
         currentLayer = 0
-    }*/
+    }
+    
+    
 }
 
 
@@ -239,32 +181,6 @@ func continuousLineFunction(_ points: inout [[CGPoint]]){
 }
 
 
-/*
-
-func pathFunction(_ points: [[CGPoint]]) -> Path{
-    currentLayer = points.count - 1
-    if currentLayer < 0{
-        currentLayer = 0
-    }
-    if !points.isEmpty{
-    guard let firstPoint = points[currentLayer].first else { return pathVar
-        
-    }
-    
-    pathVar.move(to: firstPoint)
-    for pointIndex in 1..<points[currentLayer].count{
-        
-        pathVar.addLine(to: points[currentLayer][pointIndex])
-        FirstView().editItem(points)
-        
-        
-    }
-    return pathVar
-    }
-    else {
-        return Path()
-    }
-}*/
 
 func pathFunction(_ points: [[CGPoint]]) -> Path{
     
@@ -273,24 +189,89 @@ func pathFunction(_ points: [[CGPoint]]) -> Path{
         currentLayer = 0
     }
     if !points.isEmpty{
-    guard let firstPoint = points[currentLayer].first else { return pathVar
+        guard let firstPoint = points[currentLayer].first else { return pathVar
+            
+        }
         
-    }
-//        FirstView().editItem(points)
-        print("??????")
-    pathVar.move(to: firstPoint)
-    for pointIndex in 1..<points[currentLayer].count{
-        
-        pathVar.addLine(to: points[currentLayer][pointIndex])
-        
-        
-        
-    }
+        pathVar.move(to: firstPoint)
+        for pointIndex in 1..<points[currentLayer].count{
+            
+            pathVar.addLine(to: points[currentLayer][pointIndex])
+            
+            
+            
+        }
     }
     return pathVar
 }
 
-func getPoints() -> [[CGPoint]]{
-    print("ggg")
-    return points
+
+func addFunction(){
+    addModel()
+    pathVarPreview.append(Path())
 }
+
+func deleteFunction(_ num:Int){
+    
+    saveModel()
+    pathVarPreview.remove(at: num)
+    
+}
+
+func editView(){
+    saveModel()
+}
+
+
+func backFunction(_ points: inout [[CGPoint]]){
+    points.removeAll{$0.isEmpty}
+    if points.isEmpty == false{
+        if ((points.last?.isEmpty) == true)
+        {
+            points.removeLast()
+        }
+        if points.isEmpty == false{
+            points.removeLast()
+            
+        }
+        
+        currentLayer = points.count - 1
+        pathVar = Path()
+        if currentLayer  < 0 {
+            points = [[]]
+            pathVar = Path()
+            
+            currentLayer = 0
+        } else {
+            currentLayer = points.count - 1
+            for currentNum in 0...currentLayer{
+                let firstPoint = points[currentNum].first
+                
+                
+                pathVar.move(to: firstPoint!)
+                for pointIndex in 1..<points[currentNum].count{
+                    
+                    pathVar.addLine(to: points[currentNum][pointIndex])
+                    
+                }
+                
+              
+            }
+            
+        }
+        
+        
+        
+        points.append([])
+        currentLayer = points.count - 1
+        
+        
+    } else{
+        points = [[]]
+        pathVar = Path()
+     
+        currentLayer = 0
+    }
+}
+
+
