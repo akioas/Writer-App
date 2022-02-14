@@ -1,4 +1,5 @@
 
+
 import SwiftUI
 import UIKit
 
@@ -9,6 +10,8 @@ let buttonColor = Color(red: 0.30, green: 0.65, blue: 0.70)
 let drawColor = Color(red: 0.87, green: 0.68, blue: 0.12)
 let backColor = Color(red: 0.92, green: 0.82, blue: 0.51)
 
+var currentViewNum:Int = 0
+
 
 struct ContentView: View {
     
@@ -16,12 +19,9 @@ struct ContentView: View {
 
     @FetchRequest(sortDescriptors: []) var items: FetchedResults<Point>
     
-    
-    @State var currentViewNum:Int = loadNum(KeyForUserDefaults: keyCurrentViewNum)
+
     @State var maxViewNum:Int = loadNum(KeyForUserDefaults: keyMaxViewNum)
-//    @State var points = loadPoints()
-//    @State var pointsPreview = loadPointsForPreview()
-    @State private var timeElapsed = false
+
     
     var body: some View {
         ZStack{
@@ -31,7 +31,7 @@ struct ContentView: View {
                     HStack{
                         //new image
                         Button(action: {
-                            plusButton()
+                            addItem()
                             
                         }) {
                             
@@ -39,9 +39,10 @@ struct ContentView: View {
                                 .resizable()
                                 .frame(width: 50, height: 50)
                         }
-                        Spacer()
-                            .frame(width: 50)
+//                        Spacer()
+//                            .frame(width: 50)
                         //refresh previews
+                        /*
                         Button(action:{
                             
                             refreshButton()
@@ -52,6 +53,7 @@ struct ContentView: View {
                                 .frame(width: 50, height: 50)
                             
                         }
+                         */
                     }
                     ScrollView {
                         
@@ -61,19 +63,20 @@ struct ContentView: View {
                             num in
                             NavigationLink(destination: FirstView())
                             {
+                                
                                 drawView(num:num)
                                     .frame(width: screenWidth*0.8, height: screenWidth*0.8)
                                     .background(Rectangle()
                                                     .foregroundColor(drawColor))
+                                 
                             }
                             .simultaneousGesture(TapGesture().onEnded{
-                                self.navigationButton(num)
+                                currentViewNum = num
+                                self.navigationButton(currentViewNum)
                             })
                             ZStack{
                                 Button(action:{
-                                    print("del")
-//                                    deleteButton(num, maxViewNum:&maxViewNum)
-//                                    deleteItem(num:num)//
+                                    deleteItem(num)
                                 })
                                 {
                                     Image(systemName: "trash.circle.fill")
@@ -83,14 +86,8 @@ struct ContentView: View {
                             }
                         }
                     }
-                    
-                    
-                    
+             
                 }
-                
-                
-                
-                
 
             }
             
@@ -111,13 +108,16 @@ struct ContentView: View {
         
 
     }
-       //!!!!
+    
     func addItem() {
         
            
             
             let newItem = Point(context: viewContext)
         newItem.points = [[]]
+        print(newItem.points)
+        
+        
             /*
              items![index].points
              */
@@ -131,14 +131,19 @@ struct ContentView: View {
                 fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
             
         }
+        print(items)
+        maxViewNum = items.count
+        saveNum(maxViewNum, KeyForUserDefaults: keyMaxViewNum)
+        pathVarPreview.append(Path())
     }
     
     
 
-    func deleteItem(_ items: [Point]?){
-        for itemToDelete in items!{
+    func deleteItem(_ num: Int){
+        let itemToDelete = items[num]
+        
             viewContext.delete(itemToDelete)
-        }
+        
         do {
             try viewContext.save()
         } catch {
@@ -147,53 +152,35 @@ struct ContentView: View {
             let nsError = error as NSError
             fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
         }
-    }
-
-    //!!!!!!
-    
-    func delay() {
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-            timeElapsed = true
-        }
-    }
-    
-    func refreshButton(){
-        
-        delay()
-//        pointsPreview = loadPointsForPreview()
-        refreshFunction()
-
-        
-        
+        maxViewNum = items.count
+        saveNum(maxViewNum, KeyForUserDefaults: keyMaxViewNum)
+        pathVarPreview.remove(at: num)
     }
     
     
-    
-
-    
-    
-    func plusButton(){
-        plusFunction(currentViewNum: currentViewNum)
-        maxViewNum = loadNum(KeyForUserDefaults: keyMaxViewNum)
-//        pointsPreview.append([[]])
+    func navigationButton(_ num:Int){
+        
+//        }
+        currentViewNum = num
+        navigationFunction(points: points)
     }
     
-    //to draw view
-    func navigationButton(_ num: Int){
-        
-        navigationFunction(num)
-        
-    }
     
-    //draw previews
     func drawOnAppear(){
-        onAppearPreviewFunction(items)
+        var pointsAppear:[[[CGPoint]]] = []
+        print(items)
+        print("???")
+        print(items.count)
+        for number in 0..<items.count{
+            pointsAppear.insert((items[number].points), at: number)
+        }
+        
+        print("appear")
+        print(pointsAppear)
+        onAppearPreviewFunction(pointsAppear)
+        
+        
     }
-    
-    
-    
-    
-    
     
     
     
@@ -230,30 +217,26 @@ struct ContentView: View {
     
     
 }
+    
+    
+  
+    
 
+import SwiftUI
+import UIKit
 
-
-
-
-
-
-
-
-
-
-
+var points:[[CGPoint]] = []
 
 struct FirstView: View {
-    @State var currentViewNum:Int = loadNum(KeyForUserDefaults: keyCurrentViewNum)
-    @State var points: Array<[CGPoint]> = loadPoints()
+
     @Environment(\.presentationMode) var presentationMode
     
+    @State private var timeVar = false
     
     @Environment(\.managedObjectContext) var viewContext
 
     @FetchRequest(sortDescriptors: []) var items: FetchedResults<Point>
-    
-    
+   
     
     var body: some View {
         
@@ -349,9 +332,11 @@ struct FirstView: View {
                     
                 })
                             .onEnded( { _ in
+                    
                     endDrawFunction(&points)
+//                    points.append([])
                 }))
-            DrawShape(points: points)
+            DrawShape(points: points, changed: timeVar)
             
                 .stroke(lineWidth: 5)
                 .foregroundColor(.black)
@@ -391,7 +376,7 @@ struct FirstView: View {
             
             
             Button(action: {
-                Writer.actionSheet()
+                actionSheetFunc()
             }) {
                 Image(systemName: "square.and.arrow.up.circle")
                     .resizable()
@@ -437,7 +422,7 @@ struct FirstView: View {
             .cornerRadius(8)
             
             Button(action: {
-                Writer.actionSheet()
+                actionSheetFunc()
             }) {
                 Image(systemName: "square.and.arrow.up.circle")
                     .resizable()
@@ -453,12 +438,31 @@ struct FirstView: View {
     }
     
     
-    
+    func endDrawFunction(_ points: inout [[CGPoint]]){
+        
+        if drawMode == 1{
+            currentLayer = currentLayer + 1
+            
+            points.append([])
+            
+    //        print(points)
+            
+        }
+        editItem(points)
+    }
     
     
     //draw saved image when view appears
     func drawOnAppear(){
-        
+        /*
+        for number in 0..<items.count{
+            points.insert((items[number].points), at: number)
+        }
+         */
+        points = []
+//        for number in 0..<items.count{
+            points = items[currentViewNum].points
+        print(points)
         onAppearDrawFunction(&points)
         
     }
@@ -470,6 +474,7 @@ struct FirstView: View {
     func addNewPoint(_ value: DragGesture.Value) {
         
         addNewPointFunction(&points, value: value)
+        timeVar = !timeVar
         
     }
     
@@ -487,6 +492,7 @@ struct FirstView: View {
     func clearButton(){
         
         clearFunction(&points)
+//        clearFunction(&points[currentViewNum])
         
     }
     
@@ -495,14 +501,79 @@ struct FirstView: View {
         backFunction(&points)
         }//backButton
         
-        
-        
+    func clearFunction(_ points: inout [[CGPoint]]){
+        points = [[]]
+        pathVar = Path()
+        editItem(points)
+        currentLayer = 0
+    }
+
+
+    func backFunction(_ points: inout [[CGPoint]]){
+        points.removeAll{$0.isEmpty}
+        if points.isEmpty == false{
+            if ((points.last?.isEmpty) == true)
+            {
+                points.removeLast()
+            }
+            if points.isEmpty == false{
+                points.removeLast()
+                
+            }
+            
+            currentLayer = points.count - 1
+            pathVar = Path()
+            if currentLayer  < 0 {
+                points = [[]]
+                pathVar = Path()
+                editItem(points)
+                currentLayer = 0
+            } else {
+                currentLayer = points.count - 1
+                for currentNum in 0...currentLayer{
+                    let firstPoint = points[currentNum].first
+                    
+                    
+                    pathVar.move(to: firstPoint!)
+                    for pointIndex in 1..<points[currentNum].count{
+                        
+                        pathVar.addLine(to: points[currentNum][pointIndex])
+                        
+                    }
+                    
+                    editItem(points)
+                }
+                
+            }
+            
+            
+            
+            points.append([])
+            currentLayer = points.count - 1
+            
+            
+        } else{
+            points = [[]]
+            pathVar = Path()
+            editItem(points)
+            currentLayer = 0
+    }
+    }
+
+    
         
     func editItem(_ pointsReceived: [[CGPoint]]) {
         
-            
-            
-            let newItem = items.last!
+//            currentViewNum = loadNum(KeyForUserDefaults: keyCurrentViewNum)
+            print(currentViewNum)
+        
+//        print(points)
+        print("!!")
+        print(pointsReceived)
+//        print(points.count)
+//        print(points[currentViewNum])
+        
+        let newItem = items[currentViewNum]
             newItem.points = pointsReceived
 //
 
@@ -521,8 +592,8 @@ struct FirstView: View {
     
     struct DrawShape: Shape {
         
-        var points: Array<[CGPoint]>
-        
+        var points: [[CGPoint]]
+        var changed: Bool
         func path(in rect: CGRect) -> Path {
             
             
@@ -541,6 +612,10 @@ struct FirstView: View {
 
 
 
+
+
+
+
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         Group {
@@ -548,6 +623,7 @@ struct ContentView_Previews: PreviewProvider {
             ContentView()
         }
     }}
+
 
 
 

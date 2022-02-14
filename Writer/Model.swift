@@ -1,7 +1,7 @@
 import SwiftUI
 import UIKit
 
-
+var items:[[[CGPoint]]] = [[[]]]
 var colorContinuous:Color? = .black //for continuous line button
 
 
@@ -33,80 +33,6 @@ extension View {
 }
 
 
-
-
-
-
-
-let keyPoints = "PointsKey"
-//var KeyForUserDefaults = keyPoints + String(loadNum(KeyForUserDefaults: keyCurrentViewNum))
-
-
-func savePoints(_ points: [[CGPoint]]) {
-    let KeyForUserDefaults = keyPoints + String(loadNum(KeyForUserDefaults: keyCurrentViewNum))
-    let data = points.map { try? JSONEncoder().encode($0) }
-    UserDefaults.standard.set(data, forKey: KeyForUserDefaults)
-    
-
-}
-
-
-func loadPoints() -> [[CGPoint]] {
-    let KeyForUserDefaults = keyPoints + String(loadNum(KeyForUserDefaults: keyCurrentViewNum))
-    
-    guard let encodedData = UserDefaults.standard.array(forKey: KeyForUserDefaults) as? [Data] else {
-        return [[]]
-    }
-    
-    
-    var encodedReturn = encodedData.map { try! JSONDecoder().decode([CGPoint].self, from: $0) }
-    currentLayer = encodedReturn.count - 1
-    pathVar = Path()
-    for currentNum in 0...currentLayer{
-        guard let firstPoint = encodedReturn[currentNum].first else { return [[]]
-            
-        }
-        
-        pathVar.move(to: firstPoint)
-        for pointIndex in 1..<encodedReturn[currentNum].count{
-            
-            pathVar.addLine(to: encodedReturn[currentNum][pointIndex])
-            
-        }
-
-    }
-    
-    encodedReturn.append([])
-    currentLayer = currentLayer + 1
-    return encodedReturn
-}
-
-
-
-func loadPointsForPreview() -> [[[CGPoint]]] {
-    var encodedReturn:[[[CGPoint]]] = [[[]]]
-    let maxViewNum:Int = loadNum(KeyForUserDefaults: keyMaxViewNum)
-    for num in 0..<maxViewNum{
-    let KeyForUserDefaults = keyPoints + String(num)
-    
-    guard let encodedData = UserDefaults.standard.array(forKey: KeyForUserDefaults) as? [Data] else {
-        return [[]]
-    }
-        encodedReturn.append(encodedData.map { try! JSONDecoder().decode([CGPoint].self, from: $0) })
-
-    }
-  
-    if encodedReturn[0] == [[]]{
-        encodedReturn.remove(at: 0)
-    }
-    
-    return encodedReturn
-}
-
-
-
-
-
 let keyCurrentViewNum = "CurrentViewNumKey"
 let keyMaxViewNum = "MaxViewNumKey"
 
@@ -122,49 +48,10 @@ func saveNum(_ num: Int, KeyForUserDefaults: String) {
 func loadNum(KeyForUserDefaults: String) -> Int {
     
     let encodedData = UserDefaults.standard.integer(forKey: KeyForUserDefaults)
+    
 
     return encodedData
 }
-
-
-var keyToDelete = ""
-var keyToReassign = ""
-
-func deleteView(deletedViewNum: Int,  maxViewNum: Int)->([[CGPoint]]) {
-    
-    if deletedViewNum == maxViewNum - 1{
-        keyToDelete = keyPoints + String(deletedViewNum)
-        UserDefaults.standard.removeObject(forKey: keyToDelete)
-            
-    }
-    else {
-        keyToReassign = keyPoints
-        for viewNum in deletedViewNum..<maxViewNum{
-            keyToDelete = keyPoints + String(viewNum)
-            //
-            keyToReassign = keyPoints + String(viewNum+1)
-            guard let encodedData = UserDefaults.standard.array(forKey: keyToReassign) as? [Data] else {
-                return [[]]
-            }
-            
-            let encodedReturn = encodedData.map { try! JSONDecoder().decode([CGPoint].self, from: $0) }
-            
-            let data = encodedReturn.map { try? JSONEncoder().encode($0) }
-            UserDefaults.standard.set(data as Any?, forKey: keyToDelete)
-            print(keyToReassign)
-            print(maxViewNum)
-            //
-        }
-
-        UserDefaults.standard.removeObject(forKey: keyToReassign)
-
-        print(keyToReassign)
-        
-    }
-    return [[]]
-}
-
-
 
 
 func addPoint(_ value: DragGesture.Value) -> CGPoint{
@@ -184,43 +71,3 @@ func addPoint(_ value: DragGesture.Value) -> CGPoint{
     }
     return pointToAppend
 }
-
-
-//let result = PersistenceController().PersistenceController(inMemory: true)
-//let viewContext = result.container.viewContext
-
-/*
-func addItem(_ pointsReceived: [[CGPoint]]) {
-    withAnimation {
-        
-        let newItem = Point(context: viewContext)
-        newItem.points = pointsReceived
-        /*
-         items![index].points
-         */
-
-        do {
-            try viewContext.save()
-        } catch {
-            // Replace this implementation with code to handle the error appropriately.
-            // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
-            let nsError = error as NSError
-            fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
-        }
-    }
-}
-
-func deleteItem(_ items: [Point]?){
-    for itemToDelete in items!{
-        viewContext.delete(itemToDelete)
-    }
-    do {
-        try viewContext.save()
-    } catch {
-        // Replace this implementation with code to handle the error appropriately.
-        // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
-        let nsError = error as NSError
-        fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
-    }
-}
-*/

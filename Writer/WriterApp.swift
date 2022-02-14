@@ -1,5 +1,6 @@
 import SwiftUI
 
+
 @main
 struct WriterApp: App {
 //    let persistenceController = PersistenceController.shared
