@@ -5,12 +5,12 @@ var screenWidth = UIScreen.main.bounds.width
 var screenHeight = UIScreen.main.bounds.height
 
 var currentLayer = 0
-var pathVar = Path() //draw shape
+var pathVar = UIBezierPath() //draw shape
 var drawMode = 1
 var imageSize = CGSize(width: screenWidth+100, height: screenWidth+100)
 
 
-var pathVarPreview = Array(repeating:Path(),count:loadNum(KeyForUserDefaults: keyMaxViewNum)) //previews draw shape
+var pathVarPreview = Array(repeating:UIBezierPath(),count:loadNum(KeyForUserDefaults: keyMaxViewNum)) //previews draw shape
 
 var currentNum = 0
 var currentLayerPreview = 0
@@ -21,11 +21,11 @@ var selected: Int = 0
 
 func navigationFunction(points loadPoints: [[CGPoint]]){
 
-    pathVar = Path()
+    pathVar = UIBezierPath()
     currentLayer = points.count - 1
     if points.isEmpty == false{
         
-        pathVar = Path()
+        pathVar = UIBezierPath()
         currentLayer = points.count - 1
         if currentLayer < 0{
             currentLayer = 0
@@ -37,8 +37,9 @@ func navigationFunction(points loadPoints: [[CGPoint]]){
             if firstPoint != nil{
                 pathVar.move(to: firstPoint!)
                 for pointIndex in 1..<points[currentNum].count{
-                    
-                    pathVar.addLine(to: points[currentNum][pointIndex])
+                    if ((pointIndex % 2 != 1) && (pointIndex > 0)) {
+                        pathVar.addQuadCurve(to: points[currentNum][pointIndex], controlPoint: points[currentNum][pointIndex - 1])
+                    }
                     
                 }
             }
@@ -51,13 +52,13 @@ func navigationFunction(points loadPoints: [[CGPoint]]){
         if currentLayer < 0{
             currentLayer = 0
             points = [[]]
-            pathVar = Path()
+            pathVar = UIBezierPath()
            
         }
         
     } else{
         points = [[]]
-        pathVar = Path()
+        pathVar = UIBezierPath()
 
         currentLayer = 0
     }
@@ -66,7 +67,7 @@ func navigationFunction(points loadPoints: [[CGPoint]]){
 func onAppearPreviewFunction(_ points: [[[CGPoint]]]){
     var pointsPreview = points
     
-    pathVarPreview = Array(repeating:Path(),count:loadNum(KeyForUserDefaults: keyMaxViewNum))
+    pathVarPreview = Array(repeating:UIBezierPath(),count:loadNum(KeyForUserDefaults: keyMaxViewNum))
     let maxViewNum = loadNum(KeyForUserDefaults: keyMaxViewNum)
     for  num in 0..<maxViewNum{
         pointsPreview.removeAll{$0.isEmpty}
@@ -81,9 +82,10 @@ func onAppearPreviewFunction(_ points: [[[CGPoint]]]){
                 if firstPointPreview != nil{
                     pathVarPreview[num].move(to: firstPointPreview!)
                     for pointIndex in 1..<pointsPreview[num][currentLayerPreview].count{
-                        
-                        pathVarPreview[num].addLine(to: pointsPreview[num][currentLayerPreview][pointIndex])
-                        
+                        if ((pointIndex % 2 != 1) && (pointIndex > 0)) {
+                           
+                        pathVarPreview[num].addQuadCurve(to: pointsPreview[num][currentLayerPreview][pointIndex], controlPoint: pointsPreview[num][currentLayerPreview][pointIndex - 1])
+                        }
                     }
                 }
             }
@@ -107,7 +109,7 @@ func actionSheetFunc() {
 func onAppearDrawFunction(_ points:inout [[CGPoint]]){
     
 
-    pathVar = Path()
+    pathVar = UIBezierPath()
     
     
     if points.isEmpty == false{
@@ -127,7 +129,9 @@ func onAppearDrawFunction(_ points:inout [[CGPoint]]){
                 pathVar.move(to: firstPoint!)
                 for pointIndex in 1..<points[currentNum].count{
                     
-                    pathVar.addLine(to: points[currentNum][pointIndex])
+                    if ((pointIndex % 2 != 1) && (pointIndex > 0)) {
+                        pathVar.addQuadCurve(to: points[currentNum][pointIndex], controlPoint: points[currentNum][pointIndex - 1])
+                    }
                     
                 }
             }
@@ -140,13 +144,13 @@ func onAppearDrawFunction(_ points:inout [[CGPoint]]){
         if currentLayer < 0{
             currentLayer = 0
             points = [[]]
-            pathVar = Path()
+            pathVar = UIBezierPath()
         
         }
         
     } else{
         points = [[]]
-        pathVar = Path()
+        pathVar = UIBezierPath()
         currentLayer = 0
     }
     
@@ -182,33 +186,33 @@ func continuousLineFunction(_ points: inout [[CGPoint]]){
 
 
 
-func pathFunction(_ points: [[CGPoint]]) -> Path{
+func pathFunction(_ points: [[CGPoint]]) -> UIBezierPath{
     
     currentLayer = points.count - 1
     if currentLayer < 0{
         currentLayer = 0
     }
-    if !points.isEmpty{
-        guard let firstPoint = points[currentLayer].first else { return pathVar
-            
+    currentNum = points.count - 1
+        let firstPoint = points[currentNum].first
+        
+        if firstPoint != nil{
+        
+        pathVar.move(to: firstPoint!)
+        for pointIndex in 0..<points[currentNum].count{
+            if ((pointIndex % 2 != 1) && (pointIndex > 0)) {
+                pathVar.addQuadCurve(to: points[currentNum][pointIndex], controlPoint: points[currentNum][pointIndex - 1])
+            }
+        }
         }
         
-        pathVar.move(to: firstPoint)
-        for pointIndex in 1..<points[currentLayer].count{
-            
-            pathVar.addLine(to: points[currentLayer][pointIndex])
-            
-            
-            
-        }
-    }
+    
     return pathVar
 }
 
 
 func addFunction(){
     addModel()
-    pathVarPreview.append(Path())
+    pathVarPreview.append(UIBezierPath())
 }
 
 func deleteFunction(_ num:Int){
@@ -236,10 +240,11 @@ func backFunction(_ points: inout [[CGPoint]]){
         }
         
         currentLayer = points.count - 1
-        pathVar = Path()
+        
+        pathVar = UIBezierPath()
         if currentLayer  < 0 {
             points = [[]]
-            pathVar = Path()
+            pathVar = UIBezierPath()
             
             currentLayer = 0
         } else {
@@ -250,8 +255,9 @@ func backFunction(_ points: inout [[CGPoint]]){
                 
                 pathVar.move(to: firstPoint!)
                 for pointIndex in 1..<points[currentNum].count{
-                    
-                    pathVar.addLine(to: points[currentNum][pointIndex])
+                    if ((pointIndex % 2 != 1) && (pointIndex > 0)) {
+                        pathVar.addQuadCurve(to: points[currentNum][pointIndex], controlPoint: points[currentNum][pointIndex - 1])
+                    }
                     
                 }
                 
@@ -268,7 +274,7 @@ func backFunction(_ points: inout [[CGPoint]]){
         
     } else{
         points = [[]]
-        pathVar = Path()
+        pathVar = UIBezierPath()
      
         currentLayer = 0
     }

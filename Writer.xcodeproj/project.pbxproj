@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4A2B093F27C0040600EE96CB /* DrawScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A2B093E27C0040500EE96CB /* DrawScreen.swift */; };
 		4A5B35632746C1B60036988C /* Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A5B35622746C1B60036988C /* Model.swift */; };
 		4A5B35652746C1F40036988C /* ViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A5B35642746C1F40036988C /* ViewModel.swift */; };
 		4A9A1A7C273063E800A5D113 /* WriterApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A9A1A7B273063E800A5D113 /* WriterApp.swift */; };
@@ -21,6 +22,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		4A2B093E27C0040500EE96CB /* DrawScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrawScreen.swift; sourceTree = "<group>"; };
 		4A5B35622746C1B60036988C /* Model.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Model.swift; sourceTree = "<group>"; };
 		4A5B35642746C1F40036988C /* ViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewModel.swift; sourceTree = "<group>"; };
 		4A9A1A78273063E800A5D113 /* Writer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Writer.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -72,6 +74,7 @@
 				4ACF89C627AC54F700A691C4 /* CGPointsTransformer.swift */,
 				4A9A1A7B273063E800A5D113 /* WriterApp.swift */,
 				4A9A1A7D273063E800A5D113 /* ContentView.swift */,
+				4A2B093E27C0040500EE96CB /* DrawScreen.swift */,
 				4A5B35642746C1F40036988C /* ViewModel.swift */,
 				4A5B35622746C1B60036988C /* Model.swift */,
 				4A9A1A7F273063EB00A5D113 /* Assets.xcassets */,
@@ -168,6 +171,7 @@
 				4ACF890227A83F5300A691C4 /* Model.xcdatamodeld in Sources */,
 				4A5B35652746C1F40036988C /* ViewModel.swift in Sources */,
 				4A9A1A7C273063E800A5D113 /* WriterApp.swift in Sources */,
+				4A2B093F27C0040600EE96CB /* DrawScreen.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
