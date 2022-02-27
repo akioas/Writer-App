@@ -35,13 +35,49 @@ func navigationFunction(points loadPoints: [[CGPoint]]){
             let firstPoint = points[currentNum].first
             
             if firstPoint != nil{
+                createPath(firstPoint)
+                /*
                 pathVar.move(to: firstPoint!)
                 for pointIndex in 1..<points[currentNum].count{
                     if ((pointIndex % 2 != 1) && (pointIndex > 0)) {
                         pathVar.addQuadCurve(to: points[currentNum][pointIndex], controlPoint: points[currentNum][pointIndex - 1])
                     }
                     
-                }
+                }*/
+                
+                /*
+                 pathVar.move(to: firstPoint!)
+                 
+                 
+                 if points[currentNum].count >= 3 {
+                     pathVar = tempPath
+
+                     for pointIndex in 3..<points[currentNum].count{
+
+                         if (pointIndex % 3 == 0){
+                             pathVar.addCurve(to: points[currentNum][pointIndex], controlPoint1: points[currentNum][pointIndex - 2], controlPoint2: points[currentNum][pointIndex - 1])
+
+                         }
+              
+                     }
+                     
+                 } else if points[currentNum].count >= 2 {
+                 
+                 pathVar = tempPath
+                 for pointIndex in 2..<points[currentNum].count{
+
+                         pathVar.addQuadCurve(to: points[currentNum][pointIndex], controlPoint: points[currentNum][pointIndex - 1])
+
+                 }
+                 } else {
+                     tempPath = pathVar
+                     print(tempPath)
+                     for pointIndex in 1..<points[currentNum].count{
+                         pathVar.addLine(to: points[currentNum][pointIndex])
+                     }
+                     
+                 }
+                 */
             }
            
             
@@ -197,12 +233,7 @@ func pathFunction(_ points: [[CGPoint]]) -> UIBezierPath{
         
         if firstPoint != nil{
         
-        pathVar.move(to: firstPoint!)
-        for pointIndex in 0..<points[currentNum].count{
-            if ((pointIndex % 2 != 1) && (pointIndex > 0)) {
-                pathVar.addQuadCurve(to: points[currentNum][pointIndex], controlPoint: points[currentNum][pointIndex - 1])
-            }
-        }
+        createPath(firstPoint)
         }
         
     
@@ -279,5 +310,38 @@ func backFunction(_ points: inout [[CGPoint]]){
         currentLayer = 0
     }
 }
+var tempPath = UIBezierPath()
 
+func createPath(_ firstPoint: CGPoint?){
+    pathVar.move(to: firstPoint!)
+    
+    
+    if points[currentNum].count >= 3 {
+        pathVar = tempPath
 
+        for pointIndex in 3..<points[currentNum].count{
+
+            if (pointIndex % 3 == 0){
+                pathVar.addCurve(to: points[currentNum][pointIndex], controlPoint1: points[currentNum][pointIndex - 2], controlPoint2: points[currentNum][pointIndex - 1])
+
+            }
+ 
+        }
+        
+    } else if points[currentNum].count >= 2 {
+    
+    pathVar = tempPath
+    for pointIndex in 2..<points[currentNum].count{
+
+            pathVar.addQuadCurve(to: points[currentNum][pointIndex], controlPoint: points[currentNum][pointIndex - 1])
+
+    }
+    } else {
+        tempPath = pathVar
+        print(tempPath)
+        for pointIndex in 0..<points[currentNum].count{
+            pathVar.addLine(to: points[currentNum][pointIndex])
+        }
+        
+    }
+}
