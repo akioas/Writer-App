@@ -35,60 +35,63 @@ extension View {
 
 let keyMaxViewNum = "MaxViewNumKey"
 
-
-func saveNum(_ num: Int, KeyForUserDefaults: String) {
-    UserDefaults.standard.set(num, forKey: KeyForUserDefaults)
-    
-}
-
-
-
-
-func loadNum(KeyForUserDefaults: String) -> Int {
-    
-    let encodedData = UserDefaults.standard.integer(forKey: KeyForUserDefaults)
-    
-    
-    return encodedData
-}
-
-
-func addPoint(_ value: DragGesture.Value) -> CGPoint{
-    var pointToAppend = value.location
-    if (value.location.x < screenWidth)&&(value.location.y < screenWidth) {
-    } else if (value.location.x > screenWidth)&&(value.location.y < screenWidth) {
-        pointToAppend.x = screenWidth
-    } else if (value.location.x < screenWidth)&&(value.location.y > screenWidth) {
-        pointToAppend.y = screenWidth
-    } else if (value.location.x > screenWidth)&&(value.location.y > screenWidth) {
-        pointToAppend.x = screenWidth
-        pointToAppend.y = screenWidth
-    }
-    
-    if (value.location.y < 0){
-        pointToAppend.y = 0
-    }
-    return pointToAppend
-}
-
-
-func addModel(){
-    let newItem = Point(context: viewContext)
-    newItem.points = [[]]
-   
-    
-    
-    saveModel()
-    
-}
-
-func saveModel(){
-    do {
-        try viewContext.save()
-    } catch {
-  
-        let nsError = error as NSError
-        fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
+class Defaults{
+    func saveNum(_ num: Int, KeyForUserDefaults: String) {
+        UserDefaults.standard.set(num, forKey: KeyForUserDefaults)
         
+    }
+
+
+
+
+    func loadNum(KeyForUserDefaults: String) -> Int {
+        
+        let encodedData = UserDefaults.standard.integer(forKey: KeyForUserDefaults)
+        
+        
+        return encodedData
+    }
+}
+
+class PointModel{
+    func addPoint(_ value: DragGesture.Value) -> CGPoint{
+        var pointToAppend = value.location
+        if (value.location.x < screenWidth)&&(value.location.y < screenWidth) {
+        } else if (value.location.x > screenWidth)&&(value.location.y < screenWidth) {
+            pointToAppend.x = screenWidth
+        } else if (value.location.x < screenWidth)&&(value.location.y > screenWidth) {
+            pointToAppend.y = screenWidth
+        } else if (value.location.x > screenWidth)&&(value.location.y > screenWidth) {
+            pointToAppend.x = screenWidth
+            pointToAppend.y = screenWidth
+        }
+        
+        if (value.location.y < 0){
+            pointToAppend.y = 0
+        }
+        return pointToAppend
+    }
+}
+class DataModel{
+    func addModel(){
+        let newItem = Point(context: viewContext)
+        newItem.points = [[]]
+       
+        
+        
+        saveModel()
+        
+    }
+
+    func saveModel(){
+     
+        do {
+            try viewContext.save()
+        } catch {
+      
+            let nsError = error as NSError
+            fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
+            
+        }
     }
 }
